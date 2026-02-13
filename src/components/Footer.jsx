@@ -51,7 +51,7 @@ const Footer = () => {
 
                 <div className="border-t border-slate-100 mt-10 pt-6 flex justify-center">
                     <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        © 2024 FinanciaPro — Propulsé par React & Tailwind
+                        © {new Date().getFullYear()} FinanciaPro — Propulsé par <a href="https://thatmuch.fr" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800">THATMUCH</a>
                     </p>
                 </div>
             </div>

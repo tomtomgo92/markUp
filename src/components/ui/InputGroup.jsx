@@ -4,7 +4,6 @@ const InputGroup = ({ label, value, onChange, icon: Icon, disabled, suffix }) =>
     <div className={`space-y-2 ${disabled ? 'opacity-50 grayscale' : ''}`}>
         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
             {label}
-            {disabled && <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Calculé auto</span>}
         </label>
         <div className={`relative group transition-all duration-300 ${disabled ? '' : 'focus-within:scale-[1.02]'}`}>
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -25,6 +24,7 @@ const InputGroup = ({ label, value, onChange, icon: Icon, disabled, suffix }) =>
             <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                 <span className="text-slate-400 font-bold sm:text-sm">{suffix}</span>
             </div>
+            {disabled && <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Calculé auto</span>}
         </div>
     </div>
 );

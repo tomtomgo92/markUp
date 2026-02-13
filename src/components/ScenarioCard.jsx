@@ -7,7 +7,6 @@ import {
     Wallet,
     PieChart,
     ChevronDown,
-    ArrowRight
 } from 'lucide-react';
 import InputGroup from './ui/InputGroup';
 import ResultCard from './ui/ResultCard';
@@ -27,10 +26,47 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
     };
 
     const updateItem = (itemId, field, value) => {
-        const newItems = s.items.map(item =>
-            item.id === itemId ? { ...item, [field]: value } : item
-        );
+        const val = parseFloat(value) || 0;
+        const newItems = s.items.map(item => {
+            if (item.id === itemId) {
+                let updates = { [field]: value };
+
+                // Auto-calculate logic based on mode
+                if (s.mode === 'cost_percent' && field === 'cost') {
+                    const margin = parseFloat(s.marginPercent) || 0;
+                    const newPv = val !== 0 ? (val / (1 - (margin / 100))) : 0;
+                    updates.pv = newPv.toFixed(2);
+                } else if (s.mode === 'pv_percent' && field === 'pv') {
+                    const margin = parseFloat(s.marginPercent) || 0;
+                    const newCost = val * (1 - (margin / 100));
+                    updates.cost = newCost.toFixed(2);
+                }
+
+                return { ...item, ...updates };
+            }
+            return item;
+        });
         onUpdate(s.id, 'items', newItems);
+    };
+
+    const updateGlobalMargin = (value) => {
+        const margin = parseFloat(value) || 0;
+        const newItems = s.items.map(item => {
+            const cost = parseFloat(item.cost) || 0;
+            const pv = parseFloat(item.pv) || 0;
+
+            if (s.mode === 'cost_percent') {
+                const newPv = cost !== 0 ? (cost / (1 - (margin / 100))) : 0;
+                return { ...item, pv: newPv.toFixed(2) };
+            } else if (s.mode === 'pv_percent') {
+                const newCost = pv * (1 - (margin / 100));
+                return { ...item, cost: newCost.toFixed(2) };
+            }
+            return item;
+        });
+
+        // Batch update: margin AND items
+        onUpdate(s.id, { marginPercent: value, items: newItems });
     };
 
     const removeItem = (itemId) => {
@@ -89,33 +125,22 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                             className="font-bold text-slate-800 text-lg bg-transparent border-b border-transparent hover:border-slate-300 focus:border-indigo-500 focus:outline-none transition-colors w-full"
                             placeholder="Nom du scénario"
                         />
-                        <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
-                            <span className="flex items-center gap-1"><Building2 size={12} /> Simulation</span>
-                        </div>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2 justify-end w-full sm:w-auto">
-                    <button
-                        onClick={toggleDetailMode}
-                        className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${s.isDetailed ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'}`}
-                    >
-                        {s.isDetailed ? 'Mode Détail' : 'Mode Global'}
-                    </button>
-                    {!s.isDetailed && (
-                        <div className="relative">
-                            <select
-                                value={s.mode}
-                                onChange={(e) => handleChange('mode', e.target.value)}
-                                className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
-                            >
-                                <option value="pv_cost">Défini par PV & Coût</option>
-                                <option value="cost_percent">Objectif Marge sur Coût</option>
-                                <option value="pv_percent">Objectif Marge sur PV</option>
-                            </select>
-                            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
-                        </div>
-                    )}
+                    <div className="relative">
+                        <select
+                            value={s.mode}
+                            onChange={(e) => handleChange('mode', e.target.value)}
+                            className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
+                        >
+                            <option value="pv_cost">PV & Coût</option>
+                            <option value="cost_percent">Marge & Coût</option>
+                            <option value="pv_percent">Marge & PV</option>
+                        </select>
+                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+                    </div>
                     <button
                         onClick={() => onRemove(s.id)}
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
@@ -127,10 +152,33 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
             </div>
 
             <div className="p-4 sm:p-8 space-y-8">
-
-                {s.isDetailed ? (
-                    /* SECTION DETAILS LINES */
                     <div className="space-y-4">
+
+
+                        {(s.mode === 'cost_percent' || s.mode === 'pv_percent') && (
+                            <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-indigo-100 p-2 rounded-lg text-indigo-600">
+                                        <PieChart size={18} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-indigo-900 text-sm">Marge Cible Globale</h4>
+                                        <p className="text-xs text-indigo-600/80">S'applique à toutes les lignes</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="number"
+                                        value={s.marginPercent}
+                                        onChange={(e) => updateGlobalMargin(e.target.value)}
+                                        className="w-20 px-3 py-1.5 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 outline-none text-right font-bold text-indigo-700"
+                                        placeholder="0"
+                                    />
+                                    <span className="font-bold text-indigo-400">%</span>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="space-y-2">
                             <div className="flex justify-between items-center px-2">
                                 <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider">Lignes du projet</h4>
@@ -171,8 +219,9 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                             <input
                                                                 type="number"
                                                                 value={item.cost}
+                                                                disabled={s.mode === 'pv_percent'}
                                                                 onChange={(e) => updateItem(item.id, 'cost', e.target.value)}
-                                                                className="w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700"
+                                                                className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'pv_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="0"
                                                             />
                                                             <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
@@ -183,8 +232,9 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                             <input
                                                                 type="number"
                                                                 value={item.pv}
+                                                                disabled={s.mode === 'cost_percent'}
                                                                 onChange={(e) => updateItem(item.id, 'pv', e.target.value)}
-                                                                className="w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700"
+                                                                className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="0"
                                                             />
                                                             <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
@@ -229,35 +279,6 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                             </div>
                         </div>
                     </div>
-                ) : (
-                    /* SECTION INPUTS (GLOBAL MODE) */
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <InputGroup
-                            label="Prix de Vente HT"
-                            value={s.mode === 'cost_percent' ? res.pv.toFixed(2) : s.pv}
-                            onChange={(e) => handleSmartChange('pv', e.target.value)}
-                            disabled={s.mode === 'cost_percent'}
-                            icon={Euro}
-                            suffix="EUR"
-                        />
-                        <InputGroup
-                            label="Coût de revient HT"
-                            value={s.mode === 'pv_percent' ? res.cost.toFixed(2) : s.cost}
-                            onChange={(e) => handleSmartChange('cost', e.target.value)}
-                            disabled={s.mode === 'pv_percent'}
-                            icon={Wallet}
-                            suffix="EUR"
-                        />
-                        <InputGroup
-                            label="Marge Commerciale"
-                            value={s.mode === 'pv_cost' ? (res.marginPercent * 100).toFixed(2) : s.marginPercent}
-                            onChange={(e) => handleSmartChange('marginPercent', e.target.value)}
-                            disabled={s.mode === 'pv_cost'}
-                            icon={PieChart}
-                            suffix="%"
-                        />
-                    </div>
-                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <ResultCard

@@ -33,7 +33,14 @@ const App = () => {
     };
 
     const updateScenario = (id, field, value) => {
-        setScenarios(scenarios.map(s => s.id === id ? { ...s, [field]: value } : s));
+        setScenarios(scenarios.map(s => {
+            if (s.id !== id) return s;
+            // Support batch updates if field is an object
+            if (typeof field === 'object') {
+                return { ...s, ...field };
+            }
+            return { ...s, [field]: value };
+        }));
     };
 
     return (
