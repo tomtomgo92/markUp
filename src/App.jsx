@@ -110,20 +110,58 @@ const ResultCard = ({ title, value, subtext, type = "neutral" }) => {
 const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
     const [isHovered, setIsHovered] = useState(false);
 
+    // --- MANAGE ITEMS ---
+    const addItem = () => {
+        const newItems = [
+            ...(s.items || []),
+            { id: Date.now(), name: `Ligne ${(s.items?.length || 0) + 1}`, pv: 0, cost: 0 }
+        ];
+        onUpdate(s.id, 'items', newItems);
+    };
+
+    const updateItem = (itemId, field, value) => {
+        const newItems = s.items.map(item =>
+            item.id === itemId ? { ...item, [field]: value } : item
+        );
+        onUpdate(s.id, 'items', newItems);
+    };
+
+    const removeItem = (itemId) => {
+        const newItems = s.items.filter(item => item.id !== itemId);
+        onUpdate(s.id, 'items', newItems);
+    };
+
+    const toggleDetailMode = () => {
+        const newIsDetailed = !s.isDetailed;
+        onUpdate(s.id, 'isDetailed', newIsDetailed);
+        // Initialize items if switching to detailed and empty
+        if (newIsDetailed && (!s.items || s.items.length === 0)) {
+            onUpdate(s.id, 'items', [{ id: Date.now(), name: 'Prestation 1', pv: s.pv, cost: s.cost }]);
+        }
+    };
+
     // --- LOGIQUE METIER ---
     const calculateResults = () => {
         let pv = parseFloat(s.pv) || 0;
         let cost = parseFloat(s.cost) || 0;
         let marginPercent = parseFloat(s.marginPercent) || 0;
 
-        if (s.mode === 'cost_percent') {
-            pv = cost !== 0 ? cost / (1 - (marginPercent / 100)) : 0;
-        } else if (s.mode === 'pv_percent') {
-            cost = pv * (1 - (marginPercent / 100));
+        if (s.isDetailed && s.items && s.items.length > 0) {
+            // In detailed mode, PV and Cost are sums of items
+            pv = s.items.reduce((acc, item) => acc + (parseFloat(item.pv) || 0), 0);
+            cost = s.items.reduce((acc, item) => acc + (parseFloat(item.cost) || 0), 0);
+            // Recalculate margin percent derived from totals
+            marginPercent = pv !== 0 ? ((pv - cost) / pv) * 100 : 0;
+        } else {
+            // Standard modes
+            if (s.mode === 'cost_percent') {
+                pv = cost !== 0 ? cost / (1 - (marginPercent / 100)) : 0;
+            } else if (s.mode === 'pv_percent') {
+                cost = pv * (1 - (marginPercent / 100));
+            }
         }
 
         const marginEuro = pv - cost;
-        // const currentPercent = pv !== 0 ? (marginEuro / pv) : 0; // Removed unused variable
         const tva = pv * TAX_CONFIG.TVA_STANDARD;
 
         // Calcul IS Progressif
@@ -147,23 +185,20 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
     // Handlers
     const handleChange = (field, val) => onUpdate(s.id, field, val);
 
-    // Update logic for manual mode specific behavior
     const handleSmartChange = (field, value) => {
+        if (s.isDetailed) return; // Disable smart changes in detailed mode (values are derived)
+
         const val = parseFloat(value) || 0;
 
-        // Si on est en mode "Manuel" (pv_cost) et qu'on change PV ou Cost, on recalcule le % pour l'affichage
         if (s.mode === 'pv_cost') {
             if (field === 'pv') {
-                // On change PV, le coût reste fixe, le % s'ajuste
                 const newMarginPercent = val !== 0 ? ((val - s.cost) / val) * 100 : 0;
-                onUpdate(s.id, 'marginPercent', newMarginPercent); // Juste pour stocker, le rendu le recalculera de toute façon
+                onUpdate(s.id, 'marginPercent', newMarginPercent);
             } else if (field === 'cost') {
-                // On change Cost, le PV reste fixe, le % s'ajuste
                 const newMarginPercent = s.pv !== 0 ? ((s.pv - val) / s.pv) * 100 : 0;
                 onUpdate(s.id, 'marginPercent', newMarginPercent);
             }
         }
-
         handleChange(field, value);
     };
 
@@ -188,18 +223,26 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                 </div>
 
                 <div className="flex items-center gap-2 justify-end w-full sm:w-auto">
-                    <div className="relative">
-                        <select
-                            value={s.mode}
-                            onChange={(e) => handleChange('mode', e.target.value)}
-                            className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
-                        >
-                            <option value="pv_cost">Défini par PV & Coût</option>
-                            <option value="cost_percent">Objectif Marge sur Coût</option>
-                            <option value="pv_percent">Objectif Marge sur PV</option>
-                        </select>
-                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
-                    </div>
+                    <button
+                        onClick={toggleDetailMode}
+                        className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${s.isDetailed ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'}`}
+                    >
+                        {s.isDetailed ? 'Mode Détail' : 'Mode Global'}
+                    </button>
+                    {!s.isDetailed && (
+                        <div className="relative">
+                            <select
+                                value={s.mode}
+                                onChange={(e) => handleChange('mode', e.target.value)}
+                                className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
+                            >
+                                <option value="pv_cost">Défini par PV & Coût</option>
+                                <option value="cost_percent">Objectif Marge sur Coût</option>
+                                <option value="pv_percent">Objectif Marge sur PV</option>
+                            </select>
+                            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+                        </div>
+                    )}
                     <button
                         onClick={() => onRemove(s.id)}
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
@@ -212,33 +255,126 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
 
             <div className="p-4 sm:p-8 space-y-8">
 
-                {/* SECTION INPUTS */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <InputGroup
-                        label="Prix de Vente HT"
-                        value={s.mode === 'cost_percent' ? res.pv.toFixed(2) : s.pv}
-                        onChange={(e) => handleSmartChange('pv', e.target.value)}
-                        disabled={s.mode === 'cost_percent'}
-                        icon={Euro}
-                        suffix="EUR"
-                    />
-                    <InputGroup
-                        label="Coût de revient HT"
-                        value={s.mode === 'pv_percent' ? res.cost.toFixed(2) : s.cost}
-                        onChange={(e) => handleSmartChange('cost', e.target.value)}
-                        disabled={s.mode === 'pv_percent'}
-                        icon={Wallet}
-                        suffix="EUR"
-                    />
-                    <InputGroup
-                        label="Marge Commerciale"
-                        value={s.mode === 'pv_cost' ? (res.marginPercent * 100).toFixed(2) : s.marginPercent}
-                        onChange={(e) => handleSmartChange('marginPercent', e.target.value)}
-                        disabled={s.mode === 'pv_cost'}
-                        icon={PieChart}
-                        suffix="%"
-                    />
-                </div>
+                {s.isDetailed ? (
+                    /* SECTION DETAILS LINES */
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-2">
+                                <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider">Lignes du projet</h4>
+                                <button onClick={addItem} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                                    <Plus size={14} /> Ajouter une ligne
+                                </button>
+                            </div>
+                            <div className="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                                <table className="w-full text-left text-sm">
+                                    <thead className="bg-slate-100 text-xs text-slate-500 font-bold uppercase tracking-wider">
+                                        <tr>
+                                            <th className="p-3 w-10">#</th>
+                                            <th className="p-3">Coût</th>
+                                            <th className="p-3">PV</th>
+                                            <th className="p-3 text-right">Marge</th>
+                                            <th className="p-3 w-10"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-200">
+                                        {s.items?.map((item, i) => {
+                                            const itemMargin = (parseFloat(item.pv) || 0) - (parseFloat(item.cost) || 0);
+                                            const itemMarginPercent = parseFloat(item.pv) ? (itemMargin / parseFloat(item.pv)) * 100 : 0;
+                                            return (
+                                                <tr key={item.id} className="group hover:bg-white transition-colors">
+                                                    <td className="p-3 text-slate-400 font-medium text-xs">{i + 1}</td>
+                                                    <td className="p-3">
+                                                        <div className="relative">
+                                                            <input
+                                                                type="number"
+                                                                value={item.cost}
+                                                                onChange={(e) => updateItem(item.id, 'cost', e.target.value)}
+                                                                className="w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700"
+                                                                placeholder="0"
+                                                            />
+                                                            <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-3">
+                                                        <div className="relative">
+                                                            <input
+                                                                type="number"
+                                                                value={item.pv}
+                                                                onChange={(e) => updateItem(item.id, 'pv', e.target.value)}
+                                                                className="w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700"
+                                                                placeholder="0"
+                                                            />
+                                                            <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-3 text-right">
+                                                        <div className="flex flex-col items-end">
+                                                            <span className={`font-bold ${itemMargin >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                                                                {itemMargin.toFixed(0)}€
+                                                            </span>
+                                                            <span className="text-[10px] text-slate-400">{itemMarginPercent.toFixed(1)}%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-3 text-right">
+                                                        <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 transition-colors">
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                        {(!s.items || s.items.length === 0) && (
+                                            <tr>
+                                                <td colSpan="5" className="p-6 text-center text-slate-400 text-xs italic">
+                                                    Aucune ligne. Ajoutez des postes de dépenses et de revenus.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                    {s.items && s.items.length > 0 && (
+                                        <tfoot className="bg-slate-50 font-bold text-slate-700 border-t border-slate-200">
+                                            <tr>
+                                                <td className="p-3 text-xs uppercase tracking-wider text-right" colSpan="1">Total</td>
+                                                <td className="p-3 text-indigo-900">{res.cost.toFixed(2)}€</td>
+                                                <td className="p-3 text-indigo-900">{res.pv.toFixed(2)}€</td>
+                                                <td className="p-3 text-right text-emerald-600">{(res.pv - res.cost).toFixed(2)}€</td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    )}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    /* SECTION INPUTS (GLOBAL MODE) */
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <InputGroup
+                            label="Prix de Vente HT"
+                            value={s.mode === 'cost_percent' ? res.pv.toFixed(2) : s.pv}
+                            onChange={(e) => handleSmartChange('pv', e.target.value)}
+                            disabled={s.mode === 'cost_percent'}
+                            icon={Euro}
+                            suffix="EUR"
+                        />
+                        <InputGroup
+                            label="Coût de revient HT"
+                            value={s.mode === 'pv_percent' ? res.cost.toFixed(2) : s.cost}
+                            onChange={(e) => handleSmartChange('cost', e.target.value)}
+                            disabled={s.mode === 'pv_percent'}
+                            icon={Wallet}
+                            suffix="EUR"
+                        />
+                        <InputGroup
+                            label="Marge Commerciale"
+                            value={s.mode === 'pv_cost' ? (res.marginPercent * 100).toFixed(2) : s.marginPercent}
+                            onChange={(e) => handleSmartChange('marginPercent', e.target.value)}
+                            disabled={s.mode === 'pv_cost'}
+                            icon={PieChart}
+                            suffix="%"
+                        />
+                    </div>
+                )}
 
                 {/* SECTION RESULTATS */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -290,7 +426,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
 
 const App = () => {
     const [scenarios, setScenarios] = useState([
-        { id: 1, name: "Site E-commerce", pv: 4500, cost: 3600, marginPercent: 20, mode: 'pv_cost' }
+        { id: 1, name: "Site E-commerce", pv: 4500, cost: 3600, marginPercent: 20, mode: 'pv_cost', isDetailed: false, items: [] }
     ]);
 
     const addScenario = () => {
@@ -300,7 +436,9 @@ const App = () => {
             pv: 1000,
             cost: 800,
             marginPercent: 20,
-            mode: 'pv_cost'
+            mode: 'pv_cost',
+            isDetailed: false,
+            items: []
         }]);
     };
 
