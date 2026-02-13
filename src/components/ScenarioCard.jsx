@@ -14,7 +14,8 @@ import ResultCard from './ui/ResultCard';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
-    const [isHovered, setIsHovered] = useState(false);
+    const [isHovered,setIsHovered] = useState(false);
+
 
     // --- MANAGE ITEMS ---
     const addItem = () => {
@@ -81,8 +82,14 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                         {index + 1}
                     </div>
                     <div>
-                        <h3 className="font-bold text-slate-800">{s.name || `Projet #${index + 1}`}</h3>
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <input
+                            type="text"
+                            value={s.name}
+                            onChange={(e) => onUpdate(s.id, 'name', e.target.value)}
+                            className="font-bold text-slate-800 text-lg bg-transparent border-b border-transparent hover:border-slate-300 focus:border-indigo-500 focus:outline-none transition-colors w-full"
+                            placeholder="Nom du scénario"
+                        />
+                        <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
                             <span className="flex items-center gap-1"><Building2 size={12} /> Simulation</span>
                         </div>
                     </div>
@@ -252,44 +259,38 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                     </div>
                 )}
 
-                {/* SECTION RESULTATS */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <ResultCard
-                        title="Marge Brute (HT)"
-                        value={FORMATTER.format(res.marginEuro)}
-                        subtext={`Soit ${PERCENT_FORMATTER.format(res.marginPercent)} du chiffre d'affaires`}
-                        type="success"
+                        title="Prix Vente HT"
+                        value={FORMATTER.format(res.pv)}
+                        type="neutral"
                     />
                     <ResultCard
-                        title="Bénéfice Net (Après IS)"
-                        value={FORMATTER.format(res.netProfit)}
-                        subtext={`Impôt estimé: ${FORMATTER.format(res.is)} (${res.marginEuro > TAX_CONFIG.SEUIL_IS ? '25%' : '15%'})`}
+                        title="TVA (20%)"
+                        value={FORMATTER.format(res.tva)}
+                        type="neutral"
+                    />
+                    <ResultCard
+                        title="TTC Client"
+                        value={FORMATTER.format(res.ttc)}
                         type="primary"
                     />
                 </div>
 
-                {/* DETAILS FISCAUX */}
+
                 <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
-                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Récapitulatif Fiscal & TTC</p>
+                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
                     <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
                         <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                            <span className="text-slate-500 font-medium">Prix Vente HT</span>
-                            <span className="font-bold text-slate-700">{FORMATTER.format(res.pv)}</span>
+                            <span className="text-slate-500 font-medium">Marge Brute (HT)</span>
+                            <span className="font-bold text-slate-700">{FORMATTER.format(res.marginEuro)}</span>
                         </div>
-                        <div className="hidden sm:block text-slate-300">
-                            <ArrowRight size={14} />
-                        </div>
+
                         <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                            <span className="text-slate-500 font-medium">TVA (20%)</span>
-                            <span className="font-bold text-slate-700">+{FORMATTER.format(res.tva)}</span>
+                            <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
+                            <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
                         </div>
-                        <div className="hidden sm:block text-slate-300">
-                            <div className="h-4 w-[1px] bg-slate-200"></div>
-                        </div>
-                        <div className="flex items-center justify-between w-full sm:w-auto gap-4 p-2 bg-indigo-50/50 rounded-lg">
-                            <span className="text-indigo-600 font-bold uppercase text-xs">Total TTC Client</span>
-                            <span className="font-black text-indigo-700">{FORMATTER.format(res.ttc)}</span>
-                        </div>
+
                     </div>
                 </div>
 

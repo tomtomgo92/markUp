@@ -13,7 +13,7 @@ const ResultCard = ({ title, value, subtext, type = "neutral" }) => {
                 <p className={`text-[10px] font-black uppercase tracking-wider mb-2 ${type === 'primary' ? 'text-indigo-200' : 'text-slate-400'}`}>
                     {title}
                 </p>
-                <p className={`text-2xl sm:text-3xl font-black ${type === 'success' ? 'text-emerald-700' : ''}`}>
+                <p className={`text-2xl sm:text-2xl font-black ${type === 'success' ? 'text-emerald-700' : ''}`}>
                     {value}
                 </p>
             </div>
