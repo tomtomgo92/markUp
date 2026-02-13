@@ -23,7 +23,7 @@ export const calculateResults = (s) => {
     let cost = parseFloat(s.cost) || 0;
     let marginPercent = parseFloat(s.marginPercent) || 0;
 
-    if (s.isDetailed && s.items && s.items.length > 0) {
+    if (s.items && s.items.length > 0) {
         // In detailed mode, PV and Cost are sums of items
         pv = s.items.reduce((acc, item) => acc + (parseFloat(item.pv) || 0), 0);
         cost = s.items.reduce((acc, item) => acc + (parseFloat(item.cost) || 0), 0);

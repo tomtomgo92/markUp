@@ -303,32 +303,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <InputGroup
-                            label="Prix de Vente HT"
-                            value={s.mode === 'cost_percent' ? res.pv.toFixed(0) : s.pv}
-                            onChange={(e) => handleSmartChange('pv', e.target.value)}
-                            disabled={s.mode === 'cost_percent'}
-                            icon={Euro}
-                            suffix="EUR"
-                        />
-                        <InputGroup
-                            label="Coût de revient HT"
-                            value={s.mode === 'pv_percent' ? res.cost.toFixed(0) : s.cost}
-                            onChange={(e) => handleSmartChange('cost', e.target.value)}
-                            disabled={s.mode === 'pv_percent'}
-                            icon={Wallet}
-                            suffix="EUR"
-                        />
-                        <InputGroup
-                            label="Marge Commerciale"
-                            value={s.mode === 'pv_cost' ? (res.marginPercent * 100).toFixed(2) : s.marginPercent}
-                            onChange={(e) => handleSmartChange('marginPercent', e.target.value)}
-                            disabled={s.mode === 'pv_cost'}
-                            icon={PieChart}
-                            suffix="%"
-                        />
-                    </div>
+
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <ResultCard
