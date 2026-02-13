@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import {
-    Building2,
     Trash2,
     Plus,
-    Euro,
-    Wallet,
     PieChart,
     ChevronDown,
 } from 'lucide-react';
-import InputGroup from './ui/InputGroup';
 import ResultCard from './ui/ResultCard';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
