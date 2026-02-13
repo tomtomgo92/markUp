@@ -32,9 +32,9 @@ export const calculateResults = (s) => {
     } else {
         // Standard modes
         if (s.mode === 'cost_percent') {
-            pv = cost !== 0 ? cost / (1 - (marginPercent / 100)) : 0;
+            pv = cost !== 0 ? Math.round(cost / (1 - (marginPercent / 100))) : 0;
         } else if (s.mode === 'pv_percent') {
-            cost = pv * (1 - (marginPercent / 100));
+            cost = Math.round(pv * (1 - (marginPercent / 100)));
         }
     }
 

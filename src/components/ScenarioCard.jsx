@@ -35,11 +35,11 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                 if (s.mode === 'cost_percent' && field === 'cost') {
                     const margin = parseFloat(s.marginPercent) || 0;
                     const newPv = val !== 0 ? (val / (1 - (margin / 100))) : 0;
-                    updates.pv = newPv.toFixed(2);
+                    updates.pv = newPv.toFixed(0);
                 } else if (s.mode === 'pv_percent' && field === 'pv') {
                     const margin = parseFloat(s.marginPercent) || 0;
                     const newCost = val * (1 - (margin / 100));
-                    updates.cost = newCost.toFixed(2);
+                    updates.cost = newCost.toFixed(0);
                 }
 
                 return { ...item, ...updates };
@@ -57,10 +57,10 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
 
             if (s.mode === 'cost_percent') {
                 const newPv = cost !== 0 ? (cost / (1 - (margin / 100))) : 0;
-                return { ...item, pv: newPv.toFixed(2) };
+                return { ...item, pv: newPv.toFixed(0) };
             } else if (s.mode === 'pv_percent') {
                 const newCost = pv * (1 - (margin / 100));
-                return { ...item, cost: newCost.toFixed(2) };
+                return { ...item, cost: newCost.toFixed(0) };
             }
             return item;
         });
@@ -255,11 +255,11 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                                             if (s.mode === 'cost_percent') {
                                                                                 const cost = parseFloat(item.cost) || 0;
                                                                                 const newPv = cost !== 0 ? (cost / (1 - (val / 100))) : 0;
-                                                                                updateItem(item.id, 'pv', newPv.toFixed(2));
+                                                                                updateItem(item.id, 'pv', newPv.toFixed(0));
                                                                             } else if (s.mode === 'pv_percent') {
                                                                                 const pv = parseFloat(item.pv) || 0;
                                                                                 const newCost = pv * (1 - (val / 100));
-                                                                                updateItem(item.id, 'cost', newCost.toFixed(2));
+                                                                                updateItem(item.id, 'cost', newCost.toFixed(0));
                                                                             }
                                                                         }}
                                                                         className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
@@ -301,6 +301,33 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                 </table>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <InputGroup
+                            label="Prix de Vente HT"
+                            value={s.mode === 'cost_percent' ? res.pv.toFixed(0) : s.pv}
+                            onChange={(e) => handleSmartChange('pv', e.target.value)}
+                            disabled={s.mode === 'cost_percent'}
+                            icon={Euro}
+                            suffix="EUR"
+                        />
+                        <InputGroup
+                            label="Coût de revient HT"
+                            value={s.mode === 'pv_percent' ? res.cost.toFixed(0) : s.cost}
+                            onChange={(e) => handleSmartChange('cost', e.target.value)}
+                            disabled={s.mode === 'pv_percent'}
+                            icon={Wallet}
+                            suffix="EUR"
+                        />
+                        <InputGroup
+                            label="Marge Commerciale"
+                            value={s.mode === 'pv_cost' ? (res.marginPercent * 100).toFixed(2) : s.marginPercent}
+                            onChange={(e) => handleSmartChange('marginPercent', e.target.value)}
+                            disabled={s.mode === 'pv_cost'}
+                            icon={PieChart}
+                            suffix="%"
+                        />
                     </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
