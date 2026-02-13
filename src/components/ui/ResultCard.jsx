@@ -3,7 +3,7 @@ import React from 'react';
 const ResultCard = ({ title, value, subtext, type = "neutral" }) => {
     const styles = {
         neutral: "bg-white border-slate-200",
-        primary: "bg-gradient-to-br from-indigo-600 to-blue-700 text-white border-transparent",
+        primary: "bg-gradient-to-br from-primary to-secondary text-white border-transparent",
         success: "bg-emerald-50 border-emerald-200 text-emerald-900"
     };
 

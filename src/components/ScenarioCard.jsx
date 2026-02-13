@@ -203,7 +203,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                             const itemMargin = (parseFloat(item.pv) || 0) - (parseFloat(item.cost) || 0);
                                             const itemMarginPercent = parseFloat(item.pv) ? (itemMargin / parseFloat(item.pv)) * 100 : 0;
                                             return (
-                                                <tr key={item.id} className="group hover:bg-white transition-colors">
+                                                <tr key={item.id} className="group even:bg-white hover:bg-slate-100 transition-colors border-b border-slate-100 last:border-0">
                                                     <td className="p-3 text-slate-400 font-medium text-xs">{i + 1}</td>
                                                     <td className="p-3">
                                                         <input
@@ -245,7 +245,30 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                             <span className={`font-bold ${itemMargin >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                                                                 {itemMargin.toFixed(0)}€
                                                             </span>
-                                                            <span className="text-[10px] text-slate-400">{itemMarginPercent.toFixed(1)}%</span>
+                                                            {(s.mode === 'cost_percent' || s.mode === 'pv_percent') ? (
+                                                                <div className="flex items-center justify-end gap-1">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={itemMarginPercent.toFixed(1)}
+                                                                        onChange={(e) => {
+                                                                            const val = parseFloat(e.target.value) || 0;
+                                                                            if (s.mode === 'cost_percent') {
+                                                                                const cost = parseFloat(item.cost) || 0;
+                                                                                const newPv = cost !== 0 ? (cost / (1 - (val / 100))) : 0;
+                                                                                updateItem(item.id, 'pv', newPv.toFixed(2));
+                                                                            } else if (s.mode === 'pv_percent') {
+                                                                                const pv = parseFloat(item.pv) || 0;
+                                                                                const newCost = pv * (1 - (val / 100));
+                                                                                updateItem(item.id, 'cost', newCost.toFixed(2));
+                                                                            }
+                                                                        }}
+                                                                        className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
+                                                                    />
+                                                                    <span className="text-[10px] text-slate-400">%</span>
+                                                                </div>
+                                                            ) : (
+                                                                <span className="text-[10px] text-slate-400">{itemMarginPercent.toFixed(1)}%</span>
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td className="p-3 text-right">
