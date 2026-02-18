@@ -21,6 +21,7 @@ const Header = ({ onAddScenario }) => {
 
                 <button
                     onClick={onAddScenario}
+                    aria-label="Nouveau Scénario"
                     className="group flex items-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-indigo-200 active:scale-95"
                 >
                     <Plus size={18} className="transition-transform group-hover:rotate-90" strokeWidth={2.5} />
