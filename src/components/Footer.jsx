@@ -1,7 +1,7 @@
 import React from 'react';
 import { Settings2, Building2, Info } from 'lucide-react';
 
-const Footer = () => {
+const Footer = React.memo(() => {
     return (
         <footer className="bg-white border-t border-slate-200 mt-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -57,6 +57,6 @@ const Footer = () => {
             </div>
         </footer>
     );
-};
+});
 
 export default Footer;
