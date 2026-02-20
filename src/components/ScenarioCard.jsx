@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import {
     Trash2,
     Plus,
@@ -341,4 +341,6 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
     );
 };
 
-export default ScenarioCard;
+// Optimisation: React.memo prevents re-renders when parent state updates
+// but this specific card's props haven't changed.
+export default memo(ScenarioCard);
