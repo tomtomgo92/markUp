@@ -140,6 +140,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                     <button
                         onClick={() => onRemove(s.id)}
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        aria-label="Supprimer ce scénario"
                         title="Supprimer ce scénario"
                     >
                         <Trash2 size={18} />
@@ -268,7 +269,11 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                         </div>
                                                     </td>
                                                     <td className="p-3 text-right">
-                                                        <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 transition-colors">
+                                                        <button
+                                                            onClick={() => removeItem(item.id)}
+                                                            className="text-slate-300 hover:text-red-500 transition-colors"
+                                                            aria-label="Supprimer la ligne"
+                                                        >
                                                             <Trash2 size={14} />
                                                         </button>
                                                     </td>
