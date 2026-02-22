@@ -120,6 +120,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                             onChange={(e) => onUpdate(s.id, 'name', e.target.value)}
                             className="font-bold text-slate-800 text-lg bg-transparent border-b border-transparent hover:border-slate-300 focus:border-indigo-500 focus:outline-none transition-colors w-full"
                             placeholder="Nom du scénario"
+                            aria-label="Nom du scénario"
                         />
                     </div>
                 </div>
@@ -130,6 +131,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                             value={s.mode}
                             onChange={(e) => handleChange('mode', e.target.value)}
                             className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
+                            aria-label="Mode de calcul"
                         >
                             <option value="pv_cost">PV & Coût</option>
                             <option value="cost_percent">Marge & Coût</option>
@@ -141,6 +143,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                         onClick={() => onRemove(s.id)}
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         title="Supprimer ce scénario"
+                        aria-label="Supprimer ce scénario"
                     >
                         <Trash2 size={18} />
                     </button>
@@ -169,6 +172,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                         onChange={(e) => updateGlobalMargin(e.target.value)}
                                         className="w-20 px-3 py-1.5 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 outline-none text-right font-bold text-indigo-700"
                                         placeholder="0"
+                                        aria-label="Pourcentage de marge globale"
                                     />
                                     <span className="font-bold text-indigo-400">%</span>
                                 </div>
@@ -208,6 +212,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                             onChange={(e) => updateItem(item.id, 'name', e.target.value)}
                                                             className="w-full px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700"
                                                             placeholder="Nom..."
+                                                            aria-label="Libellé de la ligne"
                                                         />
                                                     </td>
                                                     <td className="p-3">
@@ -219,6 +224,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                                 onChange={(e) => updateItem(item.id, 'cost', e.target.value)}
                                                                 className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'pv_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="0"
+                                                                aria-label="Coût de la ligne"
                                                             />
                                                             <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
                                                         </div>
@@ -232,6 +238,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                                 onChange={(e) => updateItem(item.id, 'pv', e.target.value)}
                                                                 className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="0"
+                                                                aria-label="Prix de vente de la ligne"
                                                             />
                                                             <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
                                                         </div>
@@ -259,6 +266,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                                             }
                                                                         }}
                                                                         className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
+                                                                        aria-label="Pourcentage de marge de la ligne"
                                                                     />
                                                                     <span className="text-[10px] text-slate-400">%</span>
                                                                 </div>
@@ -268,7 +276,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                         </div>
                                                     </td>
                                                     <td className="p-3 text-right">
-                                                        <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 transition-colors">
+                                                        <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 transition-colors" title="Supprimer la ligne" aria-label="Supprimer la ligne">
                                                             <Trash2 size={14} />
                                                         </button>
                                                     </td>
