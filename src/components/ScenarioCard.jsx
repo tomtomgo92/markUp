@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import {
     Trash2,
     Plus,
@@ -8,7 +8,8 @@ import {
 import ResultCard from './ui/ResultCard';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
-const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
+// Optimized: Wrapped in memo to prevent re-renders when other scenarios update
+const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
     const [isHovered,setIsHovered] = useState(false);
 
 
@@ -339,6 +340,6 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
             </div>
         </div>
     );
-};
+});
 
 export default ScenarioCard;
