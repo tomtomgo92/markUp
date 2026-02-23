@@ -118,6 +118,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                             type="text"
                             value={s.name}
                             onChange={(e) => onUpdate(s.id, 'name', e.target.value)}
+                            aria-label="Nom du scénario"
                             className="font-bold text-slate-800 text-lg bg-transparent border-b border-transparent hover:border-slate-300 focus:border-indigo-500 focus:outline-none transition-colors w-full"
                             placeholder="Nom du scénario"
                         />
@@ -129,6 +130,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                         <select
                             value={s.mode}
                             onChange={(e) => handleChange('mode', e.target.value)}
+                            aria-label="Mode de calcul"
                             className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
                         >
                             <option value="pv_cost">PV & Coût</option>
@@ -141,6 +143,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                         onClick={() => onRemove(s.id)}
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         title="Supprimer ce scénario"
+                        aria-label="Supprimer ce scénario"
                     >
                         <Trash2 size={18} />
                     </button>
@@ -167,6 +170,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                         type="number"
                                         value={s.marginPercent}
                                         onChange={(e) => updateGlobalMargin(e.target.value)}
+                                        aria-label="Marge cible globale"
                                         className="w-20 px-3 py-1.5 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 outline-none text-right font-bold text-indigo-700"
                                         placeholder="0"
                                     />
@@ -206,6 +210,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                             type="text"
                                                             value={item.name}
                                                             onChange={(e) => updateItem(item.id, 'name', e.target.value)}
+                                                            aria-label="Libellé"
                                                             className="w-full px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700"
                                                             placeholder="Nom..."
                                                         />
@@ -217,6 +222,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                                 value={item.cost}
                                                                 disabled={s.mode === 'pv_percent'}
                                                                 onChange={(e) => updateItem(item.id, 'cost', e.target.value)}
+                                                                aria-label="Coût"
                                                                 className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'pv_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="0"
                                                             />
@@ -230,6 +236,7 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                                 value={item.pv}
                                                                 disabled={s.mode === 'cost_percent'}
                                                                 onChange={(e) => updateItem(item.id, 'pv', e.target.value)}
+                                                                aria-label="Prix de vente"
                                                                 className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="0"
                                                             />
@@ -268,7 +275,12 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
                                                         </div>
                                                     </td>
                                                     <td className="p-3 text-right">
-                                                        <button onClick={() => removeItem(item.id)} className="text-slate-300 hover:text-red-500 transition-colors">
+                                                        <button
+                                                            onClick={() => removeItem(item.id)}
+                                                            className="text-slate-300 hover:text-red-500 transition-colors"
+                                                            aria-label="Supprimer la ligne"
+                                                            title="Supprimer la ligne"
+                                                        >
                                                             <Trash2 size={14} />
                                                         </button>
                                                     </td>
