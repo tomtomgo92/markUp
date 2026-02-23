@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Trash2,
     Plus,
@@ -9,9 +9,6 @@ import ResultCard from './ui/ResultCard';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
-    const [isHovered, setIsHovered] = useState(false);
-
-
     // --- MANAGE ITEMS ---
     const addItem = () => {
         const newItems = [
@@ -103,9 +100,8 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
 
     return (
         <div
+            // Hover effect is handled via CSS classes (hover:shadow-xl hover:border-indigo-300)
             className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 overflow-hidden relative"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
         >
             {/* Header Carte */}
             <div className="bg-slate-50/50 backdrop-blur-sm p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
