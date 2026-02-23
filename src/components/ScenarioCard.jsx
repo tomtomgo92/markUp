@@ -290,8 +290,17 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
                                     })}
                                     {(!s.items || s.items.length === 0) && (
                                         <tr>
-                                            <td colSpan="6" className="p-6 text-center text-slate-400 text-xs italic">
-                                                Aucune ligne. Ajoutez des postes de dépenses et de revenus.
+                                            <td colSpan="6" className="p-8 text-center text-slate-500">
+                                                <div className="flex flex-col items-center justify-center gap-3">
+                                                    <p className="text-sm font-medium">Commencez par ajouter des éléments à chiffrer</p>
+                                                    <button
+                                                        onClick={addItem}
+                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors font-bold text-sm"
+                                                    >
+                                                        <Plus size={16} />
+                                                        Ajouter une ligne
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     )}
