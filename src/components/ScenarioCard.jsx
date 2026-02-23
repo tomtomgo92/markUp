@@ -8,7 +8,7 @@ import {
 import ResultCard from './ui/ResultCard';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
-const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
+const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
     const [isHovered,setIsHovered] = useState(false);
 
 
@@ -351,6 +351,6 @@ const ScenarioCard = ({ s, onUpdate, onRemove, index }) => {
             </div>
         </div>
     );
-};
+});
 
 export default ScenarioCard;
