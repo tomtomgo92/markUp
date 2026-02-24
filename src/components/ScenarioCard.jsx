@@ -8,7 +8,9 @@ import {
 import ResultCard from './ui/ResultCard';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
-const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
+// BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
+// This is critical for list items where updating one item causes parent to re-render all items.
+const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
     const [isHovered, setIsHovered] = useState(false);
 
 

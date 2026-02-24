@@ -13,8 +13,8 @@ const App = () => {
         { id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }
     ]);
 
-    // Optimisation: useCallback prevents function recreation on every render,
-    // avoiding unnecessary re-renders of memoized child components (Header).
+    // BOLT: Optimize - use useCallback to maintain stable function reference
+    // This prevents ScenarioCard from re-rendering when other scenarios change.
     const addScenario = useCallback(() => {
         setScenarios((prev) => [...prev, {
             id: Date.now(),
@@ -28,7 +28,7 @@ const App = () => {
         }]);
     }, []);
 
-    // Optimisation: useCallback ensures stable reference for memoized ScenarioCard
+    // BOLT: Optimize - use useCallback to maintain stable function reference
     const removeScenario = useCallback((id) => {
         setScenarios((prev) => {
             if (prev.length > 1) {
@@ -38,7 +38,7 @@ const App = () => {
         });
     }, []);
 
-    // Optimisation: useCallback ensures stable reference for memoized ScenarioCard
+    // BOLT: Optimize - use useCallback to maintain stable function reference
     const updateScenario = useCallback((id, field, value) => {
         setScenarios((prev) => prev.map((s) => {
             if (s.id !== id) return s;
