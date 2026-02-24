@@ -16,7 +16,7 @@ const App = () => {
     // Optimisation: useCallback prevents function recreation on every render,
     // avoiding unnecessary re-renders of memoized child components (Header).
     const addScenario = useCallback(() => {
-        setScenarios(prev => [...prev, {
+        setScenarios((prev) => [...prev, {
             id: Date.now(),
             name: `Scénario ${prev.length + 1}`,
             pv: 0,
@@ -30,9 +30,9 @@ const App = () => {
 
     // Optimisation: useCallback ensures stable reference for memoized ScenarioCard
     const removeScenario = useCallback((id) => {
-        setScenarios(prev => {
+        setScenarios((prev) => {
             if (prev.length > 1) {
-                return prev.filter(s => s.id !== id);
+                return prev.filter((s) => s.id !== id);
             }
             return prev;
         });
@@ -40,7 +40,7 @@ const App = () => {
 
     // Optimisation: useCallback ensures stable reference for memoized ScenarioCard
     const updateScenario = useCallback((id, field, value) => {
-        setScenarios(prev => prev.map(s => {
+        setScenarios((prev) => prev.map((s) => {
             if (s.id !== id) return s;
             // Support batch updates if field is an object
             if (typeof field === 'object') {

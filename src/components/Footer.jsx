@@ -1,7 +1,7 @@
 import React from 'react';
 import { Settings2, Building2, Info } from 'lucide-react';
 
-const Footer = () => {
+const Footer = React.memo(() => {
     return (
         <footer className="bg-white border-t border-slate-200 mt-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -51,12 +51,12 @@ const Footer = () => {
 
                 <div className="border-t border-slate-100 mt-10 pt-6 flex justify-center">
                     <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        © {new Date().getFullYear()} FinanciaPro — Propulsé par <a href="https://thatmuch.fr" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800">THATMUCH</a>
+                        © {new Date().getFullYear()} MarkUp — Propulsé par <a href="https://thatmuch.fr" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800">THATMUCH</a>
                     </p>
                 </div>
             </div>
         </footer>
     );
-};
+});
 
 export default Footer;
