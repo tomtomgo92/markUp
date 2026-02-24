@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Calculator, Plus } from 'lucide-react';
 
-const Header = React.memo(({ onAddScenario }) => {
+// BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
+const Header = memo(({ onAddScenario }) => {
     return (
         <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm/50 backdrop-blur-md bg-white/80">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -11,7 +12,7 @@ const Header = React.memo(({ onAddScenario }) => {
                     </div>
                     <div>
                         <h1 className="text-xl font-black tracking-tight text-slate-900 leading-tight">
-                            Financia<span className="text-indigo-600">Pro</span>
+                            Mark<span className="text-indigo-600">Up</span>
                         </h1>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
                             Simulateur de Rentabilité
@@ -32,4 +33,5 @@ const Header = React.memo(({ onAddScenario }) => {
     );
 });
 
-export default Header;
+// Optimisation: React.memo prevents unnecessary re-renders when parent state updates
+export default memo(Header);

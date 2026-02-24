@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
     Trash2,
     Plus,
@@ -8,7 +8,9 @@ import {
 import ResultCard from './ui/ResultCard';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
-const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
+// BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
+// This is critical for list items where updating one item causes parent to re-render all items.
+const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
     // --- MANAGE ITEMS ---
     const addItem = () => {
         const newItems = [
@@ -58,7 +60,7 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
             return item;
         });
 
-        // Batch update: margin AND items
+        // Batch update: margin
         onUpdate(s.id, { marginPercent: value, items: newItems });
     };
 
@@ -138,8 +140,8 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
                     <button
                         onClick={() => onRemove(s.id)}
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Supprimer ce scénario"
                         aria-label="Supprimer ce scénario"
+                        title="Supprimer ce scénario"
                     >
                         <Trash2 size={18} aria-hidden="true" />
                     </button>
@@ -275,7 +277,7 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
                                                     <button
                                                         onClick={() => removeItem(item.id)}
                                                         className="text-slate-300 hover:text-red-500 transition-colors"
-                                                        aria-label="Supprimer la ligne"
+                                                        aria-label={`Supprimer la ligne ${item.name || 'sans nom'}`}
                                                         title="Supprimer la ligne"
                                                     >
                                                         <Trash2 size={14} aria-hidden="true" />
@@ -286,8 +288,17 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
                                     })}
                                     {(!s.items || s.items.length === 0) && (
                                         <tr>
-                                            <td colSpan="6" className="p-6 text-center text-slate-400 text-xs italic">
-                                                Aucune ligne. Ajoutez des postes de dépenses et de revenus.
+                                            <td colSpan="6" className="p-8 text-center text-slate-500">
+                                                <div className="flex flex-col items-center justify-center gap-3">
+                                                    <p className="text-sm font-medium">Commencez par ajouter des éléments à chiffrer</p>
+                                                    <button
+                                                        onClick={addItem}
+                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors font-bold text-sm"
+                                                    >
+                                                        <Plus size={16} />
+                                                        Ajouter une ligne
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     )}
@@ -350,4 +361,6 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
     );
 });
 
-export default ScenarioCard;
+// Optimisation: React.memo prevents re-renders when parent state updates
+// but this specific card's props haven't changed.
+export default memo(ScenarioCard);

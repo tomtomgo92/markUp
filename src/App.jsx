@@ -13,10 +13,12 @@ const App = () => {
         { id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }
     ]);
 
+    // BOLT: Optimize - use useCallback to maintain stable function reference
+    // This prevents ScenarioCard from re-rendering when other scenarios change.
     const addScenario = useCallback(() => {
-        setScenarios(currentScenarios => [...currentScenarios, {
+        setScenarios((prev) => [...prev, {
             id: Date.now(),
-            name: `Scénario ${currentScenarios.length + 1}`,
+            name: `Scénario ${prev.length + 1}`,
             pv: 0,
             cost: 0,
             marginPercent: 30,
@@ -26,17 +28,19 @@ const App = () => {
         }]);
     }, []);
 
+    // BOLT: Optimize - use useCallback to maintain stable function reference
     const removeScenario = useCallback((id) => {
-        setScenarios(currentScenarios => {
-            if (currentScenarios.length > 1) {
-                return currentScenarios.filter(s => s.id !== id);
+        setScenarios((prev) => {
+            if (prev.length > 1) {
+                return prev.filter((s) => s.id !== id);
             }
-            return currentScenarios;
+            return prev;
         });
     }, []);
 
+    // BOLT: Optimize - use useCallback to maintain stable function reference
     const updateScenario = useCallback((id, field, value) => {
-        setScenarios(currentScenarios => currentScenarios.map(s => {
+        setScenarios((prev) => prev.map((s) => {
             if (s.id !== id) return s;
             // Support batch updates if field is an object
             if (typeof field === 'object') {
