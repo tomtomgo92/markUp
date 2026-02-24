@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { memo } from 'react';
 import {
     Trash2,
     Plus,
@@ -11,9 +11,6 @@ import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../u
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
 const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
-    const [isHovered, setIsHovered] = useState(false);
-
-
     // --- MANAGE ITEMS ---
     const addItem = () => {
         const newItems = [
@@ -105,9 +102,8 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
 
     return (
         <div
+            // Hover effect is handled via CSS classes (hover:shadow-xl hover:border-indigo-300)
             className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 overflow-hidden relative"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
         >
             {/* Header Carte */}
             <div className="bg-slate-50/50 backdrop-blur-sm p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
