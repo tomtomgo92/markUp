@@ -11,7 +11,7 @@ const Header = memo(({ onAddScenario }) => {
                     </div>
                     <div>
                         <h1 className="text-xl font-black tracking-tight text-slate-900 leading-tight">
-                            Financia<span className="text-indigo-600">Pro</span>
+                            Mark<span className="text-indigo-600">Up</span>
                         </h1>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
                             Simulateur de Rentabilité
@@ -21,6 +21,7 @@ const Header = memo(({ onAddScenario }) => {
 
                 <button
                     onClick={onAddScenario}
+                    aria-label="Nouveau Scénario"
                     className="group flex items-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-indigo-200 active:scale-95"
                 >
                     <Plus size={18} className="transition-transform group-hover:rotate-90" strokeWidth={2.5} />
@@ -31,4 +32,5 @@ const Header = memo(({ onAddScenario }) => {
     );
 });
 
-export default Header;
+// Optimisation: React.memo prevents unnecessary re-renders when parent state updates
+export default memo(Header);
