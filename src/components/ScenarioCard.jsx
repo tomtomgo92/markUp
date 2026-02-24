@@ -6,6 +6,7 @@ import {
     ChevronDown,
 } from 'lucide-react';
 import ResultCard from './ui/ResultCard';
+import ProfitabilityBar from './ProfitabilityBar';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
@@ -319,7 +320,12 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                     </div>
                 </div>
 
-
+                <ProfitabilityBar
+                    pv={res.pv}
+                    cost={res.cost}
+                    is={res.is}
+                    netProfit={res.netProfit}
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <ResultCard
