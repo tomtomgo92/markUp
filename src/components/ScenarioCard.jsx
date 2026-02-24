@@ -63,7 +63,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
             return item;
         });
 
-        // Batch update: margin AND items
+        // Batch update: margin
         onUpdate(s.id, { marginPercent: value, items: newItems });
     };
 
@@ -144,6 +144,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                     <button
                         onClick={() => onRemove(s.id)}
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        aria-label="Supprimer ce scénario"
                         title="Supprimer ce scénario"
                         aria-label="Supprimer ce scénario"
                     >
