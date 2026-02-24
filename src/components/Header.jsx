@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Calculator, Plus } from 'lucide-react';
 
+// BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 const Header = memo(({ onAddScenario }) => {
     return (
         <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm/50 backdrop-blur-md bg-white/80">

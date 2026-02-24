@@ -146,7 +146,6 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         aria-label="Supprimer ce scénario"
                         title="Supprimer ce scénario"
-                        aria-label="Supprimer ce scénario"
                     >
                         <Trash2 size={18} aria-hidden="true" />
                     </button>
