@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     TrendingUp,
     Plus,
@@ -13,10 +13,12 @@ const App = () => {
         { id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }
     ]);
 
-    const addScenario = () => {
-        setScenarios([...scenarios, {
+    // Optimisation: useCallback prevents function recreation on every render,
+    // avoiding unnecessary re-renders of memoized child components (Header).
+    const addScenario = useCallback(() => {
+        setScenarios((prev) => [...prev, {
             id: Date.now(),
-            name: `Scénario ${scenarios.length + 1}`,
+            name: `Scénario ${prev.length + 1}`,
             pv: 0,
             cost: 0,
             marginPercent: 30,
@@ -24,16 +26,21 @@ const App = () => {
             isDetailed: false,
             items: []
         }]);
-    };
+    }, []);
 
-    const removeScenario = (id) => {
-        if (scenarios.length > 1) {
-            setScenarios(scenarios.filter(s => s.id !== id));
-        }
-    };
+    // Optimisation: useCallback ensures stable reference for memoized ScenarioCard
+    const removeScenario = useCallback((id) => {
+        setScenarios((prev) => {
+            if (prev.length > 1) {
+                return prev.filter((s) => s.id !== id);
+            }
+            return prev;
+        });
+    }, []);
 
-    const updateScenario = (id, field, value) => {
-        setScenarios(scenarios.map(s => {
+    // Optimisation: useCallback ensures stable reference for memoized ScenarioCard
+    const updateScenario = useCallback((id, field, value) => {
+        setScenarios((prev) => prev.map((s) => {
             if (s.id !== id) return s;
             // Support batch updates if field is an object
             if (typeof field === 'object') {
@@ -41,7 +48,7 @@ const App = () => {
             }
             return { ...s, [field]: value };
         }));
-    };
+    }, []);
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
