@@ -5,6 +5,7 @@ import {
     PieChart,
     ChevronDown,
 } from 'lucide-react';
+import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
@@ -137,14 +138,14 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                         </select>
                         <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} aria-hidden="true" />
                     </div>
-                    <button
-                        onClick={() => onRemove(s.id)}
+                    <ConfirmButton
+                        onConfirm={() => onRemove(s.id)}
+                        icon={Trash2}
+                        label="Supprimer ce scénario"
+                        message="Supprimer ?"
                         className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        aria-label="Supprimer ce scénario"
-                        title="Supprimer ce scénario"
-                    >
-                        <Trash2 size={18} aria-hidden="true" />
-                    </button>
+                        activeClassName="bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-red-600"
+                    />
                 </div>
             </div>
 
@@ -274,14 +275,15 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                                                     </div>
                                                 </td>
                                                 <td className="p-3 text-right">
-                                                    <button
-                                                        onClick={() => removeItem(item.id)}
+                                                    <ConfirmButton
+                                                        onConfirm={() => removeItem(item.id)}
+                                                        icon={Trash2}
+                                                        label={`Supprimer la ligne ${item.name || 'sans nom'}`}
+                                                        message="Suppr ?"
+                                                        size={14}
                                                         className="text-slate-300 hover:text-red-500 transition-colors"
-                                                        aria-label={`Supprimer la ligne ${item.name || 'sans nom'}`}
-                                                        title="Supprimer la ligne"
-                                                    >
-                                                        <Trash2 size={14} aria-hidden="true" />
-                                                    </button>
+                                                        activeClassName="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-1 rounded border border-red-100"
+                                                    />
                                                 </td>
                                             </tr>
                                         );
