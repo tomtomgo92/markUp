@@ -279,7 +279,7 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
                                                     <button
                                                         onClick={() => removeItem(item.id)}
                                                         className="text-slate-300 hover:text-red-500 transition-colors"
-                                                        aria-label="Supprimer la ligne"
+                                                        aria-label={`Supprimer la ligne ${item.name || 'sans nom'}`}
                                                         title="Supprimer la ligne"
                                                     >
                                                         <Trash2 size={14} aria-hidden="true" />
