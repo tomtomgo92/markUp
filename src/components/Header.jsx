@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Calculator, Plus } from 'lucide-react';
 
 const Header = React.memo(({ onAddScenario }) => {
@@ -32,4 +32,5 @@ const Header = React.memo(({ onAddScenario }) => {
     );
 });
 
-export default Header;
+// Optimisation: React.memo prevents unnecessary re-renders when parent state updates
+export default memo(Header);

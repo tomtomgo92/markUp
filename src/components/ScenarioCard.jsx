@@ -363,4 +363,6 @@ const ScenarioCard = React.memo(({ s, onUpdate, onRemove, index }) => {
     );
 });
 
+// Optimisation: React.memo prevents re-renders when parent state updates
+// but this specific card's props haven't changed.
 export default memo(ScenarioCard);

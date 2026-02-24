@@ -13,22 +13,22 @@ const App = () => {
         { id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }
     ]);
 
+    // Optimisation: useCallback prevents function recreation on every render,
+    // avoiding unnecessary re-renders of memoized child components (Header).
     const addScenario = useCallback(() => {
-        setScenarios((prev) => [
-            ...prev,
-            {
-                id: Date.now(),
-                name: `Scénario ${prev.length + 1}`,
-                pv: 0,
-                cost: 0,
-                marginPercent: 30,
-                mode: 'pv_cost',
-                isDetailed: false,
-                items: []
-            }
-        ]);
+        setScenarios((prev) => [...prev, {
+            id: Date.now(),
+            name: `Scénario ${prev.length + 1}`,
+            pv: 0,
+            cost: 0,
+            marginPercent: 30,
+            mode: 'pv_cost',
+            isDetailed: false,
+            items: []
+        }]);
     }, []);
 
+    // Optimisation: useCallback ensures stable reference for memoized ScenarioCard
     const removeScenario = useCallback((id) => {
         setScenarios((prev) => {
             if (prev.length > 1) {
@@ -38,17 +38,16 @@ const App = () => {
         });
     }, []);
 
+    // Optimisation: useCallback ensures stable reference for memoized ScenarioCard
     const updateScenario = useCallback((id, field, value) => {
-        setScenarios((prev) =>
-            prev.map((s) => {
-                if (s.id !== id) return s;
-                // Support batch updates if field is an object
-                if (typeof field === 'object') {
-                    return { ...s, ...field };
-                }
-                return { ...s, [field]: value };
-            })
-        );
+        setScenarios((prev) => prev.map((s) => {
+            if (s.id !== id) return s;
+            // Support batch updates if field is an object
+            if (typeof field === 'object') {
+                return { ...s, ...field };
+            }
+            return { ...s, [field]: value };
+        }));
     }, []);
 
     return (
