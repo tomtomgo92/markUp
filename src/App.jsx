@@ -50,6 +50,20 @@ const App = () => {
         }));
     }, []);
 
+    const duplicateScenario = useCallback((id) => {
+        setScenarios((prev) => {
+            const scenarioToCopy = prev.find(s => s.id === id);
+            if (!scenarioToCopy) return prev;
+
+            const newScenario = {
+                ...JSON.parse(JSON.stringify(scenarioToCopy)), // Deep copy for items array
+                id: Date.now(),
+                name: `Copie de ${scenarioToCopy.name}`
+            };
+            return [...prev, newScenario];
+        });
+    }, []);
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
 
@@ -81,6 +95,7 @@ const App = () => {
                             index={idx}
                             onUpdate={updateScenario}
                             onRemove={removeScenario}
+                            onDuplicate={duplicateScenario}
                         />
                     ))}
 

@@ -4,15 +4,18 @@ import {
     Plus,
     PieChart,
     ChevronDown,
+    Copy,
+    Percent,
 } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
 import ProfitabilityBar from './ProfitabilityBar';
+import PriceBreakdown from './PriceBreakdown';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
-const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
+const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
     // --- MANAGE ITEMS ---
     const addItem = () => {
         const newItems = [
@@ -139,6 +142,14 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                         </select>
                         <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} aria-hidden="true" />
                     </div>
+                    <button
+                        onClick={() => onDuplicate(s.id)}
+                        className="p-2 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                        title="Dupliquer ce scénario"
+                        aria-label="Dupliquer ce scénario"
+                    >
+                        <Copy size={18} />
+                    </button>
                     <ConfirmButton
                         onConfirm={() => onRemove(s.id)}
                         icon={Trash2}
@@ -322,6 +333,45 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                     </div>
                 </div>
 
+                <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                     <div className="flex items-center gap-3">
+                        <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
+                             <Percent size={18} aria-hidden="true" />
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
+                            <p className="text-xs text-amber-600/80">Réduction appliquée sur le total HT</p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="number"
+                            value={s.discount || ''}
+                            onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
+                            placeholder="0"
+                            className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
+                            aria-label="Montant de la remise"
+                        />
+                        <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
+                            <button
+                                onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
+                                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                aria-label="Remise en pourcentage"
+                            >
+                                %
+                            </button>
+                            <button
+                                onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
+                                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                aria-label="Remise en euros"
+                            >
+                                €
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <ProfitabilityBar
                     pv={res.pv}
                     cost={res.cost}
@@ -329,22 +379,42 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                     netProfit={res.netProfit}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ResultCard
-                        title="Prix Vente HT"
-                        value={FORMATTER.format(res.pv)}
-                        type="neutral"
-                    />
-                    <ResultCard
-                        title="TVA (20%)"
-                        value={FORMATTER.format(res.tva)}
-                        type="neutral"
-                    />
-                    <ResultCard
-                        title="TTC Client"
-                        value={FORMATTER.format(res.ttc)}
-                        type="primary"
-                    />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <ResultCard
+                            title="Prix Vente HT"
+                            value={
+                                res.discountAmount > 0 ? (
+                                    <span className="flex flex-col items-start">
+                                        <span className="text-xs line-through text-slate-400 font-medium">
+                                            {FORMATTER.format(res.basePv)}
+                                        </span>
+                                        <span>{FORMATTER.format(res.pv)}</span>
+                                    </span>
+                                ) : (
+                                    FORMATTER.format(res.pv)
+                                )
+                            }
+                            type="neutral"
+                        />
+                        <ResultCard
+                            title="TVA (20%)"
+                            value={FORMATTER.format(res.tva)}
+                            type="neutral"
+                        />
+                        <ResultCard
+                            title="TTC Client"
+                            value={FORMATTER.format(res.ttc)}
+                            type="primary"
+                        />
+                    </div>
+                    <div className="lg:col-span-1 h-full">
+                        <PriceBreakdown
+                            cost={res.cost}
+                            margin={res.marginEuro}
+                            tva={res.tva}
+                        />
+                    </div>
                 </div>
 
 
