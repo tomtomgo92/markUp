@@ -182,7 +182,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                     <div className="space-y-2">
                         <div className="flex justify-between items-center px-2">
                             <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider">Lignes du projet</h4>
-                            <button onClick={addItem} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                            <button onClick={addItem} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 px-2 py-1 rounded-lg focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none">
                                 <Plus size={14} /> Ajouter une ligne
                             </button>
                         </div>
@@ -282,7 +282,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                                                         label={`Supprimer la ligne ${item.name || 'sans nom'}`}
                                                         message="Suppr ?"
                                                         size={14}
-                                                        className="text-slate-300 hover:text-red-500 transition-colors"
+                                                        className="text-slate-300 hover:text-red-500 transition-colors p-1"
                                                         activeClassName="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-1 rounded border border-red-100"
                                                     />
                                                 </td>

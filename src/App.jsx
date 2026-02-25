@@ -87,7 +87,7 @@ const App = () => {
                     {/* Empty State / Add New Card Shortcut */}
                     <button
                         onClick={addScenario}
-                        className="group h-[300px] rounded-3xl border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-slate-50 transition-all duration-300 flex flex-col items-center justify-center gap-4 text-slate-400 hover:text-indigo-600"
+                        className="group h-[300px] rounded-3xl border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-slate-50 transition-all duration-300 flex flex-col items-center justify-center gap-4 text-slate-400 hover:text-indigo-600 focus-visible:ring-4 focus-visible:ring-indigo-500 focus-visible:ring-offset-4 outline-none"
                     >
                         <div className="p-4 rounded-full bg-slate-50 group-hover:bg-indigo-100 transition-colors">
                             <Plus size={32} />

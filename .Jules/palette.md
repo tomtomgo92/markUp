@@ -13,3 +13,7 @@
 ## 2025-11-01 - [Inline Delete Confirmation]
 **Learning:** Modals for simple delete actions interrupt flow. Inline confirmation (e.g. click twice) is a smoother pattern for frequent actions.
 **Action:** Use the `ConfirmButton` pattern for destructive actions in lists to maintain context and flow.
+
+## 2026-05-21 - [Custom Button Focus States]
+**Learning:** Custom button components often disable default outlines (`outline-none`) for aesthetics, leaving keyboard users lost.
+**Action:** Always bake `focus-visible` ring styles directly into the base component (e.g., `ConfirmButton`) to ensure consistent, accessible focus indicators everywhere.
