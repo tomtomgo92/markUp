@@ -26,7 +26,7 @@ const ConfirmButton = ({
         <button
             onClick={handleClick}
             onBlur={() => setStatus('idle')}
-            className={`transition-all duration-200 flex items-center justify-center gap-2 ${
+            className={`transition-all duration-200 flex items-center justify-center gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
                 status === 'confirming' ? activeClassName : className
             }`}
             aria-label={status === 'confirming' ? message : label}
