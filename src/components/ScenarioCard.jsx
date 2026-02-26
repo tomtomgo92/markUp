@@ -4,17 +4,20 @@ import {
     Plus,
     PieChart,
     ChevronDown,
+    Copy,
+    Percent,
 } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
 import ProfitabilityBar from './ProfitabilityBar';
+import PriceBreakdown from './PriceBreakdown';
 import ScenarioItemRow from './ScenarioItemRow';
-import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
+import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
-const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
-    // Keep reference to latest scenario state to avoid re-creating callbacks
+const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
+    // BOLT: Optimize - Use useRef to keep track of the latest 's' prop without triggering re-renders in callbacks
     const sRef = useRef(s);
     sRef.current = s;
 
@@ -28,20 +31,20 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
         onUpdate(currentS.id, 'items', newItems);
     }, [onUpdate]);
 
-    const updateItem = useCallback((itemId, field, value) => {
-        const currentS = sRef.current;
+    const handleUpdateItem = useCallback((itemId, field, value) => {
+        const currentScenario = sRef.current;
         const val = parseFloat(value) || 0;
-        const newItems = currentS.items.map(item => {
+        const newItems = currentScenario.items.map(item => {
             if (item.id === itemId) {
                 let updates = { [field]: value };
 
                 // Auto-calculate logic based on mode
-                if (currentS.mode === 'cost_percent' && field === 'cost') {
-                    const margin = parseFloat(currentS.marginPercent) || 0;
+                if (currentScenario.mode === 'cost_percent' && field === 'cost') {
+                    const margin = parseFloat(currentScenario.marginPercent) || 0;
                     const newPv = val !== 0 ? (val / (1 - (margin / 100))) : 0;
                     updates.pv = newPv.toFixed(0);
-                } else if (currentS.mode === 'pv_percent' && field === 'pv') {
-                    const margin = parseFloat(currentS.marginPercent) || 0;
+                } else if (currentScenario.mode === 'pv_percent' && field === 'pv') {
+                    const margin = parseFloat(currentScenario.marginPercent) || 0;
                     const newCost = val * (1 - (margin / 100));
                     updates.cost = newCost.toFixed(0);
                 }
@@ -50,7 +53,13 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
             }
             return item;
         });
-        onUpdate(currentS.id, 'items', newItems);
+        onUpdate(currentScenario.id, 'items', newItems);
+    }, [onUpdate]);
+
+    const handleRemoveItem = useCallback((itemId) => {
+        const currentScenario = sRef.current;
+        const newItems = currentScenario.items.filter(item => item.id !== itemId);
+        onUpdate(currentScenario.id, 'items', newItems);
     }, [onUpdate]);
 
     const updateGlobalMargin = useCallback((value) => {
@@ -74,19 +83,13 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
         onUpdate(currentS.id, { marginPercent: value, items: newItems });
     }, [onUpdate]);
 
-    const removeItem = useCallback((itemId) => {
-        const currentS = sRef.current;
-        const newItems = currentS.items.filter(item => item.id !== itemId);
-        onUpdate(currentS.id, 'items', newItems);
-    }, [onUpdate]);
-
     const toggleDetailMode = useCallback(() => {
-        const currentS = sRef.current;
-        const newIsDetailed = !currentS.isDetailed;
-        onUpdate(currentS.id, 'isDetailed', newIsDetailed);
+        const currentScenario = sRef.current;
+        const newIsDetailed = !currentScenario.isDetailed;
+        onUpdate(currentScenario.id, 'isDetailed', newIsDetailed);
         // Initialize items if switching to detailed and empty
-        if (newIsDetailed && (!currentS.items || currentS.items.length === 0)) {
-            onUpdate(currentS.id, 'items', [{ id: Date.now(), name: 'Prestation 1', pv: currentS.pv, cost: currentS.cost }]);
+        if (newIsDetailed && (!currentScenario.items || currentScenario.items.length === 0)) {
+            onUpdate(currentScenario.id, 'items', [{ id: Date.now(), name: 'Prestation 1', pv: currentScenario.pv, cost: currentScenario.cost }]);
         }
     }, [onUpdate]);
 
@@ -95,22 +98,23 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
     // Handlers
     const handleChange = (field, val) => onUpdate(s.id, field, val);
 
-    const handleSmartChange = (field, value) => {
-        if (s.isDetailed) return; // Disable smart changes in detailed mode (values are derived)
+    const handleSmartChange = useCallback((field, value) => {
+        const currentScenario = sRef.current;
+        if (currentScenario.isDetailed) return; // Disable smart changes in detailed mode (values are derived)
 
         const val = parseFloat(value) || 0;
 
-        if (s.mode === 'pv_cost') {
+        if (currentScenario.mode === 'pv_cost') {
             if (field === 'pv') {
-                const newMarginPercent = val !== 0 ? ((val - s.cost) / val) * 100 : 0;
-                onUpdate(s.id, 'marginPercent', newMarginPercent);
+                const newMarginPercent = val !== 0 ? ((val - currentScenario.cost) / val) * 100 : 0;
+                onUpdate(currentScenario.id, 'marginPercent', newMarginPercent);
             } else if (field === 'cost') {
-                const newMarginPercent = s.pv !== 0 ? ((s.pv - val) / s.pv) * 100 : 0;
-                onUpdate(s.id, 'marginPercent', newMarginPercent);
+                const newMarginPercent = currentScenario.pv !== 0 ? ((currentScenario.pv - val) / currentScenario.pv) * 100 : 0;
+                onUpdate(currentScenario.id, 'marginPercent', newMarginPercent);
             }
         }
         handleChange(field, value);
-    };
+    }, [onUpdate]);
 
     return (
         <div
@@ -149,6 +153,14 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                         </select>
                         <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} aria-hidden="true" />
                     </div>
+                    <button
+                        onClick={() => onDuplicate(s.id)}
+                        className="p-2 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                        title="Dupliquer ce scénario"
+                        aria-label="Dupliquer ce scénario"
+                    >
+                        <Copy size={18} />
+                    </button>
                     <ConfirmButton
                         onConfirm={() => onRemove(s.id)}
                         icon={Trash2}
@@ -162,8 +174,6 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
 
             <div className="p-4 sm:p-8 space-y-8">
                 <div className="space-y-4">
-
-
                     {(s.mode === 'cost_percent' || s.mode === 'pv_percent') && (
                         <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -192,7 +202,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                     <div className="space-y-2">
                         <div className="flex justify-between items-center px-2">
                             <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider">Lignes du projet</h4>
-                            <button onClick={addItem} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                            <button onClick={addItem} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 px-2 py-1 rounded-lg focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 outline-none">
                                 <Plus size={14} /> Ajouter une ligne
                             </button>
                         </div>
@@ -213,10 +223,10 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                                         <ScenarioItemRow
                                             key={item.id}
                                             item={item}
-                                            mode={s.mode}
                                             index={i}
-                                            onUpdate={updateItem}
-                                            onRemove={removeItem}
+                                            mode={s.mode}
+                                            onUpdate={handleUpdateItem}
+                                            onRemove={handleRemoveItem}
                                         />
                                     ))}
                                     {(!s.items || s.items.length === 0) && (
@@ -252,6 +262,45 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                     </div>
                 </div>
 
+                <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
+                            <Percent size={18} aria-hidden="true" />
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
+                            <p className="text-xs text-amber-600/80">Réduction appliquée sur le total HT</p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="number"
+                            value={s.discount || ''}
+                            onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
+                            placeholder="0"
+                            className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
+                            aria-label="Montant de la remise"
+                        />
+                        <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
+                            <button
+                                onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
+                                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                aria-label="Remise en pourcentage"
+                            >
+                                %
+                            </button>
+                            <button
+                                onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
+                                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                aria-label="Remise en euros"
+                            >
+                                €
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <ProfitabilityBar
                     pv={res.pv}
                     cost={res.cost}
@@ -259,24 +308,43 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                     netProfit={res.netProfit}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ResultCard
-                        title="Prix Vente HT"
-                        value={FORMATTER.format(res.pv)}
-                        type="neutral"
-                    />
-                    <ResultCard
-                        title="TVA (20%)"
-                        value={FORMATTER.format(res.tva)}
-                        type="neutral"
-                    />
-                    <ResultCard
-                        title="TTC Client"
-                        value={FORMATTER.format(res.ttc)}
-                        type="primary"
-                    />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <ResultCard
+                            title="Prix Vente HT"
+                            value={
+                                res.discountAmount > 0 ? (
+                                    <span className="flex flex-col items-start">
+                                        <span className="text-xs line-through text-slate-400 font-medium">
+                                            {FORMATTER.format(res.basePv)}
+                                        </span>
+                                        <span>{FORMATTER.format(res.pv)}</span>
+                                    </span>
+                                ) : (
+                                    FORMATTER.format(res.pv)
+                                )
+                            }
+                            type="neutral"
+                        />
+                        <ResultCard
+                            title="TVA (20%)"
+                            value={FORMATTER.format(res.tva)}
+                            type="neutral"
+                        />
+                        <ResultCard
+                            title="TTC Client"
+                            value={FORMATTER.format(res.ttc)}
+                            type="primary"
+                        />
+                    </div>
+                    <div className="lg:col-span-1 h-full">
+                        <PriceBreakdown
+                            cost={res.cost}
+                            margin={res.marginEuro}
+                            tva={res.tva}
+                        />
+                    </div>
                 </div>
-
 
                 <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
                     <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
@@ -290,15 +358,11 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, index }) => {
                             <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
                             <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
     );
 });
 
-// Optimisation: React.memo prevents re-renders when parent state updates
-// but this specific card's props haven't changed.
-export default memo(ScenarioCard);
+export default ScenarioCard;
