@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Calculator } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 
-const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove }) => {
+const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenTJM }) => {
     // Calculate itemMargin and itemMarginPercent for display
     const itemMargin = (parseFloat(item.pv) || 0) - (parseFloat(item.cost) || 0);
     const itemMarginPercent = parseFloat(item.pv) ? (itemMargin / parseFloat(item.pv)) * 100 : 0;
@@ -48,17 +48,29 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove }) => {
                 </div>
             </td>
             <td className="p-3">
-                <div className="relative">
-                    <input
-                        type="number"
-                        value={item.pv}
-                        disabled={mode === 'cost_percent'}
-                        onChange={(e) => onUpdate(item.id, 'pv', e.target.value)}
-                        className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        placeholder="0"
-                        aria-label="Prix de vente de la ligne"
-                    />
-                    <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
+                <div className="relative flex items-center gap-2">
+                    <div className="relative">
+                        <input
+                            type="number"
+                            value={item.pv}
+                            disabled={mode === 'cost_percent'}
+                            onChange={(e) => onUpdate(item.id, 'pv', e.target.value)}
+                            className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            placeholder="0"
+                            aria-label="Prix de vente de la ligne"
+                        />
+                        <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
+                    </div>
+                    {onOpenTJM && (
+                        <button
+                            onClick={() => onOpenTJM(item.id)}
+                            className="p-1.5 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                            title="Calculer au TJM"
+                            aria-label="Ouvrir calculateur TJM"
+                        >
+                            <Calculator size={14} />
+                        </button>
+                    )}
                 </div>
             </td>
             <td className="p-3 text-right">

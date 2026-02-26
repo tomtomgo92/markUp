@@ -1,4 +1,4 @@
-import React, { memo, useRef, useCallback } from 'react';
+import React, { memo, useRef, useCallback, useState } from 'react';
 import {
     Trash2,
     Plus,
@@ -6,17 +6,21 @@ import {
     ChevronDown,
     Copy,
     Percent,
+    Calculator,
 } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
 import ProfitabilityBar from './ProfitabilityBar';
 import PriceBreakdown from './PriceBreakdown';
 import ScenarioItemRow from './ScenarioItemRow';
+import TJMCalculator from './TJMCalculator';
 import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
 const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
+    const [activeTJMItemId, setActiveTJMItemId] = useState(null);
+
     // BOLT: Optimize - Use useRef to keep track of the latest 's' prop without triggering re-renders in callbacks
     const sRef = useRef(s);
     sRef.current = s;
@@ -227,6 +231,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                                             mode={s.mode}
                                             onUpdate={handleUpdateItem}
                                             onRemove={handleRemoveItem}
+                                            onOpenTJM={setActiveTJMItemId}
                                         />
                                     ))}
                                     {(!s.items || s.items.length === 0) && (
@@ -361,6 +366,21 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                     </div>
                 </div>
             </div>
+            {/* TJM Calculator Modal/Overlay should be absolute or fixed to the item */}
+            {activeTJMItemId && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden">
+                        <TJMCalculator
+                            initialValue={s.items.find(i => i.id === activeTJMItemId)?.pv || 0}
+                            onApply={(val) => {
+                                handleUpdateItem(activeTJMItemId, 'pv', val);
+                                setActiveTJMItemId(null);
+                            }}
+                            onClose={() => setActiveTJMItemId(null)}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 });

@@ -7,11 +7,13 @@ import Badge from './components/ui/Badge';
 import ScenarioCard from './components/ScenarioCard';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ComparisonView from './components/ComparisonView';
 
 const App = () => {
     const [scenarios, setScenarios] = useState([
         { id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }
     ]);
+    const [showComparison, setShowComparison] = useState(false);
 
     // BOLT: Optimize - use useCallback to maintain stable function reference
     // This prevents ScenarioCard from re-rendering when other scenarios change.
@@ -67,7 +69,7 @@ const App = () => {
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
 
-            <Header onAddScenario={addScenario} />
+            <Header onAddScenario={addScenario} onToggleComparison={() => setShowComparison(true)} />
 
             {/* MAIN CONTENT */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -113,6 +115,13 @@ const App = () => {
             </main>
 
             <Footer />
+
+            {showComparison && (
+                <ComparisonView
+                    scenarios={scenarios}
+                    onClose={() => setShowComparison(false)}
+                />
+            )}
         </div>
     );
 };
