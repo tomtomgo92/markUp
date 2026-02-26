@@ -138,7 +138,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                             onChange={(e) => onUpdate(s.id, 'name', e.target.value)}
                             className="font-bold text-slate-800 text-lg bg-transparent border-b border-transparent hover:border-slate-300 focus:border-indigo-500 focus:outline-none transition-colors w-full"
                             placeholder="Nom du scénario"
-                            aria-label="Nom du scénario"
+                            aria-label={`Nom du scénario ${index + 1}`}
                         />
                     </div>
                 </div>
@@ -149,7 +149,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                             value={s.mode}
                             onChange={(e) => handleChange('mode', e.target.value)}
                             className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
-                            aria-label="Mode de calcul"
+                            aria-label={`Mode de calcul pour ${s.name}`}
                         >
                             <option value="pv_cost">PV & Coût</option>
                             <option value="cost_percent">Marge & Coût</option>
@@ -196,7 +196,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                                     onChange={(e) => updateGlobalMargin(e.target.value)}
                                     className="w-20 px-3 py-1.5 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 outline-none text-right font-bold text-indigo-700"
                                     placeholder="0"
-                                    aria-label="Marge Cible Globale"
+                                    aria-label={`Marge Cible Globale pour ${s.name}`}
                                 />
                                 <span className="font-bold text-indigo-400">%</span>
                             </div>
@@ -285,20 +285,20 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                             onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
                             placeholder="0"
                             className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
-                            aria-label="Montant de la remise"
+                            aria-label={`Montant de la remise pour ${s.name}`}
                         />
                         <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
                             <button
                                 onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
                                 className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
-                                aria-label="Remise en pourcentage"
+                                aria-label={`Remise en pourcentage pour ${s.name}`}
                             >
                                 %
                             </button>
                             <button
                                 onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
                                 className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
-                                aria-label="Remise en euros"
+                                aria-label={`Remise en euros pour ${s.name}`}
                             >
                                 €
                             </button>
