@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useRef, useCallback, useState } from 'react';
 import {
     Trash2,
     Plus,
@@ -6,38 +6,49 @@ import {
     ChevronDown,
     Copy,
     Percent,
+    Calculator,
 } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
 import ProfitabilityBar from './ProfitabilityBar';
 import PriceBreakdown from './PriceBreakdown';
-import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
+import ScenarioItemRow from './ScenarioItemRow';
+import TJMCalculator from './TJMCalculator';
+import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
 const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
-    // --- MANAGE ITEMS ---
-    const addItem = () => {
-        const newItems = [
-            ...(s.items || []),
-            { id: Date.now(), name: `Ligne ${(s.items?.length || 0) + 1}`, pv: 0, cost: 0 }
-        ];
-        onUpdate(s.id, 'items', newItems);
-    };
+    const [activeTJMItemId, setActiveTJMItemId] = useState(null);
 
-    const updateItem = (itemId, field, value) => {
+    // BOLT: Optimize - Use useRef to keep track of the latest 's' prop without triggering re-renders in callbacks
+    const sRef = useRef(s);
+    sRef.current = s;
+
+    // --- MANAGE ITEMS ---
+    const addItem = useCallback(() => {
+        const currentS = sRef.current;
+        const newItems = [
+            ...(currentS.items || []),
+            { id: Date.now(), name: `Ligne ${(currentS.items?.length || 0) + 1}`, pv: 0, cost: 0 }
+        ];
+        onUpdate(currentS.id, 'items', newItems);
+    }, [onUpdate]);
+
+    const handleUpdateItem = useCallback((itemId, field, value) => {
+        const currentScenario = sRef.current;
         const val = parseFloat(value) || 0;
-        const newItems = s.items.map(item => {
+        const newItems = currentScenario.items.map(item => {
             if (item.id === itemId) {
                 let updates = { [field]: value };
 
                 // Auto-calculate logic based on mode
-                if (s.mode === 'cost_percent' && field === 'cost') {
-                    const margin = parseFloat(s.marginPercent) || 0;
+                if (currentScenario.mode === 'cost_percent' && field === 'cost') {
+                    const margin = parseFloat(currentScenario.marginPercent) || 0;
                     const newPv = val !== 0 ? (val / (1 - (margin / 100))) : 0;
                     updates.pv = newPv.toFixed(0);
-                } else if (s.mode === 'pv_percent' && field === 'pv') {
-                    const margin = parseFloat(s.marginPercent) || 0;
+                } else if (currentScenario.mode === 'pv_percent' && field === 'pv') {
+                    const margin = parseFloat(currentScenario.marginPercent) || 0;
                     const newCost = val * (1 - (margin / 100));
                     updates.cost = newCost.toFixed(0);
                 }
@@ -46,19 +57,26 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
             }
             return item;
         });
-        onUpdate(s.id, 'items', newItems);
-    };
+        onUpdate(currentScenario.id, 'items', newItems);
+    }, [onUpdate]);
 
-    const updateGlobalMargin = (value) => {
+    const handleRemoveItem = useCallback((itemId) => {
+        const currentScenario = sRef.current;
+        const newItems = currentScenario.items.filter(item => item.id !== itemId);
+        onUpdate(currentScenario.id, 'items', newItems);
+    }, [onUpdate]);
+
+    const updateGlobalMargin = useCallback((value) => {
+        const currentS = sRef.current;
         const margin = parseFloat(value) || 0;
-        const newItems = s.items.map(item => {
+        const newItems = currentS.items.map(item => {
             const cost = parseFloat(item.cost) || 0;
             const pv = parseFloat(item.pv) || 0;
 
-            if (s.mode === 'cost_percent') {
+            if (currentS.mode === 'cost_percent') {
                 const newPv = cost !== 0 ? (cost / (1 - (margin / 100))) : 0;
                 return { ...item, pv: newPv.toFixed(0) };
-            } else if (s.mode === 'pv_percent') {
+            } else if (currentS.mode === 'pv_percent') {
                 const newCost = pv * (1 - (margin / 100));
                 return { ...item, cost: newCost.toFixed(0) };
             }
@@ -66,44 +84,41 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
         });
 
         // Batch update: margin
-        onUpdate(s.id, { marginPercent: value, items: newItems });
-    };
+        onUpdate(currentS.id, { marginPercent: value, items: newItems });
+    }, [onUpdate]);
 
-    const removeItem = (itemId) => {
-        const newItems = s.items.filter(item => item.id !== itemId);
-        onUpdate(s.id, 'items', newItems);
-    };
-
-    const toggleDetailMode = () => {
-        const newIsDetailed = !s.isDetailed;
-        onUpdate(s.id, 'isDetailed', newIsDetailed);
+    const toggleDetailMode = useCallback(() => {
+        const currentScenario = sRef.current;
+        const newIsDetailed = !currentScenario.isDetailed;
+        onUpdate(currentScenario.id, 'isDetailed', newIsDetailed);
         // Initialize items if switching to detailed and empty
-        if (newIsDetailed && (!s.items || s.items.length === 0)) {
-            onUpdate(s.id, 'items', [{ id: Date.now(), name: 'Prestation 1', pv: s.pv, cost: s.cost }]);
+        if (newIsDetailed && (!currentScenario.items || currentScenario.items.length === 0)) {
+            onUpdate(currentScenario.id, 'items', [{ id: Date.now(), name: 'Prestation 1', pv: currentScenario.pv, cost: currentScenario.cost }]);
         }
-    };
+    }, [onUpdate]);
 
     const res = calculateResults(s);
 
     // Handlers
     const handleChange = (field, val) => onUpdate(s.id, field, val);
 
-    const handleSmartChange = (field, value) => {
-        if (s.isDetailed) return; // Disable smart changes in detailed mode (values are derived)
+    const handleSmartChange = useCallback((field, value) => {
+        const currentScenario = sRef.current;
+        if (currentScenario.isDetailed) return; // Disable smart changes in detailed mode (values are derived)
 
         const val = parseFloat(value) || 0;
 
-        if (s.mode === 'pv_cost') {
+        if (currentScenario.mode === 'pv_cost') {
             if (field === 'pv') {
-                const newMarginPercent = val !== 0 ? ((val - s.cost) / val) * 100 : 0;
-                onUpdate(s.id, 'marginPercent', newMarginPercent);
+                const newMarginPercent = val !== 0 ? ((val - currentScenario.cost) / val) * 100 : 0;
+                onUpdate(currentScenario.id, 'marginPercent', newMarginPercent);
             } else if (field === 'cost') {
-                const newMarginPercent = s.pv !== 0 ? ((s.pv - val) / s.pv) * 100 : 0;
-                onUpdate(s.id, 'marginPercent', newMarginPercent);
+                const newMarginPercent = currentScenario.pv !== 0 ? ((currentScenario.pv - val) / currentScenario.pv) * 100 : 0;
+                onUpdate(currentScenario.id, 'marginPercent', newMarginPercent);
             }
         }
         handleChange(field, value);
-    };
+    }, [onUpdate]);
 
     return (
         <div
@@ -163,8 +178,6 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
 
             <div className="p-4 sm:p-8 space-y-8">
                 <div className="space-y-4">
-
-
                     {(s.mode === 'cost_percent' || s.mode === 'pv_percent') && (
                         <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -210,96 +223,17 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-200">
-                                    {s.items?.map((item, i) => {
-                                        const itemMargin = (parseFloat(item.pv) || 0) - (parseFloat(item.cost) || 0);
-                                        const itemMarginPercent = parseFloat(item.pv) ? (itemMargin / parseFloat(item.pv)) * 100 : 0;
-                                        return (
-                                            <tr key={item.id} className="group even:bg-white hover:bg-slate-100 transition-colors border-b border-slate-100 last:border-0">
-                                                <td className="p-3 text-slate-400 font-medium text-xs">{i + 1}</td>
-                                                <td className="p-3">
-                                                    <input
-                                                        type="text"
-                                                        value={item.name}
-                                                        onChange={(e) => updateItem(item.id, 'name', e.target.value)}
-                                                        className="w-full px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700"
-                                                        placeholder="Nom..."
-                                                        aria-label={`Nom de la ligne ${i + 1}`}
-                                                    />
-                                                </td>
-                                                <td className="p-3">
-                                                    <div className="relative">
-                                                        <input
-                                                            type="number"
-                                                            value={item.cost}
-                                                            disabled={s.mode === 'pv_percent'}
-                                                            onChange={(e) => updateItem(item.id, 'cost', e.target.value)}
-                                                            className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'pv_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                            placeholder="0"
-                                                            aria-label={`Coût de ${item.name || 'la ligne'}`}
-                                                        />
-                                                        <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
-                                                    </div>
-                                                </td>
-                                                <td className="p-3">
-                                                    <div className="relative">
-                                                        <input
-                                                            type="number"
-                                                            value={item.pv}
-                                                            disabled={s.mode === 'cost_percent'}
-                                                            onChange={(e) => updateItem(item.id, 'pv', e.target.value)}
-                                                            className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                            placeholder="0"
-                                                            aria-label={`Prix de vente de ${item.name || 'la ligne'}`}
-                                                        />
-                                                        <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
-                                                    </div>
-                                                </td>
-                                                <td className="p-3 text-right">
-                                                    <div className="flex flex-col items-end">
-                                                        <span className={`font-bold ${itemMargin >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                                                            {itemMargin.toFixed(0)}€
-                                                        </span>
-                                                        {(s.mode === 'cost_percent' || s.mode === 'pv_percent') ? (
-                                                            <div className="flex items-center justify-end gap-1">
-                                                                <input
-                                                                    type="number"
-                                                                    value={itemMarginPercent.toFixed(1)}
-                                                                    onChange={(e) => {
-                                                                        const val = parseFloat(e.target.value) || 0;
-                                                                        if (s.mode === 'cost_percent') {
-                                                                            const cost = parseFloat(item.cost) || 0;
-                                                                            const newPv = cost !== 0 ? (cost / (1 - (val / 100))) : 0;
-                                                                            updateItem(item.id, 'pv', newPv.toFixed(0));
-                                                                        } else if (s.mode === 'pv_percent') {
-                                                                            const pv = parseFloat(item.pv) || 0;
-                                                                            const newCost = pv * (1 - (val / 100));
-                                                                            updateItem(item.id, 'cost', newCost.toFixed(0));
-                                                                        }
-                                                                    }}
-                                                                    className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
-                                                                    aria-label={`Pourcentage de marge de ${item.name || 'la ligne'}`}
-                                                                />
-                                                                <span className="text-[10px] text-slate-400">%</span>
-                                                            </div>
-                                                        ) : (
-                                                            <span className="text-[10px] text-slate-400">{itemMarginPercent.toFixed(1)}%</span>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="p-3 text-right">
-                                                    <ConfirmButton
-                                                        onConfirm={() => removeItem(item.id)}
-                                                        icon={Trash2}
-                                                        label={`Supprimer la ligne ${item.name || 'sans nom'}`}
-                                                        message="Suppr ?"
-                                                        size={14}
-                                                        className="text-slate-300 hover:text-red-500 transition-colors p-1"
-                                                        activeClassName="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-1 rounded border border-red-100"
-                                                    />
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
+                                    {s.items?.map((item, i) => (
+                                        <ScenarioItemRow
+                                            key={item.id}
+                                            item={item}
+                                            index={i}
+                                            mode={s.mode}
+                                            onUpdate={handleUpdateItem}
+                                            onRemove={handleRemoveItem}
+                                            onOpenTJM={setActiveTJMItemId}
+                                        />
+                                    ))}
                                     {(!s.items || s.items.length === 0) && (
                                         <tr>
                                             <td colSpan="6" className="p-8 text-center text-slate-500">
@@ -334,9 +268,9 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                 </div>
 
                 <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                     <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
                         <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
-                             <Percent size={18} aria-hidden="true" />
+                            <Percent size={18} aria-hidden="true" />
                         </div>
                         <div>
                             <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
@@ -417,7 +351,6 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                     </div>
                 </div>
 
-
                 <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
                     <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
                     <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
@@ -430,15 +363,26 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                             <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
                             <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
                         </div>
-
                     </div>
                 </div>
-
             </div>
+            {/* TJM Calculator Modal/Overlay should be absolute or fixed to the item */}
+            {activeTJMItemId && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden">
+                        <TJMCalculator
+                            initialValue={s.items.find(i => i.id === activeTJMItemId)?.pv || 0}
+                            onApply={(val) => {
+                                handleUpdateItem(activeTJMItemId, 'pv', val);
+                                setActiveTJMItemId(null);
+                            }}
+                            onClose={() => setActiveTJMItemId(null)}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 });
 
-// Optimisation: React.memo prevents re-renders when parent state updates
-// but this specific card's props haven't changed.
-export default memo(ScenarioCard);
+export default ScenarioCard;
