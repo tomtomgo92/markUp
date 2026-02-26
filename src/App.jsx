@@ -50,6 +50,20 @@ const App = () => {
         }));
     }, []);
 
+    const duplicateScenario = useCallback((id) => {
+        setScenarios((prev) => {
+            const scenarioToCopy = prev.find(s => s.id === id);
+            if (!scenarioToCopy) return prev;
+
+            const newScenario = {
+                ...JSON.parse(JSON.stringify(scenarioToCopy)), // Deep copy for items array
+                id: Date.now(),
+                name: `Copie de ${scenarioToCopy.name}`
+            };
+            return [...prev, newScenario];
+        });
+    }, []);
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
 
@@ -81,13 +95,14 @@ const App = () => {
                             index={idx}
                             onUpdate={updateScenario}
                             onRemove={removeScenario}
+                            onDuplicate={duplicateScenario}
                         />
                     ))}
 
                     {/* Empty State / Add New Card Shortcut */}
                     <button
                         onClick={addScenario}
-                        className="group h-[300px] rounded-3xl border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-slate-50 transition-all duration-300 flex flex-col items-center justify-center gap-4 text-slate-400 hover:text-indigo-600"
+                        className="group h-[300px] rounded-3xl border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-slate-50 transition-all duration-300 flex flex-col items-center justify-center gap-4 text-slate-400 hover:text-indigo-600 focus-visible:ring-4 focus-visible:ring-indigo-500 focus-visible:ring-offset-4 outline-none"
                     >
                         <div className="p-4 rounded-full bg-slate-50 group-hover:bg-indigo-100 transition-colors">
                             <Plus size={32} />

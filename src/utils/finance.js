@@ -38,8 +38,22 @@ export const calculateResults = (s) => {
         }
     }
 
-    const marginEuro = pv - cost;
-    const tva = pv * TAX_CONFIG.TVA_STANDARD;
+    // Discount Calculation
+    let discountAmount = 0;
+    const discount = parseFloat(s.discount) || 0;
+    const discountMode = s.discountMode || 'percent'; // 'percent' or 'euro'
+
+    if (discount > 0) {
+        if (discountMode === 'percent') {
+            discountAmount = pv * (discount / 100);
+        } else {
+            discountAmount = discount;
+        }
+    }
+
+    const finalPV = Math.max(0, pv - discountAmount);
+    const marginEuro = finalPV - cost;
+    const tva = finalPV * TAX_CONFIG.TVA_STANDARD;
 
     // Calcul IS Progressif
     let is = 0;
@@ -50,9 +64,15 @@ export const calculateResults = (s) => {
     }
 
     return {
-        pv, cost, marginEuro,
-        marginPercent: pv !== 0 ? (marginEuro / pv) : 0,
-        tva, ttc: pv + tva, is,
-        netProfit: marginEuro - is
+        pv: finalPV,
+        basePv: pv,
+        cost,
+        marginEuro,
+        marginPercent: finalPV !== 0 ? (marginEuro / finalPV) : 0,
+        tva,
+        ttc: finalPV + tva,
+        is,
+        netProfit: marginEuro - is,
+        discountAmount
     };
 };
