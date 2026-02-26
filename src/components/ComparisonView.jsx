@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { X, TrendingUp } from 'lucide-react';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER } from '../utils/finance';
 
 const ComparisonView = ({ scenarios, onClose }) => {

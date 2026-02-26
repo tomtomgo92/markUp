@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import {
     Trash2,
     Plus,
@@ -6,16 +6,20 @@ import {
     ChevronDown,
     Copy,
     Percent,
+    Calculator,
 } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
 import ProfitabilityBar from './ProfitabilityBar';
 import PriceBreakdown from './PriceBreakdown';
+import TJMCalculator from './TJMCalculator';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
 const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
+    const [activeTJMItemId, setActiveTJMItemId] = useState(null);
+
     // --- MANAGE ITEMS ---
     const addItem = () => {
         const newItems = [
@@ -241,17 +245,40 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                                                     </div>
                                                 </td>
                                                 <td className="p-3">
-                                                    <div className="relative">
-                                                        <input
-                                                            type="number"
-                                                            value={item.pv}
-                                                            disabled={s.mode === 'cost_percent'}
-                                                            onChange={(e) => updateItem(item.id, 'pv', e.target.value)}
-                                                            className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                            placeholder="0"
-                                                            aria-label="Prix de vente de la ligne"
-                                                        />
-                                                        <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
+                                                    <div className="relative flex items-center gap-2">
+                                                        <div className="relative">
+                                                            <input
+                                                                type="number"
+                                                                value={item.pv}
+                                                                disabled={s.mode === 'cost_percent'}
+                                                                onChange={(e) => updateItem(item.id, 'pv', e.target.value)}
+                                                                className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${s.mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                placeholder="0"
+                                                                aria-label="Prix de vente de la ligne"
+                                                            />
+                                                            <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
+                                                        </div>
+
+                                                        <div className="relative">
+                                                            <button
+                                                                onClick={() => setActiveTJMItemId(activeTJMItemId === item.id ? null : item.id)}
+                                                                className={`p-1.5 rounded-lg transition-colors ${activeTJMItemId === item.id ? 'bg-indigo-100 text-indigo-600' : 'text-slate-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
+                                                                title="Calculer au TJM"
+                                                                aria-label="Ouvrir calculateur TJM"
+                                                            >
+                                                                <Calculator size={14} />
+                                                            </button>
+                                                            {activeTJMItemId === item.id && (
+                                                                <TJMCalculator
+                                                                    initialValue={item.pv}
+                                                                    onApply={(val) => {
+                                                                        updateItem(item.id, 'pv', val);
+                                                                        setActiveTJMItemId(null);
+                                                                    }}
+                                                                    onClose={() => setActiveTJMItemId(null)}
+                                                                />
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td className="p-3 text-right">
