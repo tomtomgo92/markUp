@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 
 const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove }) => {
+    // Calculate itemMargin and itemMarginPercent for display
     const itemMargin = (parseFloat(item.pv) || 0) - (parseFloat(item.cost) || 0);
     const itemMarginPercent = parseFloat(item.pv) ? (itemMargin / parseFloat(item.pv)) * 100 : 0;
 
