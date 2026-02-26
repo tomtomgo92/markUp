@@ -1,0 +1,11 @@
+
+> markup@0.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 384 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+10:58:47 PM [vite] hmr update /src/components/TJMCalculator.jsx, /src/index.css
+10:58:47 PM [vite] hmr update /src/components/TJMCalculator.jsx, /src/index.css
