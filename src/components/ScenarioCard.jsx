@@ -19,7 +19,8 @@ import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
 const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
-    const [activeTJMItemId, setActiveTJMItemId] = useState(null);
+    // Stores { itemId, field } or null
+    const [activeCalculator, setActiveCalculator] = useState(null);
 
     // BOLT: Optimize - Use useRef to keep track of the latest 's' prop without triggering re-renders in callbacks
     const sRef = useRef(s);
@@ -96,6 +97,10 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
             onUpdate(currentScenario.id, 'items', [{ id: Date.now(), name: 'Prestation 1', pv: currentScenario.pv, cost: currentScenario.cost }]);
         }
     }, [onUpdate]);
+
+    const handleOpenCalculator = useCallback((itemId, field) => {
+        setActiveCalculator({ itemId, field });
+    }, []);
 
     const res = calculateResults(s);
 
@@ -231,7 +236,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                                             mode={s.mode}
                                             onUpdate={handleUpdateItem}
                                             onRemove={handleRemoveItem}
-                                            onOpenTJM={setActiveTJMItemId}
+                                            onOpenCalculator={handleOpenCalculator}
                                         />
                                     ))}
                                     {(!s.items || s.items.length === 0) && (
@@ -367,16 +372,17 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                 </div>
             </div>
             {/* TJM Calculator Modal/Overlay should be absolute or fixed to the item */}
-            {activeTJMItemId && (
+            {activeCalculator && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 backdrop-blur-sm p-4">
                     <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden">
                         <TJMCalculator
-                            initialValue={s.items.find(i => i.id === activeTJMItemId)?.pv || 0}
+                            initialValue={s.items.find(i => i.id === activeCalculator.itemId)?.[activeCalculator.field] || 0}
+                            mode={activeCalculator.field === 'cost' ? 'cost' : 'price'}
                             onApply={(val) => {
-                                handleUpdateItem(activeTJMItemId, 'pv', val);
-                                setActiveTJMItemId(null);
+                                handleUpdateItem(activeCalculator.itemId, activeCalculator.field, val);
+                                setActiveCalculator(null);
                             }}
-                            onClose={() => setActiveTJMItemId(null)}
+                            onClose={() => setActiveCalculator(null)}
                         />
                     </div>
                 </div>

@@ -10,7 +10,7 @@ def run():
         page = context.new_page()
 
         # Set viewport
-        page.set_viewport_size({"width": 1280, "height": 900})
+        page.set_viewport_size({"width": 1280, "height": 1200})
 
         print("Navigating to app...")
         try:
@@ -65,7 +65,11 @@ def run():
 
         # 5. Verify Item Value
         # The PV input should now be 1500
-        pv_input = page.locator("input[aria-label='Prix de vente de la ligne']").first
+        # In ScenarioItemRow, the label is dynamic: aria-label={`Prix de vente de ${item.name || 'la ligne'}`}
+        # The item name defaults to "Ligne 1", so it might be "Prix de vente de Ligne 1"
+        # Or if "Commencez par ajouter" was visible, it added a new line "Ligne X"
+        # Let's use a starts-with selector
+        pv_input = page.locator("input[aria-label^='Prix de vente de']").first
         pv_value = pv_input.input_value()
 
         if pv_value == "1500":
