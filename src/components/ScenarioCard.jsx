@@ -318,36 +318,34 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                     netProfit={res.netProfit}
                 />
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <ResultCard
-                            title="Prix Vente HT"
-                            value={
-                                res.discountAmount > 0 ? (
-                                    <span className="flex flex-col items-start">
-                                        <span className="text-xs line-through text-slate-400 font-medium">
-                                            {FORMATTER.format(res.basePv)}
-                                        </span>
-                                        <span>{FORMATTER.format(res.pv)}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <ResultCard
+                        title="Prix Vente HT"
+                        value={
+                            res.discountAmount > 0 ? (
+                                <span className="flex flex-col items-start">
+                                    <span className="text-xs line-through text-slate-400 font-medium">
+                                        {FORMATTER.format(res.basePv)}
                                     </span>
-                                ) : (
-                                    FORMATTER.format(res.pv)
-                                )
-                            }
-                            type="neutral"
-                        />
-                        <ResultCard
-                            title="TVA (20%)"
-                            value={FORMATTER.format(res.tva)}
-                            type="neutral"
-                        />
-                        <ResultCard
-                            title="TTC Client"
-                            value={FORMATTER.format(res.ttc)}
-                            type="primary"
-                        />
-                    </div>
-                    <div className="lg:col-span-1 h-full">
+                                    <span>{FORMATTER.format(res.pv)}</span>
+                                </span>
+                            ) : (
+                                FORMATTER.format(res.pv)
+                            )
+                        }
+                        type="neutral"
+                    />
+                    <ResultCard
+                        title="TVA (20%)"
+                        value={FORMATTER.format(res.tva)}
+                        type="neutral"
+                    />
+                    <ResultCard
+                        title="TTC Client"
+                        value={FORMATTER.format(res.ttc)}
+                        type="primary"
+                    />
+                    <div className="h-full">
                         <PriceBreakdown
                             cost={res.cost}
                             margin={res.marginEuro}
