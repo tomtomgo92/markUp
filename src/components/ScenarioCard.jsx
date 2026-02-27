@@ -237,6 +237,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                                             onUpdate={handleUpdateItem}
                                             onRemove={handleRemoveItem}
                                             onOpenCalculator={handleOpenCalculator}
+                                            onAddItem={addItem}
                                         />
                                     ))}
                                     {(!s.items || s.items.length === 0) && (

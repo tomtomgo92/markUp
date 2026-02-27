@@ -17,3 +17,7 @@
 ## 2026-05-21 - [Custom Button Focus States]
 **Learning:** Custom button components often disable default outlines (`outline-none`) for aesthetics, leaving keyboard users lost.
 **Action:** Always bake `focus-visible` ring styles directly into the base component (e.g., `ConfirmButton`) to ensure consistent, accessible focus indicators everywhere.
+
+## 2026-05-22 - [Keyboard Shortcuts for Data Entry]
+**Learning:** In data-heavy forms (like pricing tables), reaching for the mouse to "Add Row" breaks flow.
+**Action:** Bind the `Enter` key on inputs within a list to the "Add Item" function to enable continuous, keyboard-only data entry.

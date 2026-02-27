@@ -2,9 +2,15 @@ import React, { memo } from 'react';
 import { Trash2, Calculator } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 
-const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCalculator }) => {
+const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCalculator, onAddItem }) => {
     // Calculate itemMargin and itemMarginPercent for display
     const itemMargin = (parseFloat(item.pv) || 0) - (parseFloat(item.cost) || 0);
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            onAddItem();
+        }
+    };
     const itemMarginPercent = parseFloat(item.pv) ? (itemMargin / parseFloat(item.pv)) * 100 : 0;
 
     const handleMarginPercentChange = (e) => {
@@ -28,6 +34,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     type="text"
                     value={item.name}
                     onChange={(e) => onUpdate(item.id, 'name', e.target.value)}
+                    onKeyDown={handleKeyDown}
                     className="w-full px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700"
                     placeholder="Nom..."
                     aria-label={`Nom de la ligne ${index + 1}`}
@@ -41,6 +48,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                             value={item.cost}
                             disabled={mode === 'pv_percent'}
                             onChange={(e) => onUpdate(item.id, 'cost', e.target.value)}
+                            onKeyDown={handleKeyDown}
                             className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'pv_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                             placeholder="0"
                             aria-label={`Coût de ${item.name || 'la ligne'}`}
@@ -67,6 +75,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                             value={item.pv}
                             disabled={mode === 'cost_percent'}
                             onChange={(e) => onUpdate(item.id, 'pv', e.target.value)}
+                            onKeyDown={handleKeyDown}
                             className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                             placeholder="0"
                             aria-label={`Prix de vente de ${item.name || 'la ligne'}`}
