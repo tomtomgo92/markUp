@@ -93,20 +93,31 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     <span className={`font-bold ${itemMargin >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                         {itemMargin.toFixed(0)}€
                     </span>
-                    {(mode === 'cost_percent' || mode === 'pv_percent') ? (
-                        <div className="flex items-center justify-end gap-1">
-                            <input
-                                type="number"
-                                value={itemMarginPercent.toFixed(1)}
-                                onChange={handleMarginPercentChange}
-                                className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
-                                aria-label={`Pourcentage de marge de ${item.name || 'la ligne'}`}
-                            />
-                            <span className="text-[10px] text-slate-400">%</span>
-                        </div>
-                    ) : (
-                        <span className="text-[10px] text-slate-400">{itemMarginPercent.toFixed(1)}%</span>
-                    )}
+                    <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                        <div
+                            className={`w-2 h-2 rounded-full ${
+                                itemMarginPercent >= 40 ? 'bg-emerald-500' :
+                                itemMarginPercent >= 20 ? 'bg-amber-500' :
+                                'bg-red-500'
+                            }`}
+                            title={`Santé de la marge: ${itemMarginPercent >= 40 ? 'Excellente' : itemMarginPercent >= 20 ? 'Moyenne' : 'Critique'}`}
+                            aria-hidden="true"
+                        />
+                        {(mode === 'cost_percent' || mode === 'pv_percent') ? (
+                            <div className="flex items-center justify-end gap-0.5">
+                                <input
+                                    type="number"
+                                    value={itemMarginPercent.toFixed(1)}
+                                    onChange={handleMarginPercentChange}
+                                    className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
+                                    aria-label={`Pourcentage de marge de ${item.name || 'la ligne'}`}
+                                />
+                                <span className="text-[10px] text-slate-400">%</span>
+                            </div>
+                        ) : (
+                            <span className="text-[10px] text-slate-400">{itemMarginPercent.toFixed(1)}%</span>
+                        )}
+                    </div>
                 </div>
             </td>
             )}
