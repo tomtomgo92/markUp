@@ -37,9 +37,10 @@ const ComparisonView = ({ scenarios, onClose, isClientMode }) => {
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
+                        className="p-2 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                        aria-label="Fermer le comparateur"
                     >
-                        <X size={24} />
+                        <X size={24} aria-hidden="true" />
                     </button>
                 </div>
 
