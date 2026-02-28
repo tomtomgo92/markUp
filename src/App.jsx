@@ -14,6 +14,7 @@ const App = () => {
         { id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }
     ]);
     const [showComparison, setShowComparison] = useState(false);
+    const [isClientMode, setIsClientMode] = useState(false);
 
     // BOLT: Optimize - use useCallback to maintain stable function reference
     // This prevents ScenarioCard from re-rendering when other scenarios change.
@@ -68,14 +69,20 @@ const App = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
-
-            <Header onAddScenario={addScenario} onToggleComparison={() => setShowComparison(true)} />
+            <div className="print-hidden">
+                <Header
+                    onAddScenario={addScenario}
+                    onToggleComparison={() => setShowComparison(true)}
+                    isClientMode={isClientMode}
+                    setIsClientMode={setIsClientMode}
+                />
+            </div>
 
             {/* MAIN CONTENT */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
 
                 {/* Hero Section / Intro */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 print-hidden">
                     <div className="space-y-2">
                         <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                             <TrendingUp className="text-emerald-500" strokeWidth={2.5} />
@@ -98,13 +105,14 @@ const App = () => {
                             onUpdate={updateScenario}
                             onRemove={removeScenario}
                             onDuplicate={duplicateScenario}
+                            isClientMode={isClientMode}
                         />
                     ))}
 
                     {/* Empty State / Add New Card Shortcut */}
                     <button
                         onClick={addScenario}
-                        className="group h-[300px] rounded-3xl border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-slate-50 transition-all duration-300 flex flex-col items-center justify-center gap-4 text-slate-400 hover:text-indigo-600 focus-visible:ring-4 focus-visible:ring-indigo-500 focus-visible:ring-offset-4 outline-none"
+                        className="group h-[300px] rounded-3xl border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-slate-50 transition-all duration-300 flex flex-col items-center justify-center gap-4 text-slate-400 hover:text-indigo-600 focus-visible:ring-4 focus-visible:ring-indigo-500 focus-visible:ring-offset-4 outline-none print-hidden"
                     >
                         <div className="p-4 rounded-full bg-slate-50 group-hover:bg-indigo-100 transition-colors">
                             <Plus size={32} />
@@ -114,12 +122,15 @@ const App = () => {
                 </div>
             </main>
 
-            <Footer />
+            <div className="print-hidden">
+                <Footer />
+            </div>
 
             {showComparison && (
                 <ComparisonView
                     scenarios={scenarios}
                     onClose={() => setShowComparison(false)}
+                    isClientMode={isClientMode}
                 />
             )}
         </div>

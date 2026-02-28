@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@media print {
+    .print-hidden {
+        display: none !important;
+    }
+
+    body {
+        background-color: white !important;
+    }
+
+    input, select {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    /* Remove outline from all elements when printing */
+    * {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Force background colors to print if needed by specific elements like the profitability bar */
+    .bg-emerald-500 {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}
