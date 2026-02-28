@@ -30,8 +30,12 @@ const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) =
             <div className="space-y-4">
                 <div className="flex justify-between items-center pb-2 border-b border-slate-100">
                     <h5 className="text-xs font-bold uppercase text-slate-400 tracking-wider">{title}</h5>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-                        <X size={16} />
+                    <button
+                        onClick={onClose}
+                        className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1 rounded-md transition-colors outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1"
+                        aria-label={`Fermer le calculateur ${mode === 'cost' ? 'CJM' : 'TJM'}`}
+                    >
+                        <X size={16} aria-hidden="true" />
                     </button>
                 </div>
 
