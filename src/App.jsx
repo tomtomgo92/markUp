@@ -9,10 +9,24 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ComparisonView from './components/ComparisonView';
 
+const getInitialScenarios = () => {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const data = urlParams.get('data');
+        if (data) {
+            const parsedData = JSON.parse(decodeURIComponent(escape(atob(data))));
+            if (Array.isArray(parsedData) && parsedData.length > 0) {
+                return parsedData;
+            }
+        }
+    } catch (error) {
+        console.error("Failed to parse scenarios from URL", error);
+    }
+    return [{ id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }];
+};
+
 const App = () => {
-    const [scenarios, setScenarios] = useState([
-        { id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }
-    ]);
+    const [scenarios, setScenarios] = useState(getInitialScenarios());
     const [showComparison, setShowComparison] = useState(false);
     const [isClientMode, setIsClientMode] = useState(false);
 
@@ -75,6 +89,7 @@ const App = () => {
                     onToggleComparison={() => setShowComparison(true)}
                     isClientMode={isClientMode}
                     setIsClientMode={setIsClientMode}
+                    scenarios={scenarios}
                 />
             </div>
 

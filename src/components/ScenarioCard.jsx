@@ -68,6 +68,44 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
         onUpdate(currentScenario.id, 'items', newItems);
     }, [onUpdate]);
 
+    const updateGlobalMarginEuro = useCallback((value) => {
+        const currentS = sRef.current;
+        const targetMarginEuro = parseFloat(value) || 0;
+
+        const totalCost = currentS.items.reduce((acc, item) => acc + (parseFloat(item.cost) || 0), 0);
+        const totalPv = currentS.items.reduce((acc, item) => acc + (parseFloat(item.pv) || 0), 0);
+
+        const newItems = currentS.items.map(item => {
+            const cost = parseFloat(item.cost) || 0;
+            const pv = parseFloat(item.pv) || 0;
+
+            if (currentS.mode === 'cost_percent' || currentS.mode === 'pv_cost') {
+                // Keep cost fixed, change PV
+                let itemTargetMargin = 0;
+                if (totalCost > 0) {
+                    itemTargetMargin = targetMarginEuro * (cost / totalCost);
+                } else if (currentS.items.length > 0) {
+                    itemTargetMargin = targetMarginEuro / currentS.items.length;
+                }
+                const newPv = cost + itemTargetMargin;
+                return { ...item, pv: newPv.toFixed(0) };
+            } else if (currentS.mode === 'pv_percent') {
+                // Keep PV fixed, change Cost
+                let itemTargetMargin = 0;
+                if (totalPv > 0) {
+                    itemTargetMargin = targetMarginEuro * (pv / totalPv);
+                } else if (currentS.items.length > 0) {
+                    itemTargetMargin = targetMarginEuro / currentS.items.length;
+                }
+                const newCost = pv - itemTargetMargin;
+                return { ...item, cost: newCost.toFixed(0) };
+            }
+            return item;
+        });
+
+        onUpdate(currentS.id, 'items', newItems);
+    }, [onUpdate]);
+
     const updateGlobalMargin = useCallback((value) => {
         const currentS = sRef.current;
         const margin = parseFloat(value) || 0;
@@ -394,14 +432,48 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                     <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
                     <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
                         <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                            <span className="text-slate-500 font-medium">Marge Brute (HT)</span>
-                            <span className="font-bold text-slate-700">{FORMATTER.format(res.marginEuro)}</span>
+                            <span className="text-slate-500 font-medium">Marge Brute Cible (HT)</span>
+                            <div className="flex items-center gap-1">
+                                <input
+                                    type="number"
+                                    value={res.marginEuro.toFixed(0)}
+                                    onChange={(e) => updateGlobalMarginEuro(e.target.value)}
+                                    className="w-24 px-2 py-1 text-right font-bold text-slate-700 bg-white border border-slate-200 rounded-md hover:border-indigo-300 focus:border-indigo-500 outline-none"
+                                    aria-label="Objectif de Marge Brute en Euros"
+                                    title="Modifiez pour recalculer automatiquement les prix ou les coûts"
+                                />
+                                <span className="text-slate-500 font-bold">€</span>
+                            </div>
                         </div>
 
                         <div className="flex items-center justify-between w-full sm:w-auto gap-4">
                             <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
                             <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
                         </div>
+                    </div>
+
+                    {/* Indicateur de Santé de la Marge globale */}
+                    <div className="pt-2 mt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                         <span className="text-slate-500 font-medium">Santé de la marge globale :</span>
+                         <div className="flex items-center gap-2">
+                             <div
+                                className={`w-2.5 h-2.5 rounded-full ${
+                                    (res.marginPercent * 100) >= 40 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' :
+                                    (res.marginPercent * 100) >= 20 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' :
+                                    'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                                }`}
+                                aria-hidden="true"
+                             />
+                             <span className={`font-bold ${
+                                  (res.marginPercent * 100) >= 40 ? 'text-emerald-700' :
+                                  (res.marginPercent * 100) >= 20 ? 'text-amber-700' :
+                                  'text-red-700'
+                             }`}>
+                                 {(res.marginPercent * 100) >= 40 ? 'Saine (≥ 40%)' :
+                                  (res.marginPercent * 100) >= 20 ? 'Moyenne (20-40%)' :
+                                  'Critique (< 20%)'}
+                             </span>
+                         </div>
                     </div>
                 </div>
                 )}
