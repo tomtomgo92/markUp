@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FORMATTER, PERCENT_FORMATTER } from '../utils/finance';
 
-const PriceBreakdown = ({ cost, margin, tva }) => {
+// BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
+const PriceBreakdown = memo(({ cost, margin, tva }) => {
     // Safety check: if margin is negative, the pie chart metaphor breaks.
     // In that case, we don't render this component (the ProfitabilityBar handles the loss display).
     if (margin < 0) return null;
@@ -119,6 +120,6 @@ const PriceBreakdown = ({ cost, margin, tva }) => {
             </div>
         </div>
     );
-};
+});
 
 export default PriceBreakdown;
