@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Trash2, Calculator } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 
-const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCalculator }) => {
+const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCalculator, isClientMode }) => {
     // Calculate itemMargin and itemMarginPercent for display
     const itemMargin = (parseFloat(item.pv) || 0) - (parseFloat(item.cost) || 0);
     const itemMarginPercent = parseFloat(item.pv) ? (itemMargin / parseFloat(item.pv)) * 100 : 0;
@@ -33,6 +33,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     aria-label={`Nom de la ligne ${index + 1}`}
                 />
             </td>
+            {!isClientMode && (
             <td className="p-3">
                 <div className="relative flex items-center gap-2">
                     <div className="relative">
@@ -43,14 +44,14 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                             onChange={(e) => onUpdate(item.id, 'cost', e.target.value)}
                             className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'pv_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                             placeholder="0"
-                            aria-label={`Coût de ${item.name || 'la ligne'}`}
+                            aria-label="Coût de la ligne"
                         />
                         <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
                     </div>
                      {onOpenCalculator && mode !== 'pv_percent' && (
                         <button
                             onClick={() => onOpenCalculator(item.id, 'cost')}
-                            className="p-1.5 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors print-hidden"
                             title="Calculer au CJM"
                             aria-label="Ouvrir calculateur CJM"
                         >
@@ -59,6 +60,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     )}
                 </div>
             </td>
+            )}
             <td className="p-3">
                 <div className="relative flex items-center gap-2">
                     <div className="relative">
@@ -76,7 +78,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     {onOpenCalculator && mode !== 'cost_percent' && (
                         <button
                             onClick={() => onOpenCalculator(item.id, 'pv')}
-                            className="p-1.5 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors print-hidden"
                             title="Calculer au TJM"
                             aria-label="Ouvrir calculateur TJM"
                         >
@@ -85,6 +87,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     )}
                 </div>
             </td>
+            {!isClientMode && (
             <td className="p-3 text-right">
                 <div className="flex flex-col items-end">
                     <span className={`font-bold ${itemMargin >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
@@ -106,7 +109,8 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     )}
                 </div>
             </td>
-            <td className="p-3 text-right">
+            )}
+            <td className="p-3 text-right print-hidden">
                 <ConfirmButton
                     onConfirm={() => onRemove(item.id)}
                     icon={Trash2}

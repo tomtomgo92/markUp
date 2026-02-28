@@ -3,9 +3,18 @@
 > vite
 
 
-  VITE v5.4.21  ready in 384 ms
+  VITE v5.4.21  ready in 346 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
-10:58:47 PM [vite] hmr update /src/components/TJMCalculator.jsx, /src/index.css
-10:58:47 PM [vite] hmr update /src/components/TJMCalculator.jsx, /src/index.css
+12:24:46 AM [vite] hmr update /src/index.css, /src/components/ScenarioCard.jsx, /src/components/ComparisonView.jsx, /src/components/ProfitabilityBar.jsx, /src/components/PriceBreakdown.jsx
+12:25:12 AM [vite] hmr update /src/components/ScenarioCard.jsx, /src/index.css
+12:25:58 AM [vite] hmr update /src/components/ScenarioCard.jsx, /src/index.css
+12:25:58 AM [vite] hmr update /src/App.jsx, /src/index.css
+12:26:11 AM [vite] hmr update /src/index.css
+12:27:02 AM [vite] hmr update /src/components/ScenarioItemRow.jsx, /src/index.css
+12:28:37 AM [vite] hmr update /src/components/ScenarioCard.jsx, /src/index.css
+12:29:41 AM [vite] hmr update /src/components/ScenarioCard.jsx, /src/index.css
+12:30:40 AM [vite] hmr update /src/components/ScenarioItemRow.jsx, /src/index.css
+12:31:28 AM [vite] hmr update /src/components/ScenarioCard.jsx, /src/index.css
+12:32:20 AM [vite] hmr update /src/components/ScenarioCard.jsx, /src/index.css
