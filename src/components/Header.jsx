@@ -42,7 +42,7 @@ const Header = memo(({ onAddScenario, onToggleComparison, isClientMode, setIsCli
                     <button
                         onClick={() => setIsClientMode(!isClientMode)}
                         aria-label={isClientMode ? "Désactiver le mode présentation" : "Activer le mode présentation"}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                        className={`outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                             isClientMode
                                 ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
                                 : 'text-slate-600 hover:bg-slate-100 hover:text-indigo-600'
@@ -56,7 +56,7 @@ const Header = memo(({ onAddScenario, onToggleComparison, isClientMode, setIsCli
                     <button
                         onClick={onToggleComparison}
                         aria-label="Comparer les scénarios"
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                        className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
                     >
                         <BarChart2 size={20} strokeWidth={2.5} />
                         <span className="hidden sm:inline">Comparer</span>
@@ -65,7 +65,7 @@ const Header = memo(({ onAddScenario, onToggleComparison, isClientMode, setIsCli
                     <button
                         onClick={handleShare}
                         aria-label="Partager la simulation"
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
+                        className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
                         title="Copier le lien de partage"
                     >
                         {isCopied ? <Check size={20} strokeWidth={2.5} className="text-emerald-500" /> : <Share2 size={20} strokeWidth={2.5} />}
@@ -75,7 +75,7 @@ const Header = memo(({ onAddScenario, onToggleComparison, isClientMode, setIsCli
                     <button
                         onClick={onAddScenario}
                         aria-label="Nouveau Scénario"
-                        className="group flex items-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-indigo-200 active:scale-95"
+                        className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 group flex items-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-indigo-200 active:scale-95"
                     >
                         <Plus size={18} className="transition-transform group-hover:rotate-90" strokeWidth={2.5} />
                         <span className="hidden sm:inline">Nouveau Scénario</span>

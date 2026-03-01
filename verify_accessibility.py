@@ -8,7 +8,7 @@ def run():
 
         print("Navigating to home page...")
         try:
-            page.goto("http://localhost:3000/markup/")
+            page.goto("http://localhost:5173/markUp/")
 
             # Wait for initial load
             page.wait_for_selector('input[value="Scénario 1"]')

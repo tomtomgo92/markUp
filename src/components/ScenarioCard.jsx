@@ -193,7 +193,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                             value={s.mode}
                             onChange={(e) => handleChange('mode', e.target.value)}
                             className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
-                            aria-label="Mode de calcul"
+                            aria-label={`Mode de calcul pour ${s.name}`}
                         >
                             <option value="pv_cost">PV & Coût</option>
                             <option value="cost_percent">Marge & Coût</option>
@@ -204,7 +204,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                     <div className="flex items-center print-hidden">
                         <button
                             onClick={() => window.print()}
-                            className="p-2 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 p-2 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
                             title="Exporter en PDF / Imprimer"
                             aria-label="Exporter en PDF"
                         >
@@ -212,7 +212,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                         </button>
                         <button
                             onClick={() => onDuplicate(s.id)}
-                            className="p-2 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 p-2 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
                             title="Dupliquer ce scénario"
                             aria-label="Dupliquer ce scénario"
                         >
@@ -296,7 +296,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                                     <p className="text-sm font-medium">Commencez par ajouter des éléments à chiffrer</p>
                                                     <button
                                                         onClick={addItem}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors font-bold text-sm"
+                                                        className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors font-bold text-sm"
                                                     >
                                                         <Plus size={16} />
                                                         Ajouter une ligne
@@ -346,14 +346,14 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                         <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
                             <button
                                 onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
-                                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
                                 aria-label="Remise en pourcentage"
                             >
                                 %
                             </button>
                             <button
                                 onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
-                                className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
                                 aria-label="Remise en euros"
                             >
                                 €

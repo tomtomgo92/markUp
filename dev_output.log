@@ -3,13 +3,9 @@
 > vite
 
 
-  VITE v5.4.21  ready in 360 ms
+  VITE v5.4.21  ready in 349 ms
 
-  ➜  Local:   http://localhost:5173/
+  ➜  Local:   http://localhost:5173/markUp/
   ➜  Network: use --host to expose
-9:51:08 PM [vite] hmr update /src/components/ScenarioItemRow.jsx, /src/index.css
-9:51:16 PM [vite] hmr update /src/components/ScenarioCard.jsx, /src/index.css
-9:51:37 PM [vite] hmr update /src/App.jsx, /src/index.css
-9:51:41 PM [vite] hmr update /src/App.jsx, /src/index.css
-9:51:48 PM [vite] hmr update /src/components/Header.jsx, /src/index.css
-9:51:53 PM [vite] hmr update /src/components/Header.jsx, /src/index.css
+6:59:49 PM [vite] hmr update /src/components/ScenarioCard.jsx, /src/index.css
+7:00:01 PM [vite] hmr update /src/components/ScenarioItemRow.jsx, /src/index.css
