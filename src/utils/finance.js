@@ -53,7 +53,8 @@ export const calculateResults = (s) => {
 
     const finalPV = Math.max(0, pv - discountAmount);
     const marginEuro = finalPV - cost;
-    const tvaRate = s.tvaRate !== undefined ? parseFloat(s.tvaRate) : TAX_CONFIG.TVA_STANDARD;
+    const isNoVat = s.noVat === true;
+    const tvaRate = isNoVat ? 0 : (s.tvaRate !== undefined ? parseFloat(s.tvaRate) : TAX_CONFIG.TVA_STANDARD);
     const tva = finalPV * tvaRate;
 
     // Calcul IS Progressif
