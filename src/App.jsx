@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
     TrendingUp,
     Plus,
@@ -29,6 +29,10 @@ const App = () => {
     const [scenarios, setScenarios] = useState(getInitialScenarios());
     const [showComparison, setShowComparison] = useState(false);
     const [isClientMode, setIsClientMode] = useState(false);
+
+    // Ref to maintain latest scenarios state without triggering re-renders in Header
+    const scenariosRef = useRef(scenarios);
+    scenariosRef.current = scenarios;
 
     // BOLT: Optimize - use useCallback to maintain stable function reference
     // This prevents ScenarioCard from re-rendering when other scenarios change.
@@ -81,15 +85,19 @@ const App = () => {
         });
     }, []);
 
+    // BOLT: Optimize - Prevent Header from re-rendering by using stable callbacks
+    const handleToggleComparison = useCallback(() => setShowComparison(true), []);
+    const getScenarios = useCallback(() => scenariosRef.current, []);
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
             <div className="print-hidden">
                 <Header
                     onAddScenario={addScenario}
-                    onToggleComparison={() => setShowComparison(true)}
+                    onToggleComparison={handleToggleComparison}
                     isClientMode={isClientMode}
                     setIsClientMode={setIsClientMode}
-                    scenarios={scenarios}
+                    getScenarios={getScenarios}
                 />
             </div>
 
