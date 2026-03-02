@@ -11,15 +11,27 @@ const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) =
     const label = mode === 'cost' ? 'CJM' : 'TJM';
     const title = mode === 'cost' ? 'Calcul CJM' : 'Calcul TJM';
 
-    // Close on click outside
+    // Close on click outside or escape key
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (ref.current && !ref.current.contains(event.target)) {
                 onClose();
             }
         };
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
     }, [onClose]);
 
     return (
@@ -46,6 +58,7 @@ const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) =
                             type="number"
                             value={tjm}
                             onChange={(e) => setTjm(parseFloat(e.target.value) || 0)}
+                            onFocus={(e) => e.target.select()}
                             className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 outline-none font-bold text-slate-700"
                             placeholder="ex: 500"
                             autoFocus
@@ -57,6 +70,7 @@ const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) =
                             type="number"
                             value={days}
                             onChange={(e) => setDays(parseFloat(e.target.value) || 0)}
+                            onFocus={(e) => e.target.select()}
                             className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 outline-none font-bold text-slate-700"
                             placeholder="ex: 3"
                         />

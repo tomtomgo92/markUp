@@ -248,6 +248,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                     type="number"
                                     value={s.marginPercent}
                                     onChange={(e) => updateGlobalMargin(e.target.value)}
+                                    onFocus={(e) => e.target.select()}
                                     className="w-20 px-3 py-1.5 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 outline-none text-right font-bold text-indigo-700"
                                     placeholder="0"
                                     aria-label="Marge Cible Globale"
@@ -340,6 +341,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                 type="number"
                                 value={s.discount || ''}
                                 onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
+                                onFocus={(e) => e.target.select()}
                                 placeholder="0"
                                 className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
                                 aria-label="Montant de la remise"
@@ -457,6 +459,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                         type="number"
                                         value={res.marginEuro.toFixed(0)}
                                         onChange={(e) => updateGlobalMarginEuro(e.target.value)}
+                                        onFocus={(e) => e.target.select()}
                                         className="w-24 px-2 py-1 text-right font-bold text-slate-700 bg-white border border-slate-200 rounded-md hover:border-indigo-300 focus:border-indigo-500 outline-none"
                                         aria-label="Objectif de Marge Brute en Euros"
                                         title="Modifiez pour recalculer automatiquement les prix ou les coûts"
