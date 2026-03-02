@@ -26,7 +26,8 @@ const getInitialScenarios = () => {
 };
 
 const App = () => {
-    const [scenarios, setScenarios] = useState(getInitialScenarios());
+    // BOLT: Optimize - use lazy initialization to prevent parsing URL params and JSON on every render
+    const [scenarios, setScenarios] = useState(getInitialScenarios);
     const [showComparison, setShowComparison] = useState(false);
     const [isClientMode, setIsClientMode] = useState(false);
 
