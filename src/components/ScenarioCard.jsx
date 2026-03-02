@@ -286,6 +286,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                             onUpdate={handleUpdateItem}
                                             onRemove={handleRemoveItem}
                                             onOpenCalculator={handleOpenCalculator}
+                                            onAddItem={addItem}
                                             isClientMode={isClientMode}
                                         />
                                     ))}
@@ -323,53 +324,53 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                 </div>
 
                 {!isClientMode && (
-                <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
-                            <Percent size={18} aria-hidden="true" />
+                    <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
+                                <Percent size={18} aria-hidden="true" />
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
+                                <p className="text-xs text-amber-600/80">Réduction appliquée sur le total HT</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
-                            <p className="text-xs text-amber-600/80">Réduction appliquée sur le total HT</p>
-                        </div>
-                    </div>
 
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="number"
-                            value={s.discount || ''}
-                            onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
-                            placeholder="0"
-                            className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
-                            aria-label="Montant de la remise"
-                        />
-                        <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
-                            <button
-                                onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
-                                className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
-                                aria-label="Remise en pourcentage"
-                            >
-                                %
-                            </button>
-                            <button
-                                onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
-                                className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
-                                aria-label="Remise en euros"
-                            >
-                                €
-                            </button>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="number"
+                                value={s.discount || ''}
+                                onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
+                                placeholder="0"
+                                className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
+                                aria-label="Montant de la remise"
+                            />
+                            <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
+                                <button
+                                    onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
+                                    className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                    aria-label="Remise en pourcentage"
+                                >
+                                    %
+                                </button>
+                                <button
+                                    onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
+                                    className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                    aria-label="Remise en euros"
+                                >
+                                    €
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
                 )}
 
                 {!isClientMode && (
-                <ProfitabilityBar
-                    pv={res.pv}
-                    cost={res.cost}
-                    is={res.is}
-                    netProfit={res.netProfit}
-                />
+                    <ProfitabilityBar
+                        pv={res.pv}
+                        cost={res.cost}
+                        is={res.is}
+                        netProfit={res.netProfit}
+                    />
                 )}
 
                 <div className={`grid grid-cols-1 ${isClientMode ? 'lg:grid-cols-3' : 'lg:grid-cols-3'} gap-4`}>
@@ -390,92 +391,108 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                             }
                             type="neutral"
                         />
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-2 px-2 py-1 bg-slate-100 rounded-lg w-fit print-hidden">
+                                <input
+                                    type="checkbox"
+                                    id={`no-vat-${s.id}`}
+                                    checked={s.noVat || false}
+                                    onChange={(e) => onUpdate(s.id, 'noVat', e.target.checked)}
+                                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+                                />
+                                <label htmlFor={`no-vat-${s.id}`} className="text-[10px] font-bold text-slate-600 uppercase">
+                                    Non assujetti TVA
+                                </label>
+                            </div>
+                            <ResultCard
+                                title={
+                                    <div className="flex items-center gap-1 -mt-1 -ml-1">
+                                        <span>TVA</span>
+                                        {!s.noVat ? (
+                                            <select
+                                                value={s.tvaRate !== undefined ? s.tvaRate : TAX_CONFIG.TVA_STANDARD}
+                                                onChange={(e) => onUpdate(s.id, 'tvaRate', parseFloat(e.target.value))}
+                                                className="appearance-none bg-transparent hover:bg-slate-100 text-slate-500 font-black focus:ring-2 focus:ring-indigo-500 rounded px-1 py-0.5 outline-none cursor-pointer"
+                                                aria-label={`Taux de TVA pour ${s.name}`}
+                                            >
+                                                <option value={0}>0%</option>
+                                                <option value={0.055}>5.5%</option>
+                                                <option value={0.10}>10%</option>
+                                                <option value={0.20}>20%</option>
+                                            </select>
+                                        ) : (
+                                            <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded ml-1">0%</span>
+                                        )}
+                                    </div>
+                                }
+                                value={FORMATTER.format(res.tva)}
+                                type="neutral"
+                            />
+                        </div>
                         <ResultCard
-                            title={
-                                <div className="flex items-center gap-1 -mt-1 -ml-1">
-                                    <span>TVA</span>
-                                    <select
-                                        value={s.tvaRate !== undefined ? s.tvaRate : TAX_CONFIG.TVA_STANDARD}
-                                        onChange={(e) => onUpdate(s.id, 'tvaRate', parseFloat(e.target.value))}
-                                        className="appearance-none bg-transparent hover:bg-slate-100 text-slate-500 font-black focus:ring-2 focus:ring-indigo-500 rounded px-1 py-0.5 outline-none cursor-pointer"
-                                        aria-label={`Taux de TVA pour ${s.name}`}
-                                    >
-                                        <option value={0}>0%</option>
-                                        <option value={0.055}>5.5%</option>
-                                        <option value={0.10}>10%</option>
-                                        <option value={0.20}>20%</option>
-                                    </select>
-                                </div>
-                            }
-                            value={FORMATTER.format(res.tva)}
-                            type="neutral"
-                        />
-                        <ResultCard
-                            title="TTC Client"
+                            title={s.noVat ? "Prix Total" : "TTC Client"}
                             value={FORMATTER.format(res.ttc)}
                             type="primary"
                         />
                     </div>
                     {!isClientMode && (
-                    <div className="lg:col-span-1 h-full">
-                        <PriceBreakdown
-                            cost={res.cost}
-                            margin={res.marginEuro}
-                            tva={res.tva}
-                        />
-                    </div>
+                        <div className="lg:col-span-1 h-full">
+                            <PriceBreakdown
+                                cost={res.cost}
+                                margin={res.marginEuro}
+                                tva={res.tva}
+                            />
+                        </div>
                     )}
                 </div>
 
                 {!isClientMode && (
-                <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
-                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
-                    <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
-                        <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                            <span className="text-slate-500 font-medium">Marge Brute Cible (HT)</span>
-                            <div className="flex items-center gap-1">
-                                <input
-                                    type="number"
-                                    value={res.marginEuro.toFixed(0)}
-                                    onChange={(e) => updateGlobalMarginEuro(e.target.value)}
-                                    className="w-24 px-2 py-1 text-right font-bold text-slate-700 bg-white border border-slate-200 rounded-md hover:border-indigo-300 focus:border-indigo-500 outline-none"
-                                    aria-label="Objectif de Marge Brute en Euros"
-                                    title="Modifiez pour recalculer automatiquement les prix ou les coûts"
-                                />
-                                <span className="text-slate-500 font-bold">€</span>
+                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
+                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
+                        <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
+                            <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                                <span className="text-slate-500 font-medium">Marge Brute Cible (HT)</span>
+                                <div className="flex items-center gap-1">
+                                    <input
+                                        type="number"
+                                        value={res.marginEuro.toFixed(0)}
+                                        onChange={(e) => updateGlobalMarginEuro(e.target.value)}
+                                        className="w-24 px-2 py-1 text-right font-bold text-slate-700 bg-white border border-slate-200 rounded-md hover:border-indigo-300 focus:border-indigo-500 outline-none"
+                                        aria-label="Objectif de Marge Brute en Euros"
+                                        title="Modifiez pour recalculer automatiquement les prix ou les coûts"
+                                    />
+                                    <span className="text-slate-500 font-bold">€</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                                <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
+                                <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                            <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
-                            <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
+                        {/* Indicateur de Santé de la Marge globale */}
+                        <div className="pt-2 mt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                            <span className="text-slate-500 font-medium">Santé de la marge globale :</span>
+                            <div className="flex items-center gap-2">
+                                <div
+                                    className={`w-2.5 h-2.5 rounded-full ${(res.marginPercent * 100) >= 40 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' :
+                                        (res.marginPercent * 100) >= 20 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' :
+                                            'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                                        }`}
+                                    aria-hidden="true"
+                                />
+                                <span className={`font-bold ${(res.marginPercent * 100) >= 40 ? 'text-emerald-700' :
+                                    (res.marginPercent * 100) >= 20 ? 'text-amber-700' :
+                                        'text-red-700'
+                                    }`}>
+                                    {(res.marginPercent * 100) >= 40 ? 'Saine (≥ 40%)' :
+                                        (res.marginPercent * 100) >= 20 ? 'Moyenne (20-40%)' :
+                                            'Critique (< 20%)'}
+                                </span>
+                            </div>
                         </div>
                     </div>
-
-                    {/* Indicateur de Santé de la Marge globale */}
-                    <div className="pt-2 mt-2 border-t border-slate-200 flex items-center justify-between text-xs">
-                         <span className="text-slate-500 font-medium">Santé de la marge globale :</span>
-                         <div className="flex items-center gap-2">
-                             <div
-                                className={`w-2.5 h-2.5 rounded-full ${
-                                    (res.marginPercent * 100) >= 40 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' :
-                                    (res.marginPercent * 100) >= 20 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' :
-                                    'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
-                                }`}
-                                aria-hidden="true"
-                             />
-                             <span className={`font-bold ${
-                                  (res.marginPercent * 100) >= 40 ? 'text-emerald-700' :
-                                  (res.marginPercent * 100) >= 20 ? 'text-amber-700' :
-                                  'text-red-700'
-                             }`}>
-                                 {(res.marginPercent * 100) >= 40 ? 'Saine (≥ 40%)' :
-                                  (res.marginPercent * 100) >= 20 ? 'Moyenne (20-40%)' :
-                                  'Critique (< 20%)'}
-                             </span>
-                         </div>
-                    </div>
-                </div>
                 )}
             </div>
             {/* TJM Calculator Modal/Overlay should be absolute or fixed to the item */}
