@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FORMATTER, PERCENT_FORMATTER } from '../utils/finance';
 
-const ProfitabilityBar = ({ pv, cost, is, netProfit }) => {
+// BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
+const ProfitabilityBar = memo(({ pv, cost, is, netProfit }) => {
     // If no PV, don't show the bar
     if (!pv || pv <= 0) return null;
 
@@ -103,6 +104,6 @@ const ProfitabilityBar = ({ pv, cost, is, netProfit }) => {
             </div>
         </div>
     );
-};
+});
 
 export default ProfitabilityBar;

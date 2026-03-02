@@ -2,7 +2,7 @@ import React from 'react';
 import { X, TrendingUp } from 'lucide-react';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER } from '../utils/finance';
 
-const ComparisonView = ({ scenarios, onClose }) => {
+const ComparisonView = ({ scenarios, onClose, isClientMode }) => {
     // 1. Calculate results for all scenarios
     const data = scenarios.map(s => {
         const res = calculateResults(s);
@@ -37,9 +37,10 @@ const ComparisonView = ({ scenarios, onClose }) => {
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
+                        className="p-2 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                        aria-label="Fermer le comparateur"
                     >
-                        <X size={24} />
+                        <X size={24} aria-hidden="true" />
                     </button>
                 </div>
 
@@ -71,31 +72,41 @@ const ComparisonView = ({ scenarios, onClose }) => {
                                         className="w-full bg-slate-100 rounded-t-xl relative overflow-hidden flex flex-col justify-end transition-all duration-500 group-hover:shadow-lg"
                                         style={{ height: `${heightPercent}%`, minHeight: '4px' }}
                                     >
-                                        {/* Margin Segment (Top) */}
-                                        <div
-                                            className={`${marginColor} w-full transition-all duration-500 flex items-center justify-center relative overflow-hidden`}
-                                            style={{ height: `${marginHeight}%` }}
-                                        >
-                                            {marginHeight > 15 && (
-                                                <span className="text-white font-bold text-xs drop-shadow-md">
-                                                    Marge
-                                                </span>
-                                            )}
-                                            {/* Shine effect */}
-                                            <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
-                                        </div>
+                                        {isClientMode ? (
+                                            <div
+                                                className="bg-indigo-500 w-full transition-all duration-500 flex items-center justify-center relative overflow-hidden h-full"
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {/* Margin Segment (Top) */}
+                                                <div
+                                                    className={`${marginColor} w-full transition-all duration-500 flex items-center justify-center relative overflow-hidden`}
+                                                    style={{ height: `${marginHeight}%` }}
+                                                >
+                                                    {marginHeight > 15 && (
+                                                        <span className="text-white font-bold text-xs drop-shadow-md">
+                                                            Marge
+                                                        </span>
+                                                    )}
+                                                    {/* Shine effect */}
+                                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
+                                                </div>
 
-                                        {/* Cost Segment (Bottom) */}
-                                        <div
-                                            className="bg-slate-300 w-full transition-all duration-500 flex items-center justify-center border-t border-white/20"
-                                            style={{ height: `${costHeight}%` }}
-                                        >
-                                            {costHeight > 15 && (
-                                                <span className="text-slate-500 font-bold text-xs">
-                                                    Coût
-                                                </span>
-                                            )}
-                                        </div>
+                                                {/* Cost Segment (Bottom) */}
+                                                <div
+                                                    className="bg-slate-300 w-full transition-all duration-500 flex items-center justify-center border-t border-white/20"
+                                                    style={{ height: `${costHeight}%` }}
+                                                >
+                                                    {costHeight > 15 && (
+                                                        <span className="text-slate-500 font-bold text-xs">
+                                                            Coût
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
 
                                     {/* Scenario Name */}
@@ -103,14 +114,17 @@ const ComparisonView = ({ scenarios, onClose }) => {
                                         <div className="font-bold text-slate-800 truncate px-2" title={item.name}>
                                             {item.name}
                                         </div>
+                                        {!isClientMode && (
                                         <div className="flex items-center justify-center gap-2 mt-1">
                                             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${isLowMargin ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
                                                 {PERCENT_FORMATTER.format(marginPercent)}
                                             </span>
                                         </div>
+                                        )}
                                     </div>
 
                                     {/* Detailed metrics (hover/always visible depending on design) */}
+                                    {!isClientMode && (
                                     <div className="mt-4 w-full bg-slate-50 rounded-lg p-2 text-xs space-y-1 opacity-80 group-hover:opacity-100 transition-opacity">
                                         <div className="flex justify-between text-slate-500">
                                             <span>Coût:</span>
@@ -121,6 +135,7 @@ const ComparisonView = ({ scenarios, onClose }) => {
                                             <span>{FORMATTER.format(netProfit)}</span>
                                         </div>
                                     </div>
+                                    )}
                                 </div>
                             );
                         })}
@@ -128,6 +143,7 @@ const ComparisonView = ({ scenarios, onClose }) => {
                 </div>
 
                 {/* Footer / Legend */}
+                {!isClientMode && (
                 <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-center gap-6 text-xs text-slate-500 font-medium">
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded bg-emerald-500"></div>
@@ -138,6 +154,7 @@ const ComparisonView = ({ scenarios, onClose }) => {
                         <span>Coûts (Achats/Presta)</span>
                     </div>
                 </div>
+                )}
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-const ResultCard = ({ title, value, subtext, type = "neutral" }) => {
+// BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
+const ResultCard = memo(({ title, value, subtext, type = "neutral" }) => {
     const styles = {
         neutral: "bg-white border-slate-200",
         primary: "bg-gradient-to-br from-primary to-secondary text-white border-transparent shadow-lg shadow-indigo-200",
@@ -29,6 +30,6 @@ const ResultCard = ({ title, value, subtext, type = "neutral" }) => {
             )}
         </div>
     );
-};
+});
 
 export default ResultCard;
