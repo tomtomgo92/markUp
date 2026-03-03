@@ -26,7 +26,9 @@ const getInitialScenarios = () => {
 };
 
 const App = () => {
-    const [scenarios, setScenarios] = useState(getInitialScenarios());
+    // BOLT: Optimize - Use lazy initialization for scenarios state to prevent executing getInitialScenarios
+    // (which parses JSON and decodes base64 from the URL) on every re-render of App.
+    const [scenarios, setScenarios] = useState(getInitialScenarios);
     const [showComparison, setShowComparison] = useState(false);
     const [isClientMode, setIsClientMode] = useState(false);
 
