@@ -26,7 +26,9 @@ const getInitialScenarios = () => {
 };
 
 const App = () => {
-    const [scenarios, setScenarios] = useState(getInitialScenarios());
+    // BOLT: Optimize - Pass function reference to useState instead of executing it.
+    // This prevents the expensive URL parsing and JSON decoding from running on every render.
+    const [scenarios, setScenarios] = useState(getInitialScenarios);
     const [showComparison, setShowComparison] = useState(false);
     const [isClientMode, setIsClientMode] = useState(false);
 
