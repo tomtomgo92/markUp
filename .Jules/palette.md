@@ -21,3 +21,7 @@
 ## 2026-05-22 - [Keyboard Shortcuts for Data Entry]
 **Learning:** In data-heavy forms (like pricing tables), reaching for the mouse to "Add Row" breaks flow.
 **Action:** Bind the `Enter` key on inputs within a list to the "Add Item" function to enable continuous, keyboard-only data entry.
+
+## 2026-05-24 - [Keyboard Shortcuts in Popover Calculators]
+**Learning:** Inputs within temporary popover calculators (like `TJMCalculator`) break data entry flow if they require a mouse click to apply.
+**Action:** Always bind the `Enter` key on inputs within popover calculators to trigger the apply/submit action.
