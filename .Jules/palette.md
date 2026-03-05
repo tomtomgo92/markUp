@@ -21,3 +21,7 @@
 ## 2026-05-22 - [Keyboard Shortcuts for Data Entry]
 **Learning:** In data-heavy forms (like pricing tables), reaching for the mouse to "Add Row" breaks flow.
 **Action:** Bind the `Enter` key on inputs within a list to the "Add Item" function to enable continuous, keyboard-only data entry.
+
+## 2026-06-25 - [Keyboard Support in Inline Popovers]
+**Learning:** Inline calculator popovers without `Enter` key submission force keyboard users to manually tab to or click an "Apply" button, breaking data entry flow.
+**Action:** Always add `onKeyDown` listeners to inputs in inline helper popovers to submit changes directly when the `Enter` key is pressed.
