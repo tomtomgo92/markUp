@@ -21,3 +21,7 @@
 ## 2026-05-22 - [Keyboard Shortcuts for Data Entry]
 **Learning:** In data-heavy forms (like pricing tables), reaching for the mouse to "Add Row" breaks flow.
 **Action:** Bind the `Enter` key on inputs within a list to the "Add Item" function to enable continuous, keyboard-only data entry.
+
+## 2026-05-24 - [Auto-Selecting Default Values in Data Entry]
+**Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
+**Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
