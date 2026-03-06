@@ -239,12 +239,13 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                     <PieChart size={18} aria-hidden="true" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-indigo-900 text-sm">Marge Cible Globale</h4>
+                                    <label htmlFor={`marge-globale-${s.id}`} className="font-bold text-indigo-900 text-sm cursor-pointer">Marge Cible Globale</label>
                                     <p className="text-xs text-indigo-600/80">S'applique à toutes les lignes</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
                                 <input
+                                    id={`marge-globale-${s.id}`}
                                     type="number"
                                     value={s.marginPercent}
                                     onChange={(e) => updateGlobalMargin(e.target.value)}
@@ -331,13 +332,14 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                 <Percent size={18} aria-hidden="true" />
                             </div>
                             <div>
-                                <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
+                                <label htmlFor={`remise-${s.id}`} className="font-bold text-amber-900 text-sm cursor-pointer">Remise Commerciale</label>
                                 <p className="text-xs text-amber-600/80">Réduction appliquée sur le total HT</p>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2">
                             <input
+                                id={`remise-${s.id}`}
                                 type="number"
                                 value={s.discount || ''}
                                 onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
@@ -453,9 +455,10 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                         <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
                         <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
                             <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                                <span className="text-slate-500 font-medium">Marge Brute Cible (HT)</span>
+                                <label htmlFor={`marge-brute-cible-${s.id}`} className="text-slate-500 font-medium cursor-pointer hover:text-indigo-600 transition-colors">Marge Brute Cible (HT)</label>
                                 <div className="flex items-center gap-1">
                                     <input
+                                        id={`marge-brute-cible-${s.id}`}
                                         type="number"
                                         value={res.marginEuro.toFixed(0)}
                                         onChange={(e) => updateGlobalMarginEuro(e.target.value)}
