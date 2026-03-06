@@ -22,6 +22,11 @@
 **Learning:** In data-heavy forms (like pricing tables), reaching for the mouse to "Add Row" breaks flow.
 **Action:** Bind the `Enter` key on inputs within a list to the "Add Item" function to enable continuous, keyboard-only data entry.
 
+## 2026-06-25 - [Keyboard Support in Inline Popovers]
+**Learning:** Inline calculator popovers without `Enter` key submission force keyboard users to manually tab to or click an "Apply" button, breaking data entry flow.
+**Action:** Always add `onKeyDown` listeners to inputs in inline helper popovers to submit changes directly when the `Enter` key is pressed.
+
 ## 2026-05-24 - [Auto-Selecting Default Values in Data Entry]
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
+

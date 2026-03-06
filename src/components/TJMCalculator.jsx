@@ -58,6 +58,12 @@ const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) =
                             type="number"
                             value={tjm}
                             onChange={(e) => setTjm(parseFloat(e.target.value) || 0)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    onApply(total);
+                                }
+                            }}
                             onFocus={(e) => e.target.select()}
                             className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 outline-none font-bold text-slate-700"
                             placeholder="ex: 500"
@@ -70,6 +76,12 @@ const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) =
                             type="number"
                             value={days}
                             onChange={(e) => setDays(parseFloat(e.target.value) || 0)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    onApply(total);
+                                }
+                            }}
                             onFocus={(e) => e.target.select()}
                             className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 outline-none font-bold text-slate-700"
                             placeholder="ex: 3"
