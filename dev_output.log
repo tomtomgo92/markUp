@@ -1,0 +1,10 @@
+
+> markup@0.0.0 dev /app
+> vite
+
+
+  VITE v5.4.21  ready in 474 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+2:42:17 PM [vite] hmr update /src/components/WaterfallChart.jsx, /src/index.css

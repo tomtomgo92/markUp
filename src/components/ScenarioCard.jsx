@@ -13,6 +13,7 @@ import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
 import ProfitabilityBar from './ProfitabilityBar';
 import PriceBreakdown from './PriceBreakdown';
+import WaterfallChart from './WaterfallChart';
 import ScenarioItemRow from './ScenarioItemRow';
 import TJMCalculator from './TJMCalculator';
 import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
@@ -22,6 +23,7 @@ import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
 const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClientMode }) => {
     // Stores { itemId, field } or null
     const [activeCalculator, setActiveCalculator] = useState(null);
+    const [showWaterfall, setShowWaterfall] = useState(false);
 
     // BOLT: Optimize - Use useRef to keep track of the latest 's' prop without triggering re-renders in callbacks
     const sRef = useRef(s);
@@ -324,43 +326,61 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                 </div>
 
                 {!isClientMode && (
-                    <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
-                                <Percent size={18} aria-hidden="true" />
+                    <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
+                                    <Percent size={18} aria-hidden="true" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
+                                    <p className="text-xs text-amber-600/80">Réduction appliquée sur le total HT</p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
-                                <p className="text-xs text-amber-600/80">Réduction appliquée sur le total HT</p>
-                            </div>
-                        </div>
 
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="number"
-                                value={s.discount || ''}
-                                onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
-                                placeholder="0"
-                                className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
-                                aria-label="Montant de la remise"
-                            />
-                            <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
-                                <button
-                                    onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
-                                    className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
-                                    aria-label="Remise en pourcentage"
-                                >
-                                    %
-                                </button>
-                                <button
-                                    onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
-                                    className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
-                                    aria-label="Remise en euros"
-                                >
-                                    €
-                                </button>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="number"
+                                    value={s.discount || ''}
+                                    onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
+                                    placeholder="0"
+                                    className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
+                                    aria-label="Montant de la remise"
+                                />
+                                <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
+                                    <button
+                                        onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
+                                        className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                        aria-label="Remise en pourcentage"
+                                    >
+                                        %
+                                    </button>
+                                    <button
+                                        onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
+                                        className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                        aria-label="Remise en euros"
+                                    >
+                                        €
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                        {(!s.discountMode || s.discountMode === 'percent') && (
+                            <div className="flex items-center gap-4 px-2">
+                                <span className="text-xs font-bold text-amber-700 w-8">0%</span>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="50"
+                                    step="1"
+                                    value={s.discount || 0}
+                                    onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
+                                    className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                    aria-label="Ajuster la remise en pourcentage"
+                                />
+                                <span className="text-xs font-bold text-amber-700 w-8 text-right">50%</span>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -436,12 +456,28 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                         />
                     </div>
                     {!isClientMode && (
-                        <div className="lg:col-span-1 h-full">
-                            <PriceBreakdown
-                                cost={res.cost}
-                                margin={res.marginEuro}
-                                tva={res.tva}
-                            />
+                        <div className="lg:col-span-1 h-full relative group">
+                            <button
+                                onClick={() => setShowWaterfall(!showWaterfall)}
+                                className="absolute right-2 top-2 z-10 p-1.5 text-slate-400 hover:text-indigo-600 bg-white/80 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-slate-200 shadow-sm"
+                                title="Changer de vue"
+                                aria-label="Basculer entre graphique circulaire et en cascade"
+                            >
+                                <PieChart size={14} className={showWaterfall ? 'rotate-180 transition-transform' : 'transition-transform'} />
+                            </button>
+                            {showWaterfall ? (
+                                <WaterfallChart
+                                    cost={res.cost}
+                                    margin={res.marginEuro}
+                                    tva={res.tva}
+                                />
+                            ) : (
+                                <PriceBreakdown
+                                    cost={res.cost}
+                                    margin={res.marginEuro}
+                                    tva={res.tva}
+                                />
+                            )}
                         </div>
                     )}
                 </div>

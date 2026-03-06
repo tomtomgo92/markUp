@@ -15,11 +15,13 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
 
     const handleMarginPercentChange = (e) => {
         const val = parseFloat(e.target.value) || 0;
-        if (mode === 'cost_percent') {
+        if (mode === 'cost_percent' || mode === 'pv_cost') {
+            // Keep cost fixed, change PV
             const cost = parseFloat(item.cost) || 0;
             const newPv = cost !== 0 ? (cost / (1 - (val / 100))) : 0;
             onUpdate(item.id, 'pv', newPv.toFixed(0));
         } else if (mode === 'pv_percent') {
+            // Keep PV fixed, change Cost
             const pv = parseFloat(item.pv) || 0;
             const newCost = pv * (1 - (val / 100));
             onUpdate(item.id, 'cost', newCost.toFixed(0));
@@ -111,20 +113,18 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                                 title={`Santé de la marge: ${itemMarginPercent >= 40 ? 'Excellente' : itemMarginPercent >= 20 ? 'Moyenne' : 'Critique'}`}
                                 aria-hidden="true"
                             />
-                            {(mode === 'cost_percent' || mode === 'pv_percent') ? (
-                                <div className="flex items-center justify-end gap-0.5">
-                                    <input
-                                        type="number"
-                                        value={itemMarginPercent.toFixed(1)}
-                                        onChange={handleMarginPercentChange}
-                                        className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
-                                        aria-label={`Pourcentage de marge de ${item.name || 'la ligne'}`}
-                                    />
-                                    <span className="text-[10px] text-slate-400">%</span>
-                                </div>
-                            ) : (
-                                <span className="text-[10px] text-slate-400">{itemMarginPercent.toFixed(1)}%</span>
-                            )}
+                            <div className="flex items-center justify-end gap-0.5">
+                                <input
+                                    type="number"
+                                    value={itemMarginPercent.toFixed(1)}
+                                    onChange={handleMarginPercentChange}
+                                    className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
+                                    aria-label={`Pourcentage de marge de ${item.name || 'la ligne'}`}
+                                    disabled={mode !== 'cost_percent' && mode !== 'pv_percent' && mode !== 'pv_cost'}
+                                    title="Modifiez pour recalculer PV ou Coût selon le mode"
+                                />
+                                <span className="text-[10px] text-slate-400">%</span>
+                            </div>
                         </div>
                     </div>
                 </td>
