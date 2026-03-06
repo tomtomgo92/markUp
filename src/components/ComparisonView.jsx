@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, TrendingUp } from 'lucide-react';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER } from '../utils/finance';
 
@@ -14,6 +14,20 @@ const ComparisonView = ({ scenarios, onClose, isClientMode }) => {
 
     // 2. Determine max PV to scale the chart
     const maxPV = Math.max(...data.map(d => d.results.pv), 1); // Avoid div by 0
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onClose]);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
