@@ -1,3 +1,7 @@
+## 2025-03-06 - [React Derived Data Memoization for UI Toggles]
+**Learning:** Pure UI state toggles passed down to complex components (like `isClientMode` or `activeCalculator` local state) can trigger expensive recalculations of derived data (like mapping and reducing financial arrays) on every toggle click.
+**Action:** When a component receives pure UI state toggles or manages local purely UI state, explicitly memoize any expensive data derivations (e.g., `calculateResults`, `.map()`, `Math.max()`) using `useMemo` so they only recalculate when their underlying data dependencies change.
+
 ## 2026-03-05 - [React List Virtualization Pattern]
 **Learning:** Extracting list items into memoized components (`React.memo`) and using `useRef` to maintain stable callback references in the parent component effectively prevents unnecessary re-renders of the entire list when a single item updates.
 **Action:** When optimizing large lists or tables where rows have complex interactions, extract the row into a separate component and use `useRef` in the parent to access current state in callbacks without recreating them.
