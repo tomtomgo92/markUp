@@ -54,6 +54,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                                 className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'pv_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="0"
                                 aria-label={`Coût de la ligne ${item.name || index + 1}`}
+                                title={mode === 'pv_percent' ? 'Calculé automatiquement (Mode Marge & PV)' : ''}
                             />
                             <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
                         </div>
@@ -64,7 +65,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                                 title="Calculer au CJM"
                                 aria-label="Ouvrir calculateur CJM"
                             >
-                                <Calculator size={14} />
+                                <Calculator size={14} aria-hidden="true" />
                             </button>
                         )}
                     </div>
@@ -83,6 +84,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                             className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                             placeholder="0"
                             aria-label={`Prix de vente de ${item.name || index + 1}`}
+                            title={mode === 'cost_percent' ? 'Calculé automatiquement (Mode Marge & Coût)' : ''}
                         />
                         <span className="text-xs text-slate-400 absolute right-8 top-1.5 pointer-events-none">€</span>
                     </div>
@@ -93,7 +95,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                             title="Calculer au TJM"
                             aria-label="Ouvrir calculateur TJM"
                         >
-                            <Calculator size={14} />
+                            <Calculator size={14} aria-hidden="true" />
                         </button>
                     )}
                 </div>
@@ -119,6 +121,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                                         type="number"
                                         value={itemMarginPercent.toFixed(1)}
                                         onChange={handleMarginPercentChange}
+                                        onKeyDown={handleKeyDown}
                                         onFocus={(e) => e.target.select()}
                                         className="w-12 px-1 py-0.5 text-right text-[10px] font-bold text-slate-500 bg-transparent border-b border-slate-200 hover:border-indigo-300 focus:border-indigo-500 outline-none"
                                         aria-label={`Pourcentage de marge de ${item.name || 'la ligne'}`}
