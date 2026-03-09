@@ -5,3 +5,7 @@
 ## 2025-01-28 - [React Lazy State Initialization]
 **Learning:** When initializing React state with expensive operations (like URL parameter parsing, base64 decoding, or JSON parsing), calling the function directly inside `useState` (e.g., `useState(getInitialState())`) executes the expensive operation on *every single render* of the component, even though the result is only used on the first render.
 **Action:** Always use React lazy initialization by passing a function reference to `useState` (e.g., `useState(getInitialState)`) when the initial state calculation is expensive, to prevent main thread blocking and unnecessary recalculations.
+
+## 2025-03-09 - [Memoizing Financial Calculations]
+**Learning:** Recalculating financial results inside components like `ScenarioCard` and `ComparisonView` on every render causes performance bottlenecks, especially when UI-only state (like toggling `isClientMode` or opening calculators) changes. Since these calculations map over arrays, the complexity scales with the amount of data.
+**Action:** Decouple financial computations from UI-only state changes by wrapping them in `useMemo`. Ensure that expensive calculations are only re-run when their specific data dependencies (like the `scenarios` array or individual `s` object) actually change.
