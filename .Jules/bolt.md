@@ -1,3 +1,7 @@
+## 2026-03-06 - [Memoize Derived Financial Data on UI Toggles]
+**Learning:** Components that compute derived financial data (`calculateResults`) in their render body will needlessly recalculate those expensive operations when simple, UI-only states change (like `isClientMode` or showing/hiding a calculator modal).
+**Action:** Use `useMemo` on computationally expensive derived data based on props (like `scenarios`), so that toggling UI features does not cause redundant performance-draining data recalculations.
+
 ## 2026-03-05 - [React List Virtualization Pattern]
 **Learning:** Extracting list items into memoized components (`React.memo`) and using `useRef` to maintain stable callback references in the parent component effectively prevents unnecessary re-renders of the entire list when a single item updates.
 **Action:** When optimizing large lists or tables where rows have complex interactions, extract the row into a separate component and use `useRef` in the parent to access current state in callbacks without recreating them.
