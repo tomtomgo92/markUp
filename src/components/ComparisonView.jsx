@@ -1,19 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { X, TrendingUp } from 'lucide-react';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER } from '../utils/finance';
 
 const ComparisonView = ({ scenarios, onClose, isClientMode }) => {
     // 1. Calculate results for all scenarios
-    const data = scenarios.map(s => {
+    // BOLT: Optimize - memoize mapped derived calculations so changing UI props
+    // (like isClientMode) doesn't cause O(n) recalculations of all scenarios
+    const data = useMemo(() => scenarios.map(s => {
         const res = calculateResults(s);
         return {
             ...s,
             results: res
         };
-    });
+    }), [scenarios]);
 
     // 2. Determine max PV to scale the chart
-    const maxPV = Math.max(...data.map(d => d.results.pv), 1); // Avoid div by 0
+    // BOLT: Optimize - memoize chart scaling limits
+    const maxPV = useMemo(() => Math.max(...data.map(d => d.results.pv), 1), [data]); // Avoid div by 0
 
     useEffect(() => {
         const handleKeyDown = (event) => {
