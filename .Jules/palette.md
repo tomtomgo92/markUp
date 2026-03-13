@@ -30,3 +30,10 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2026-06-25 - [Dynamic IDs for Reusable Form Helpers]
+**Learning:** Hardcoded IDs in reusable popovers or calculators (like TJMCalculator) conflict if multiple instances render or are open simultaneously, breaking label-to-input associations for screen readers.
+**Action:** Use React's `useId()` hook to dynamically generate unique IDs for linking `<label>` and `<input>` pairs in generic, reusable components to guarantee semantic accessibility.
+
+## 2026-06-25 - [Contextualizing Disabled Inputs]
+**Learning:** Disabling an input without visible explanation (especially in dynamic forms where modes change) leaves users guessing why they can't interact with it.
+**Action:** Always add a `title` attribute or visible helper text to disabled inputs explaining the specific reason (e.g., "Calculated automatically") to reduce confusion and cognitive load.
