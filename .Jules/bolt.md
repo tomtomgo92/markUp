@@ -5,3 +5,7 @@
 ## 2025-01-28 - [React Lazy State Initialization]
 **Learning:** When initializing React state with expensive operations (like URL parameter parsing, base64 decoding, or JSON parsing), calling the function directly inside `useState` (e.g., `useState(getInitialState())`) executes the expensive operation on *every single render* of the component, even though the result is only used on the first render.
 **Action:** Always use React lazy initialization by passing a function reference to `useState` (e.g., `useState(getInitialState)`) when the initial state calculation is expensive, to prevent main thread blocking and unnecessary recalculations.
+
+## 2024-03-14 - Memoization of domain calculations decoupled from UI state changes
+**Learning:** In the `ScenarioCard` and `ComparisonView` components, the derived calculations were unmemoized. This means toggling UI-only state (like `activeCalculator` or `isClientMode`) would unnecessarily recalculate complex financial domain derivations via `calculateResults`, which can cause O(N*M) time complexity and severe frame drops when dealing with numerous scenarios or deep lists of items.
+**Action:** Always wrap heavy domain derivations inside `useMemo` so they are only recalculated when their underlying dependencies (like `scenarios`) change.
