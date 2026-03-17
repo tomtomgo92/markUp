@@ -1,4 +1,4 @@
-import React, { memo, useRef, useCallback, useState } from 'react';
+import React, { memo, useRef, useCallback, useState, useMemo } from 'react';
 import {
     Trash2,
     Plus,
@@ -141,7 +141,9 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
         setActiveCalculator({ itemId, field });
     }, []);
 
-    const res = calculateResults(s);
+    // BOLT: Optimize - useMemo prevents expensive financial recalculations
+    // when unrelated UI state (like activeCalculator modal) changes and triggers re-render
+    const res = useMemo(() => calculateResults(s), [s]);
 
     // Handlers
     const handleChange = (field, val) => onUpdate(s.id, field, val);

@@ -5,3 +5,7 @@
 ## 2025-01-28 - [React Lazy State Initialization]
 **Learning:** When initializing React state with expensive operations (like URL parameter parsing, base64 decoding, or JSON parsing), calling the function directly inside `useState` (e.g., `useState(getInitialState())`) executes the expensive operation on *every single render* of the component, even though the result is only used on the first render.
 **Action:** Always use React lazy initialization by passing a function reference to `useState` (e.g., `useState(getInitialState)`) when the initial state calculation is expensive, to prevent main thread blocking and unnecessary recalculations.
+
+## 2026-03-17 - Prevent Cascading Recalculations from UI State Toggles
+**Learning:** UI-only state toggles (like `isClientMode` or `activeCalculator` modals) passed down to complex components can cause severe performance regressions. Every time the toggle changes, the component re-renders. If expensive derived data calculations (like mapping over nested financial arrays) aren't properly memoized, they run redundantly.
+**Action:** Always wrap expensive derived calculations (like `calculateResults(s)` or heavy array `.map()` operations) in `useMemo` if the component receives UI state props that change frequently but don't affect the underlying data.
