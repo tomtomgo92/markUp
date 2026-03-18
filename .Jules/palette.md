@@ -30,3 +30,7 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+
+## 2025-05-25 - [Form Accessibility with React useId]
+**Learning:** Hardcoded IDs for inputs and labels in reusable components or mapped lists create collisions, leading to invalid HTML and accessibility failures. Simply omitting `id` and `htmlFor` makes clicking the label fail to focus the input.
+**Action:** Always use React's `useId()` hook to generate unique IDs for inputs and their associated `<label htmlFor={id}>` elements in reusable components to ensure robust form accessibility and an expanded clickable area.
