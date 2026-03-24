@@ -24,6 +24,7 @@ const ScenarioItem = memo(({ item, index, mode, onUpdateItem, onRemoveItem }) =>
                         type="number"
                         value={item.cost}
                         disabled={mode === 'pv_percent'}
+                        title={mode === 'pv_percent' ? "Le coût est calculé automatiquement dans ce mode" : ""}
                         onChange={(e) => onUpdateItem(item.id, 'cost', e.target.value)}
                         className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'pv_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                         placeholder="0"
@@ -38,6 +39,7 @@ const ScenarioItem = memo(({ item, index, mode, onUpdateItem, onRemoveItem }) =>
                         type="number"
                         value={item.pv}
                         disabled={mode === 'cost_percent'}
+                        title={mode === 'cost_percent' ? "Le prix est calculé automatiquement dans ce mode" : ""}
                         onChange={(e) => onUpdateItem(item.id, 'pv', e.target.value)}
                         className={`w-24 px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-indigo-500 bg-transparent focus:bg-white outline-none font-bold text-slate-700 ${mode === 'cost_percent' ? 'opacity-50 cursor-not-allowed' : ''}`}
                         placeholder="0"
