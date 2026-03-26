@@ -30,3 +30,6 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2024-03-26 - Disabled Elements Context Tooltips
+**Learning:** Users can become frustrated when elements like inputs are disabled without a clear contextual reason, particularly when the disabled state is implicitly tied to a select mode elsewhere in the component hierarchy (like 'Marge & PV' disabling the 'Cost' input).
+**Action:** Add native HTML `title` attributes to conditionally disabled inputs to provide a simple, accessible hover tooltip explaining the constraint (e.g., 'Calculé automatiquement (Mode Marge & PV)'). This natively leverages browser tooltips without adding heavy UI dependencies.
