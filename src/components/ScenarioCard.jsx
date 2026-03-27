@@ -239,12 +239,13 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                     <PieChart size={18} aria-hidden="true" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-indigo-900 text-sm">Marge Cible Globale</h4>
+                                    <label htmlFor={`global-margin-${s.id}`} className="font-bold text-indigo-900 text-sm cursor-pointer block">Marge Cible Globale</label>
                                     <p className="text-xs text-indigo-600/80">S'applique à toutes les lignes</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
                                 <input
+                                    id={`global-margin-${s.id}`}
                                     type="number"
                                     value={s.marginPercent}
                                     onChange={(e) => updateGlobalMargin(e.target.value)}
@@ -331,13 +332,14 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                 <Percent size={18} aria-hidden="true" />
                             </div>
                             <div>
-                                <h4 className="font-bold text-amber-900 text-sm">Remise Commerciale</h4>
+                                <label htmlFor={`discount-${s.id}`} className="font-bold text-amber-900 text-sm cursor-pointer block">Remise Commerciale</label>
                                 <p className="text-xs text-amber-600/80">Réduction appliquée sur le total HT</p>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2">
                             <input
+                                id={`discount-${s.id}`}
                                 type="number"
                                 value={s.discount || ''}
                                 onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
