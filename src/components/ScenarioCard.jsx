@@ -1,4 +1,4 @@
-import React, { memo, useRef, useCallback, useState } from 'react';
+import React, { memo, useRef, useCallback, useState, useMemo } from 'react';
 import {
     Trash2,
     Plus,
@@ -141,7 +141,10 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
         setActiveCalculator({ itemId, field });
     }, []);
 
-    const res = calculateResults(s);
+    // BOLT: Optimize - Memoize expensive financial calculations
+    // This prevents recalculating all totals and margins just because
+    // the user opened the TJM calculator (which updates local state 'activeCalculator')
+    const res = useMemo(() => calculateResults(s), [s]);
 
     // Handlers
     const handleChange = (field, val) => onUpdate(s.id, field, val);
