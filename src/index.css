@@ -1,7 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+    font-family: 'NeueMachina';
+    src: url('assets/fonts/NeueMachina-Ultrabold.woff') format('woff'), url('assets/fonts/NeueMachina-Ultrabold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
 
+@font-face {
+    font-family: 'NeueMachina';
+    src: url('assets/fonts/NeueMachina-Regular.woff') format('woff'), url('assets/fonts/NeueMachina-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@layer base {
+    body {
+        @apply font-sans antialiased text-slate-900 bg-slate-50;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-heading tracking-tight;
+    }
+}
 @media print {
     .print-hidden {
         display: none !important;
@@ -32,3 +53,4 @@
         -webkit-print-color-adjust: exact;
     }
 }
+
