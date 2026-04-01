@@ -19,7 +19,7 @@ import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
-const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClientMode }) => {
+const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
     // Stores { itemId, field } or null
     const [activeCalculator, setActiveCalculator] = useState(null);
 
@@ -232,7 +232,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
 
             <div className="p-4 sm:p-8 space-y-8">
                 <div className="space-y-4">
-                    {!isClientMode && (s.mode === 'cost_percent' || s.mode === 'pv_percent') && (
+                    {(s.mode === 'cost_percent' || s.mode === 'pv_percent') && (
                         <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="bg-indigo-100 p-2 rounded-lg text-indigo-600">
@@ -271,9 +271,9 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                     <tr>
                                         <th className="p-3 w-10">#</th>
                                         <th className="p-3">Libellé</th>
-                                        {!isClientMode && <th className="p-3">Coût</th>}
+                                        <th className="p-3">Coût</th>
                                         <th className="p-3">PV</th>
-                                        {!isClientMode && <th className="p-3 text-right">Marge</th>}
+                                        <th className="p-3 text-right">Marge</th>
                                         <th className="p-3 w-10 print-hidden"></th>
                                     </tr>
                                 </thead>
@@ -288,12 +288,11 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                             onRemove={handleRemoveItem}
                                             onOpenCalculator={handleOpenCalculator}
                                             onAddItem={addItem}
-                                            isClientMode={isClientMode}
                                         />
                                     ))}
                                     {(!s.items || s.items.length === 0) && (
                                         <tr>
-                                            <td colSpan={isClientMode ? "4" : "6"} className="p-8 text-center text-slate-500">
+                                            <td colSpan="6" className="p-8 text-center text-slate-500">
                                                 <div className="flex flex-col items-center justify-center gap-3">
                                                     <p className="text-sm font-medium">Commencez par ajouter des éléments à chiffrer</p>
                                                     <button
@@ -312,9 +311,9 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                                     <tfoot className="bg-slate-50 font-bold text-slate-700 border-t border-slate-200">
                                         <tr>
                                             <td className="p-3 text-xs uppercase tracking-wider text-right" colSpan="2">Total</td>
-                                            {!isClientMode && <td className="p-3 text-indigo-900">{res.cost.toFixed(2)}€</td>}
+                                            <td className="p-3 text-indigo-900">{res.cost.toFixed(2)}€</td>
                                             <td className="p-3 text-indigo-900">{res.pv.toFixed(2)}€</td>
-                                            {!isClientMode && <td className="p-3 text-right text-emerald-600">{(res.pv - res.cost).toFixed(2)}€</td>}
+                                            <td className="p-3 text-right text-emerald-600">{(res.pv - res.cost).toFixed(2)}€</td>
                                             <td></td>
                                         </tr>
                                     </tfoot>
@@ -324,8 +323,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                     </div>
                 </div>
 
-                {!isClientMode && (
-                    <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                             <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
                                 <Percent size={18} aria-hidden="true" />
@@ -364,19 +362,16 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                             </div>
                         </div>
                     </div>
-                )}
 
-                {!isClientMode && (
-                    <ProfitabilityBar
-                        pv={res.pv}
-                        cost={res.cost}
-                        is={res.is}
-                        netProfit={res.netProfit}
-                    />
-                )}
+                <ProfitabilityBar
+                    pv={res.pv}
+                    cost={res.cost}
+                    is={res.is}
+                    netProfit={res.netProfit}
+                />
 
-                <div className={`grid grid-cols-1 ${isClientMode ? 'lg:grid-cols-3' : 'lg:grid-cols-3'} gap-4`}>
-                    <div className={`${isClientMode ? 'lg:col-span-3' : 'lg:col-span-2'} grid grid-cols-1 sm:grid-cols-3 gap-4`}>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <ResultCard
                             title="Prix Vente HT"
                             value={
@@ -437,66 +432,62 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index, isClient
                             type="primary"
                         />
                     </div>
-                    {!isClientMode && (
-                        <div className="lg:col-span-1 h-full">
-                            <PriceBreakdown
-                                cost={res.cost}
-                                margin={res.marginEuro}
-                                tva={res.tva}
-                            />
-                        </div>
-                    )}
+                    <div className="lg:col-span-1 h-full">
+                        <PriceBreakdown
+                            cost={res.cost}
+                            margin={res.marginEuro}
+                            tva={res.tva}
+                        />
+                    </div>
                 </div>
 
-                {!isClientMode && (
-                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
-                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
-                        <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
-                            <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                                <span className="text-slate-500 font-medium">Marge Brute Cible (HT)</span>
-                                <div className="flex items-center gap-1">
-                                    <input
-                                        type="number"
-                                        value={res.marginEuro.toFixed(0)}
-                                        onChange={(e) => updateGlobalMarginEuro(e.target.value)}
-                                        onFocus={(e) => e.target.select()}
-                                        className="w-24 px-2 py-1 text-right font-bold text-slate-700 bg-white border border-slate-200 rounded-md hover:border-indigo-300 focus:border-indigo-500 outline-none"
-                                        aria-label="Objectif de Marge Brute en Euros"
-                                        title="Modifiez pour recalculer automatiquement les prix ou les coûts"
-                                    />
-                                    <span className="text-slate-500 font-bold">€</span>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                                <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
-                                <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
+                <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
+                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Détails</p>
+                    <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
+                        <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                            <span className="text-slate-500 font-medium">Marge Brute Cible (HT)</span>
+                            <div className="flex items-center gap-1">
+                                <input
+                                    type="number"
+                                    value={res.marginEuro.toFixed(0)}
+                                    onChange={(e) => updateGlobalMarginEuro(e.target.value)}
+                                    onFocus={(e) => e.target.select()}
+                                    className="w-24 px-2 py-1 text-right font-bold text-slate-700 bg-white border border-slate-200 rounded-md hover:border-indigo-300 focus:border-indigo-500 outline-none"
+                                    aria-label="Objectif de Marge Brute en Euros"
+                                    title="Modifiez pour recalculer automatiquement les prix ou les coûts"
+                                />
+                                <span className="text-slate-500 font-bold">€</span>
                             </div>
                         </div>
 
-                        {/* Indicateur de Santé de la Marge globale */}
-                        <div className="pt-2 mt-2 border-t border-slate-200 flex items-center justify-between text-xs">
-                            <span className="text-slate-500 font-medium">Santé de la marge globale :</span>
-                            <div className="flex items-center gap-2">
-                                <div
-                                    className={`w-2.5 h-2.5 rounded-full ${(res.marginPercent * 100) >= 40 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' :
-                                        (res.marginPercent * 100) >= 20 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' :
-                                            'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
-                                        }`}
-                                    aria-hidden="true"
-                                />
-                                <span className={`font-bold ${(res.marginPercent * 100) >= 40 ? 'text-emerald-700' :
-                                    (res.marginPercent * 100) >= 20 ? 'text-amber-700' :
-                                        'text-red-700'
-                                    }`}>
-                                    {(res.marginPercent * 100) >= 40 ? 'Saine (≥ 40%)' :
-                                        (res.marginPercent * 100) >= 20 ? 'Moyenne (20-40%)' :
-                                            'Critique (< 20%)'}
-                                </span>
-                            </div>
+                        <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                            <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
+                            <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
                         </div>
                     </div>
-                )}
+
+                    {/* Indicateur de Santé de la Marge globale */}
+                    <div className="pt-2 mt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                        <span className="text-slate-500 font-medium">Santé de la marge globale :</span>
+                        <div className="flex items-center gap-2">
+                            <div
+                                className={`w-2.5 h-2.5 rounded-full ${(res.marginPercent * 100) >= 40 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' :
+                                    (res.marginPercent * 100) >= 20 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' :
+                                        'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                                    }`}
+                                aria-hidden="true"
+                            />
+                            <span className={`font-bold ${(res.marginPercent * 100) >= 40 ? 'text-emerald-700' :
+                                (res.marginPercent * 100) >= 20 ? 'text-amber-700' :
+                                    'text-red-700'
+                                }`}>
+                                {(res.marginPercent * 100) >= 40 ? 'Saine (≥ 40%)' :
+                                    (res.marginPercent * 100) >= 20 ? 'Moyenne (20-40%)' :
+                                        'Critique (< 20%)'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
             {/* TJM Calculator Modal/Overlay should be absolute or fixed to the item */}
             {activeCalculator && (

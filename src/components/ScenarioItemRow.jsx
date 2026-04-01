@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Trash2, Calculator } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 
-const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCalculator, onAddItem, isClientMode }) => {
+const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCalculator, onAddItem }) => {
     // Calculate itemMargin and itemMarginPercent for display
     const itemMargin = (parseFloat(item.pv) || 0) - (parseFloat(item.cost) || 0);
 
@@ -40,7 +40,6 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     aria-label={`Nom de la ligne ${index + 1}`}
                 />
             </td>
-            {!isClientMode && (
                 <td className="p-3">
                     <div className="relative flex items-center gap-2">
                         <div className="relative">
@@ -69,7 +68,6 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                         )}
                     </div>
                 </td>
-            )}
             <td className="p-3">
                 <div className="relative flex items-center gap-2">
                     <div className="relative">
@@ -98,7 +96,6 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                     )}
                 </div>
             </td>
-            {!isClientMode && (
                 <td className="p-3 text-right">
                     <div className="flex flex-col items-end">
                         <span className={`font-bold ${itemMargin >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
@@ -131,7 +128,6 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                         </div>
                     </div>
                 </td>
-            )}
             <td className="p-3 text-right print-hidden">
                 <ConfirmButton
                     onConfirm={() => onRemove(item.id)}

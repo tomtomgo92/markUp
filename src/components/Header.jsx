@@ -1,8 +1,8 @@
 import React, { memo, useState } from 'react';
-import { Calculator, Plus, BarChart2, Eye, EyeOff, Share2, Check } from 'lucide-react';
+import { Calculator, Plus, BarChart2, Share2, Check } from 'lucide-react';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
-const Header = memo(({ onAddScenario, onToggleComparison, isClientMode, setIsClientMode, getScenarios }) => {
+const Header = memo(({ onAddScenario, onToggleComparison, getScenarios }) => {
     const [isCopied, setIsCopied] = useState(false);
 
     const handleShare = async () => {
@@ -39,19 +39,6 @@ const Header = memo(({ onAddScenario, onToggleComparison, isClientMode, setIsCli
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => setIsClientMode(!isClientMode)}
-                        aria-label={isClientMode ? "Désactiver le mode présentation" : "Activer le mode présentation"}
-                        className={`outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                            isClientMode
-                                ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
-                                : 'text-slate-600 hover:bg-slate-100 hover:text-indigo-600'
-                        }`}
-                        title={isClientMode ? "Masquer les marges (Mode Client Activé)" : "Afficher les marges"}
-                    >
-                        {isClientMode ? <EyeOff size={20} strokeWidth={2.5} /> : <Eye size={20} strokeWidth={2.5} />}
-                        <span className="hidden sm:inline">Mode Client</span>
-                    </button>
 
                     <button
                         onClick={onToggleComparison}

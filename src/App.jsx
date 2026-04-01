@@ -30,7 +30,6 @@ const App = () => {
     // Prevents expensive URL parsing and JSON decoding on every render
     const [scenarios, setScenarios] = useState(getInitialScenarios);
     const [showComparison, setShowComparison] = useState(false);
-    const [isClientMode, setIsClientMode] = useState(false);
 
     // Ref to maintain latest scenarios state without triggering re-renders in Header
     const scenariosRef = useRef(scenarios);
@@ -97,8 +96,6 @@ const App = () => {
                 <Header
                     onAddScenario={addScenario}
                     onToggleComparison={handleToggleComparison}
-                    isClientMode={isClientMode}
-                    setIsClientMode={setIsClientMode}
                     getScenarios={getScenarios}
                 />
             </div>
@@ -130,7 +127,6 @@ const App = () => {
                             onUpdate={updateScenario}
                             onRemove={removeScenario}
                             onDuplicate={duplicateScenario}
-                            isClientMode={isClientMode}
                         />
                     ))}
 
@@ -155,7 +151,6 @@ const App = () => {
                 <ComparisonView
                     scenarios={scenarios}
                     onClose={() => setShowComparison(false)}
-                    isClientMode={isClientMode}
                 />
             )}
         </div>
