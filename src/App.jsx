@@ -121,7 +121,7 @@ const App = () => {
                 </div>
 
                 {/* Scenarios Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div className="grid grid-cols-1 gap-8 items-start">
                     {scenarios.map((s, idx) => (
                         <ScenarioCard
                             key={s.id}
