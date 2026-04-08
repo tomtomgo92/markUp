@@ -8,6 +8,8 @@ import {
     Percent,
     Calculator,
     Download,
+    ClipboardCopy,
+    Check,
 } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
@@ -22,6 +24,7 @@ import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
 const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
     // Stores { itemId, field } or null
     const [activeCalculator, setActiveCalculator] = useState(null);
+    const [isCopied, setIsCopied] = useState(false);
 
     // BOLT: Optimize - Use useRef to keep track of the latest 's' prop without triggering re-renders in callbacks
     const sRef = useRef(s);
@@ -164,6 +167,21 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
         handleChange(field, value);
     }, [onUpdate]);
 
+    const handleSmartCopy = useCallback(async () => {
+        try {
+            const marginPctStr = res.marginPercent ? (res.marginPercent * 100).toFixed(1) + '%' : '0%';
+            let text = `📦 ${s.name || 'Scénario'} | 💰 Prix Vente : ${res.pv.toFixed(0)}€`;
+            if (!isClientMode) {
+                text += ` | 📉 Coût : ${res.cost.toFixed(0)}€ | 🟢 Marge : ${marginPctStr} (${res.marginEuro.toFixed(0)}€)`;
+            }
+            await navigator.clipboard.writeText(text);
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy to clipboard', err);
+        }
+    }, [s.name, res.pv, res.cost, res.marginPercent, res.marginEuro, isClientMode]);
+
     return (
         <div
             // Hover effect is handled via CSS classes (hover:shadow-xl hover:border-indigo-300)
@@ -175,7 +193,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                     <div className="bg-white p-2 rounded-xl shadow-sm border border-slate-200 text-indigo-600 font-bold text-lg h-10 w-10 flex items-center justify-center">
                         {index + 1}
                     </div>
-                    <div>
+                    <div className="flex items-center gap-3">
                         <input
                             type="text"
                             value={s.name}
@@ -184,6 +202,36 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                             placeholder="Nom du scénario"
                             aria-label={`Nom du scénario ${index + 1}`}
                         />
+                        {!isClientMode && (
+                            <div
+                                className={`flex items-center gap-1.5 px-2 py-1 rounded-full border bg-white shadow-sm print-hidden ${
+                                    (res.marginPercent * 100) >= 40 ? 'border-emerald-200' :
+                                    (res.marginPercent * 100) >= 20 ? 'border-amber-200' :
+                                    'border-red-200'
+                                }`}
+                                title={`Santé de la marge globale: ${
+                                    (res.marginPercent * 100) >= 40 ? 'Saine' :
+                                    (res.marginPercent * 100) >= 20 ? 'Moyenne' :
+                                    'Critique'
+                                }`}
+                            >
+                                <div
+                                    className={`w-2 h-2 rounded-full ${
+                                        (res.marginPercent * 100) >= 40 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' :
+                                        (res.marginPercent * 100) >= 20 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' :
+                                        'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                                    }`}
+                                    aria-hidden="true"
+                                />
+                                <span className={`text-[10px] font-bold ${
+                                    (res.marginPercent * 100) >= 40 ? 'text-emerald-700' :
+                                    (res.marginPercent * 100) >= 20 ? 'text-amber-700' :
+                                    'text-red-700'
+                                }`}>
+                                    {res.marginPercent ? (res.marginPercent * 100).toFixed(0) : '0'}%
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -202,6 +250,16 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                         <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} aria-hidden="true" />
                     </div>
                     <div className="flex items-center print-hidden">
+                        <button
+                            onClick={handleSmartCopy}
+                            className={`outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 p-2 rounded-lg transition-colors ${
+                                isCopied ? 'text-emerald-500 bg-emerald-50' : 'text-slate-300 hover:text-indigo-500 hover:bg-indigo-50'
+                            }`}
+                            title="Copier le résumé"
+                            aria-label="Copier le résumé"
+                        >
+                            {isCopied ? <Check size={18} /> : <ClipboardCopy size={18} />}
+                        </button>
                         <button
                             onClick={() => window.print()}
                             className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 p-2 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
@@ -334,31 +392,63 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="number"
-                                value={s.discount || ''}
-                                onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
-                                onFocus={(e) => e.target.select()}
-                                placeholder="0"
-                                className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
-                                aria-label="Montant de la remise"
-                            />
-                            <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
-                                <button
-                                    onClick={() => onUpdate(s.id, 'discountMode', 'percent')}
-                                    className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
-                                    aria-label="Remise en pourcentage"
-                                >
-                                    %
-                                </button>
-                                <button
-                                    onClick={() => onUpdate(s.id, 'discountMode', 'euro')}
-                                    className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
-                                    aria-label="Remise en euros"
-                                >
-                                    €
-                                </button>
+                        <div className="flex flex-col gap-2 w-full sm:w-auto">
+                            <div className="flex items-center justify-end gap-2">
+                                <input
+                                    type="number"
+                                    value={s.discount || ''}
+                                    onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
+                                    onFocus={(e) => e.target.select()}
+                                    placeholder="0"
+                                    className="w-24 px-3 py-1.5 rounded-lg border-2 border-amber-200 focus:border-amber-500 outline-none text-right font-bold text-amber-700 bg-white"
+                                    aria-label="Montant de la remise"
+                                />
+                                <div className="flex bg-white rounded-lg border border-amber-200 p-0.5 shadow-sm">
+                                    <button
+                                        onClick={() => {
+                                            const newMode = 'percent';
+                                            let currentDiscount = parseFloat(s.discount) || 0;
+                                            if (s.discountMode === 'euro' && res.basePv > 0) {
+                                                currentDiscount = (currentDiscount / res.basePv) * 100;
+                                            } else if (s.discountMode === 'euro') {
+                                                currentDiscount = 0;
+                                            }
+                                            onUpdate(s.id, 'discountMode', newMode);
+                                            onUpdate(s.id, 'discount', currentDiscount.toFixed(0));
+                                        }}
+                                        className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${(!s.discountMode || s.discountMode === 'percent') ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                        aria-label="Remise en pourcentage"
+                                    >
+                                        %
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            const newMode = 'euro';
+                                            let currentDiscount = parseFloat(s.discount) || 0;
+                                            if ((!s.discountMode || s.discountMode === 'percent')) {
+                                                currentDiscount = res.basePv * (currentDiscount / 100);
+                                            }
+                                            onUpdate(s.id, 'discountMode', newMode);
+                                            onUpdate(s.id, 'discount', currentDiscount.toFixed(0));
+                                        }}
+                                        className={`outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 px-3 py-1 rounded-md text-xs font-bold transition-all ${s.discountMode === 'euro' ? 'bg-amber-500 text-white shadow-sm' : 'text-amber-400 hover:bg-amber-50'}`}
+                                        aria-label="Remise en euros"
+                                    >
+                                        €
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max={(!s.discountMode || s.discountMode === 'percent') ? 100 : res.basePv.toFixed(0)}
+                                    step={(!s.discountMode || s.discountMode === 'percent') ? 1 : Math.max(1, Math.floor(res.basePv / 100))}
+                                    value={s.discount || 0}
+                                    onChange={(e) => onUpdate(s.id, 'discount', e.target.value)}
+                                    className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1"
+                                    aria-label="Curseur de simulation de remise"
+                                />
                             </div>
                         </div>
                     </div>
