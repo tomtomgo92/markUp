@@ -30,3 +30,10 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2024-05-18 - Explaining disabled inputs
+**Learning:** Users can get frustrated when inputs are disabled without a clear reason (e.g. in 'Marge & PV' mode, cost is disabled). Adding a `title` attribute provides a helpful tooltip explaining it's auto-calculated.
+**Action:** Whenever conditionally disabling a form field based on an active mode/state, explicitly provide context via `title` or helper text to reduce friction.
+
+## 2024-05-18 - Label linkage with useId
+**Learning:** Wrapping text in `<label>` elements expands the clickable hit area, which is great for fast navigation. But without `htmlFor` and `id` linkages, the accessibility tree doesn't properly associate the label to the input.
+**Action:** Always link `<label>` to `<input>` explicitly. In React components rendered conditionally or repeatedly, use `useId()` to generate unique IDs and prevent collisions.
