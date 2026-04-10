@@ -30,3 +30,6 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2026-04-10 - [Contextual Tooltips for Disabled Inputs]
+**Learning:** Disabled form elements (like auto-calculated inputs) often cause frustration because users don't know *why* they can't edit them. The `opacity-50 cursor-not-allowed` pattern is visually clear but lacks context.
+**Action:** Always add an explicit `title` attribute or inline helper text to visually disabled inputs explaining why they are locked, specifically in bidirectional/goal-seek UIs.
