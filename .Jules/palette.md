@@ -30,3 +30,6 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2026-04-13 - [Semantic Form Labels in Popovers]
+**Learning:** Text descriptions acting as labels in inline calculators often lack semantic HTML linking (`htmlFor` and `id`), which breaks screen reader association and reduces the clickable area for users.
+**Action:** Always link `<label>` elements to their corresponding inputs using React's `useId()` hook and apply `cursor-pointer` to expand the interaction area and improve form accessibility.
