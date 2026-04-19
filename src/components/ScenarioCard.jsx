@@ -1,4 +1,4 @@
-import React, { memo, useRef, useCallback, useState } from 'react';
+import React, { memo, useRef, useCallback, useState, useMemo } from 'react';
 import {
     Trash2,
     Plus,
@@ -141,7 +141,8 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
         setActiveCalculator({ itemId, field });
     }, []);
 
-    const res = calculateResults(s);
+    // BOLT: Optimize - Use useMemo to prevent recalculating derived finance data when unrelated state changes (like activeCalculator)
+    const res = useMemo(() => calculateResults(s), [s]);
 
     // Handlers
     const handleChange = (field, val) => onUpdate(s.id, field, val);
