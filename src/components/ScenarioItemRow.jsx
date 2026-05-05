@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Trash2, Calculator } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
+import { pvFromCost, costFromPv } from '../utils/finance';
 
 const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCalculator, onAddItem }) => {
     // Calculate itemMargin and itemMarginPercent for display
@@ -16,13 +17,9 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
     const handleMarginPercentChange = (e) => {
         const val = parseFloat(e.target.value) || 0;
         if (mode === 'cost_percent') {
-            const cost = parseFloat(item.cost) || 0;
-            const newPv = cost !== 0 ? (cost / (1 - (val / 100))) : 0;
-            onUpdate(item.id, 'pv', newPv.toFixed(0));
+            onUpdate(item.id, 'pv', String(pvFromCost(parseFloat(item.cost) || 0, val)));
         } else if (mode === 'pv_percent') {
-            const pv = parseFloat(item.pv) || 0;
-            const newCost = pv * (1 - (val / 100));
-            onUpdate(item.id, 'cost', newCost.toFixed(0));
+            onUpdate(item.id, 'cost', String(costFromPv(parseFloat(item.pv) || 0, val)));
         }
     };
 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
     TrendingUp,
     Plus,
@@ -9,19 +9,45 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ComparisonView from './components/ComparisonView';
 
+const LS_KEY = 'markup_scenarios';
+
+const decodeScenarios = (data) => {
+    const binary = atob(data);
+    const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
+    const json = new TextDecoder().decode(bytes);
+    const parsed = JSON.parse(json);
+    // v0 compat: old URLs encoded raw arrays
+    if (Array.isArray(parsed)) return parsed.length > 0 ? parsed : null;
+    // v1 schema: { v: 1, data: [] }
+    if (parsed?.v === 1 && Array.isArray(parsed.data)) return parsed.data.length > 0 ? parsed.data : null;
+    return null;
+};
+
 const getInitialScenarios = () => {
+    // 1. URL takes priority
     try {
         const urlParams = new URLSearchParams(window.location.search);
         const data = urlParams.get('data');
         if (data) {
-            const parsedData = JSON.parse(decodeURIComponent(escape(atob(data))));
-            if (Array.isArray(parsedData) && parsedData.length > 0) {
-                return parsedData;
-            }
+            const parsed = decodeScenarios(data);
+            if (parsed) return parsed;
         }
     } catch (error) {
         console.error("Failed to parse scenarios from URL", error);
     }
+
+    // 2. Fall back to localStorage
+    try {
+        const saved = localStorage.getItem(LS_KEY);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    } catch (error) {
+        console.error("Failed to read localStorage", error);
+    }
+
+    // 3. Default
     return [{ id: 1, name: "Scénario 1", pv: 0, cost: 0, marginPercent: 30, mode: 'pv_cost', isDetailed: false, items: [] }];
 };
 
@@ -30,6 +56,15 @@ const App = () => {
     // Prevents expensive URL parsing and JSON decoding on every render
     const [scenarios, setScenarios] = useState(getInitialScenarios);
     const [showComparison, setShowComparison] = useState(false);
+
+    // Auto-save to localStorage on every change
+    useEffect(() => {
+        try {
+            localStorage.setItem(LS_KEY, JSON.stringify(scenarios));
+        } catch (e) {
+            console.warn('localStorage save failed', e);
+        }
+    }, [scenarios]);
 
     // Ref to maintain latest scenarios state without triggering re-renders in Header
     const scenariosRef = useRef(scenarios);

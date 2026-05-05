@@ -8,6 +8,7 @@ import {
     Percent,
     Calculator,
     Download,
+    Info,
 } from 'lucide-react';
 import ConfirmButton from './ui/ConfirmButton';
 import ResultCard from './ui/ResultCard';
@@ -15,7 +16,7 @@ import ProfitabilityBar from './ProfitabilityBar';
 import PriceBreakdown from './PriceBreakdown';
 import ScenarioItemRow from './ScenarioItemRow';
 import TJMCalculator from './TJMCalculator';
-import { calculateResults, FORMATTER, TAX_CONFIG } from '../utils/finance';
+import { calculateResults, FORMATTER, TAX_CONFIG, pvFromCost, costFromPv } from '../utils/finance';
 
 // BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
 // This is critical for list items where updating one item causes parent to re-render all items.
@@ -26,6 +27,22 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
     // BOLT: Optimize - Use useRef to keep track of the latest 's' prop without triggering re-renders in callbacks
     const sRef = useRef(s);
     sRef.current = s;
+
+    const cardRef = useRef(null);
+
+    const handlePrint = useCallback(() => {
+        const card = cardRef.current;
+        if (!card) { window.print(); return; }
+        document.body.classList.add('print-single');
+        card.classList.add('is-printing');
+        const cleanup = () => {
+            document.body.classList.remove('print-single');
+            card.classList.remove('is-printing');
+            window.removeEventListener('afterprint', cleanup);
+        };
+        window.addEventListener('afterprint', cleanup);
+        window.print();
+    }, []);
 
     // --- MANAGE ITEMS ---
     const addItem = useCallback(() => {
@@ -47,12 +64,10 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                 // Auto-calculate logic based on mode
                 if (currentScenario.mode === 'cost_percent' && field === 'cost') {
                     const margin = parseFloat(currentScenario.marginPercent) || 0;
-                    const newPv = val !== 0 ? (val / (1 - (margin / 100))) : 0;
-                    updates.pv = newPv.toFixed(0);
+                    updates.pv = String(pvFromCost(val, margin));
                 } else if (currentScenario.mode === 'pv_percent' && field === 'pv') {
                     const margin = parseFloat(currentScenario.marginPercent) || 0;
-                    const newCost = val * (1 - (margin / 100));
-                    updates.cost = newCost.toFixed(0);
+                    updates.cost = String(costFromPv(val, margin));
                 }
 
                 return { ...item, ...updates };
@@ -114,11 +129,9 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
             const pv = parseFloat(item.pv) || 0;
 
             if (currentS.mode === 'cost_percent') {
-                const newPv = cost !== 0 ? (cost / (1 - (margin / 100))) : 0;
-                return { ...item, pv: newPv.toFixed(0) };
+                return { ...item, pv: String(pvFromCost(cost, margin)) };
             } else if (currentS.mode === 'pv_percent') {
-                const newCost = pv * (1 - (margin / 100));
-                return { ...item, cost: newCost.toFixed(0) };
+                return { ...item, cost: String(costFromPv(pv, margin)) };
             }
             return item;
         });
@@ -166,8 +179,8 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
 
     return (
         <div
-            // Hover effect is handled via CSS classes (hover:shadow-xl hover:border-indigo-300)
-            className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 overflow-hidden relative"
+            ref={cardRef}
+            className="scenario-card bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 overflow-hidden relative"
         >
             {/* Header Carte */}
             <div className="bg-slate-50/50 backdrop-blur-sm p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -194,18 +207,19 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                             onChange={(e) => handleChange('mode', e.target.value)}
                             className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer"
                             aria-label={`Mode de calcul pour ${s.name}`}
+                            title="Choisissez quelles variables vous saisissez — la troisième est calculée automatiquement"
                         >
-                            <option value="pv_cost">PV & Coût</option>
-                            <option value="cost_percent">Marge & Coût</option>
-                            <option value="pv_percent">Marge & PV</option>
+                            <option value="pv_cost" title="Saisissez le Prix de Vente et le Coût → la marge est calculée">PV & Coût</option>
+                            <option value="cost_percent" title="Saisissez le Coût et la Marge cible (%) → le Prix de Vente est calculé">Marge & Coût</option>
+                            <option value="pv_percent" title="Saisissez le Prix de Vente et la Marge cible (%) → le Coût est calculé">Marge & PV</option>
                         </select>
                         <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} aria-hidden="true" />
                     </div>
                     <div className="flex items-center print-hidden">
                         <button
-                            onClick={() => window.print()}
+                            onClick={handlePrint}
                             className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 p-2 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
-                            title="Exporter en PDF / Imprimer"
+                            title="Exporter en PDF / Imprimer ce scénario"
                             aria-label="Exporter en PDF"
                         >
                             <Download size={18} />
@@ -462,7 +476,9 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
 
                         <div className="flex items-center justify-between w-full sm:w-auto gap-4">
                             <span className="text-slate-500 font-medium">Bénéfice Net (Après IS)</span>
-                            <span className="font-bold text-slate-700">+{FORMATTER.format(res.netProfit)}</span>
+                            <span className={`font-bold ${res.netProfit >= 0 ? 'text-emerald-700' : 'text-red-600'}`}>
+                                {res.netProfit >= 0 ? '+' : ''}{FORMATTER.format(res.netProfit)}
+                            </span>
                         </div>
                     </div>
 
@@ -486,6 +502,10 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                                         'Critique (< 20%)'}
                             </span>
                         </div>
+                    </div>
+                    <div className="flex items-start gap-1.5 text-[10px] text-amber-600/80 pt-1">
+                        <Info size={11} className="flex-shrink-0 mt-0.5" aria-hidden="true" />
+                        <span>IS estimé par scénario — non consolidé au niveau de l'exercice fiscal.</span>
                     </div>
                 </div>
             </div>

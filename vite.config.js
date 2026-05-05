@@ -5,4 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
     plugins: [react()],
     base: '/', // Use '/' for custom domain/subdomain deployment
+    test: {
+        environment: 'jsdom',
+        globals: true,
+    },
 })

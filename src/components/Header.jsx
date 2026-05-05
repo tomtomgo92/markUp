@@ -1,14 +1,17 @@
 import React, { memo, useState } from 'react';
 import { Calculator, Plus, BarChart2, Share2, Check } from 'lucide-react';
 
-// BOLT: Optimize - use memo to prevent re-renders when parent renders but props haven't changed.
-const Header = memo(({ onAddScenario, onToggleComparison, getScenarios }) => {
+const Header = ({ onAddScenario, onToggleComparison, getScenarios }) => {
     const [isCopied, setIsCopied] = useState(false);
 
     const handleShare = async () => {
         try {
-            // Serialize scenarios state to base64 using getScenarios callback to avoid dependency on state
-            const data = btoa(unescape(encodeURIComponent(JSON.stringify(getScenarios()))));
+            const payload = { v: 1, data: getScenarios() };
+            const json = JSON.stringify(payload);
+            const bytes = new TextEncoder().encode(json);
+            const binary = Array.from(bytes, b => String.fromCharCode(b)).join('');
+            const data = btoa(binary);
+
             const url = new URL(window.location.href);
             url.searchParams.set('data', data);
 
@@ -71,7 +74,6 @@ const Header = memo(({ onAddScenario, onToggleComparison, getScenarios }) => {
             </div>
         </header>
     );
-});
+};
 
-// Optimisation: React.memo prevents unnecessary re-renders when parent state updates
 export default memo(Header);

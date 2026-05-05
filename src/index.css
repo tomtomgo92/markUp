@@ -52,5 +52,10 @@
         print-color-adjust: exact;
         -webkit-print-color-adjust: exact;
     }
+
+    /* Per-card print: hide all scenario cards except the one being printed */
+    body.print-single .scenario-card:not(.is-printing) {
+        display: none !important;
+    }
 }
 

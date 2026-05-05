@@ -18,6 +18,19 @@ export const PERCENT_FORMATTER = new Intl.NumberFormat('fr-FR', {
     maximumFractionDigits: 2
 });
 
+export const pvFromCost = (cost, marginPercent) => {
+    const c = parseFloat(cost) || 0;
+    const m = parseFloat(marginPercent) || 0;
+    if (c === 0 || m >= 100) return 0;
+    return Math.round(c / (1 - m / 100));
+};
+
+export const costFromPv = (pv, marginPercent) => {
+    const p = parseFloat(pv) || 0;
+    const m = parseFloat(marginPercent) || 0;
+    return Math.round(p * (1 - m / 100));
+};
+
 export const calculateResults = (s) => {
     let pv = parseFloat(s.pv) || 0;
     let cost = parseFloat(s.cost) || 0;
@@ -32,9 +45,9 @@ export const calculateResults = (s) => {
     } else {
         // Standard modes
         if (s.mode === 'cost_percent') {
-            pv = cost !== 0 ? Math.round(cost / (1 - (marginPercent / 100))) : 0;
+            pv = pvFromCost(cost, marginPercent);
         } else if (s.mode === 'pv_percent') {
-            cost = Math.round(pv * (1 - (marginPercent / 100)));
+            cost = costFromPv(pv, marginPercent);
         }
     }
 
