@@ -14,11 +14,6 @@ const ResultCard = memo(({ title, value, subtext, type = "neutral" }) => {
                 <p className={`text-[11px] font-black uppercase tracking-widest ${type === 'primary' ? 'text-white/70' : 'text-slate-400'}`}>
                     {title}
                 </p>
-                {/*
-                   Using text-2xl which is slightly smaller and safer for standard card widths.
-                   No whitespace-nowrap to allow wrapping for extremely long numbers, but text-2xl usually fits
-                   standard 6-7 digit currency values comfortably in this layout.
-                */}
                 <div className={`text-2xl font-black tracking-tight ${type === 'success' ? 'text-emerald-700' : ''} ${type === 'primary' ? 'text-white' : 'text-slate-900'}`}>
                     {value}
                 </div>

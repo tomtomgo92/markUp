@@ -3,7 +3,6 @@ import {
     TrendingUp,
     Plus,
 } from 'lucide-react';
-import Badge from './components/ui/Badge';
 import ScenarioCard from './components/ScenarioCard';
 import Header from './components/Header';
 import Footer from './components/Footer';
