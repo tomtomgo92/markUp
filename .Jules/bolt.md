@@ -5,3 +5,6 @@
 ## 2025-01-28 - [React Lazy State Initialization]
 **Learning:** When initializing React state with expensive operations (like URL parameter parsing, base64 decoding, or JSON parsing), calling the function directly inside `useState` (e.g., `useState(getInitialState())`) executes the expensive operation on *every single render* of the component, even though the result is only used on the first render.
 **Action:** Always use React lazy initialization by passing a function reference to `useState` (e.g., `useState(getInitialState)`) when the initial state calculation is expensive, to prevent main thread blocking and unnecessary recalculations.
+## 2024-03-24 - [Memoizing derived financial data]
+**Learning:** Derived data computations in parent components (like ScenarioCard and ComparisonView) need to be memoized using useMemo to prevent unnecessary recalculations when UI-only state (like isClientMode or activeCalculator) changes.
+**Action:** Always wrap expensive or derived mapped calculations in useMemo if the component receives UI-only state updates that trigger re-renders.
