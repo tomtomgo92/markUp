@@ -30,3 +30,6 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2026-06-25 - [Form Accessibility and Clickable Areas]
+**Learning:** Text descriptions masquerading as labels without `htmlFor` and `id` bindings frustrate users because clicking the text doesn't focus the input, and it breaks screen reader associations.
+**Action:** For better form accessibility and to expand interaction areas, text descriptions acting as labels must be semantically implemented using `<label>` elements linked to inputs via `htmlFor` and `id`.
