@@ -30,3 +30,7 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+
+## 2026-06-25 - [Dynamic Popovers Semantic Labels]
+**Learning:** Using static IDs or no IDs for labels in dynamic popovers or calculators leads to inaccessible inputs or ID collisions when multiple instances are rendered.
+**Action:** Always use `useId()` in React to generate unique, stable IDs to link `<label htmlFor={id}>` with `<input id={id}>` in reusable components like popovers to ensure accessibility and larger click targets without collisions.

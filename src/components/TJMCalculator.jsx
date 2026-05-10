@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useId } from 'react';
 import { Check, X } from 'lucide-react';
 
 const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) => {
     const [tjm, setTjm] = useState(500);
+    const tjmInputId = useId();
+    const daysInputId = useId();
     const [days, setDays] = useState(1);
     const ref = useRef(null);
 
@@ -53,8 +55,9 @@ const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) =
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1">
-                        <label className="text-xs font-medium text-slate-600">{label} (€/j)</label>
+                        <label htmlFor={tjmInputId} className="text-xs font-medium text-slate-600">{label} (€/j)</label>
                         <input
+                            id={tjmInputId}
                             type="number"
                             value={tjm}
                             onChange={(e) => setTjm(parseFloat(e.target.value) || 0)}
@@ -71,8 +74,9 @@ const TJMCalculator = ({ initialValue = 0, onApply, onClose, mode = 'price' }) =
                         />
                     </div>
                     <div className="flex flex-col gap-1">
-                        <label className="text-xs font-medium text-slate-600">Jours</label>
+                        <label htmlFor={daysInputId} className="text-xs font-medium text-slate-600">Jours</label>
                         <input
+                            id={daysInputId}
                             type="number"
                             value={days}
                             onChange={(e) => setDays(parseFloat(e.target.value) || 0)}
