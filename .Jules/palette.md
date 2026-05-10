@@ -30,3 +30,9 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2026-04-09 - Add title attribute to disabled inputs
+**Learning:** When inputs are disabled due to auto-calculation (like margin target modes locking the Cost or PV fields), users can be confused if there is no explanation. Adding a native `title` attribute provides a simple, accessible tooltip explaining *why* the field is locked without needing custom tooltip components.
+**Action:** Always verify if a disabled state requires an explanation, and utilize the native `title` attribute for quick, zero-dependency UX improvements on disabled form controls.
+## 2026-04-09 - Add title attribute to disabled inputs
+**Learning:** When inputs are disabled due to auto-calculation (like margin target modes locking the Cost or PV fields), users can be confused if there is no explanation. Adding a native `title` attribute provides a simple, accessible tooltip explaining *why* the field is locked without needing custom tooltip components.
+**Action:** Always verify if a disabled state requires an explanation, and utilize the native `title` attribute for quick, zero-dependency UX improvements on disabled form controls.
