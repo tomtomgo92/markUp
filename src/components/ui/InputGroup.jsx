@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useId } from 'react';
 
-const InputGroup = ({ label, value, onChange, icon: Icon, disabled, suffix }) => (
+const InputGroup = ({ label, value, onChange, icon: Icon, disabled, suffix }) => {
+    const id = useId();
+    return (
     <div className={`space-y-2 ${disabled ? 'opacity-50 grayscale' : ''}`}>
-        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
+        <label htmlFor={id} className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
             {label}
         </label>
         <div className={`relative group transition-all duration-300 ${disabled ? '' : 'focus-within:scale-[1.02]'}`}>
@@ -10,6 +12,7 @@ const InputGroup = ({ label, value, onChange, icon: Icon, disabled, suffix }) =>
                 <Icon className={`h-4 w-4 ${disabled ? 'text-slate-400' : 'text-slate-500 group-focus-within:text-indigo-600'}`} />
             </div>
             <input
+                id={id}
                 type="number"
                 disabled={disabled}
                 className={`block w-full pl-10 pr-12 py-3 sm:text-sm font-bold rounded-xl border-2 outline-none transition-colors
@@ -27,6 +30,7 @@ const InputGroup = ({ label, value, onChange, icon: Icon, disabled, suffix }) =>
             {disabled && <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Calculé auto</span>}
         </div>
     </div>
-);
+    );
+};
 
 export default InputGroup;
