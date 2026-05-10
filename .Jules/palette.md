@@ -30,3 +30,7 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+
+## 2026-04-11 - [Semantic Form Labels]
+**Learning:** Text descriptions acting as labels must be semantically implemented using <label> elements linked to inputs via htmlFor and id. This ensures screen readers announce the input correctly and expands the clickable area for users.
+**Action:** Use React's useId() hook to generate unique IDs dynamically and link labels to their corresponding inputs.
