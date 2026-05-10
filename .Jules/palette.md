@@ -30,3 +30,6 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2026-04-02 - [Contextualizing Disabled States]
+**Learning:** In the Scenario table, inputs are dynamically disabled based on the active calculating mode (e.g., PV disabled in Cost Mode). Users without context might think the input is broken.
+**Action:** Always provide a `title` attribute on dynamically disabled inputs to explain why they are disabled.
