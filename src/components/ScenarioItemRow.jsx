@@ -44,6 +44,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                                 type="number"
                                 value={item.cost}
                                 disabled={mode === 'pv_percent'}
+                                title={mode === 'pv_percent' ? "Le coût est calculé automatiquement dans ce mode" : ""}
                                 onChange={(e) => onUpdate(item.id, 'cost', e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 onFocus={(e) => e.target.select()}
@@ -72,6 +73,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                             type="number"
                             value={item.pv}
                             disabled={mode === 'cost_percent'}
+                            title={mode === 'cost_percent' ? "Le prix est calculé automatiquement dans ce mode" : ""}
                             onChange={(e) => onUpdate(item.id, 'pv', e.target.value)}
                             onKeyDown={handleKeyDown}
                             onFocus={(e) => e.target.select()}
