@@ -30,3 +30,6 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+## 2026-06-25 - [Contextual Tooltips for Disabled Inputs]
+**Learning:** Disabled inputs (e.g., auto-calculated fields) often lack explanation, leading to user confusion and friction. A simple `title` attribute provides an immediate explanation on hover without adding visual clutter.
+**Action:** Always add a `title` attribute with a brief explanation to inputs when they are conditionally disabled to clarify the system state to the user.
