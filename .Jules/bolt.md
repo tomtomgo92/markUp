@@ -5,3 +5,6 @@
 ## 2025-01-28 - [React Lazy State Initialization]
 **Learning:** When initializing React state with expensive operations (like URL parameter parsing, base64 decoding, or JSON parsing), calling the function directly inside `useState` (e.g., `useState(getInitialState())`) executes the expensive operation on *every single render* of the component, even though the result is only used on the first render.
 **Action:** Always use React lazy initialization by passing a function reference to `useState` (e.g., `useState(getInitialState)`) when the initial state calculation is expensive, to prevent main thread blocking and unnecessary recalculations.
+## 2026-04-16 - [Memoizing Financial Derived State]
+**Learning:** In standard React data-flow, creating mapped arrays with computed data (like `scenarios.map(s => ({...s, results: calculateResults(s)}))`) inside a parent component or modal (`ComparisonView`) will cause all those expensive math operations to run on *every* render (e.g. if a simple unrelated state like an active modal or focus changes), significantly slowing down the app when multiple scenarios exist.
+**Action:** Always wrap data-derived arrays and their subsequent aggregated math (like finding max values) in `useMemo` hooks scoped strictly to their base data dependencies (e.g. `[scenarios]`) to preserve references and bypass expensive recalculations.
