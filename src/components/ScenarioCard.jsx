@@ -1,4 +1,4 @@
-import React, { memo, useRef, useCallback, useState } from 'react';
+import React, { memo, useRef, useCallback, useState, useMemo } from 'react';
 import {
     Trash2,
     Plus,
@@ -154,7 +154,9 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
         setActiveCalculator({ itemId, field });
     }, []);
 
-    const res = calculateResults(s);
+    // BOLT: Optimize - Memoize calculateResults to prevent recalculation
+    // when unrelated state (like activeCalculator) or props (like isClientMode) change
+    const res = useMemo(() => calculateResults(s), [s]);
 
     // Handlers
     const handleChange = (field, val) => onUpdate(s.id, field, val);
