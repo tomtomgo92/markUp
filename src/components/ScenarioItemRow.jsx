@@ -44,6 +44,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                                 type="number"
                                 value={item.cost}
                                 disabled={mode === 'pv_percent'}
+                                title={mode === 'pv_percent' ? "Calculé automatiquement (Mode Marge & PV)" : undefined}
                                 onChange={(e) => onUpdate(item.id, 'cost', e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 onFocus={(e) => e.target.select()}
@@ -60,7 +61,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                                 title="Calculer au CJM"
                                 aria-label="Ouvrir calculateur CJM"
                             >
-                                <Calculator size={14} />
+                                <Calculator size={14} aria-hidden="true" />
                             </button>
                         )}
                     </div>
@@ -72,6 +73,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                             type="number"
                             value={item.pv}
                             disabled={mode === 'cost_percent'}
+                            title={mode === 'cost_percent' ? "Calculé automatiquement (Mode Marge & Coût)" : undefined}
                             onChange={(e) => onUpdate(item.id, 'pv', e.target.value)}
                             onKeyDown={handleKeyDown}
                             onFocus={(e) => e.target.select()}
@@ -88,7 +90,7 @@ const ScenarioItemRow = memo(({ item, index, mode, onUpdate, onRemove, onOpenCal
                             title="Calculer au TJM"
                             aria-label="Ouvrir calculateur TJM"
                         >
-                            <Calculator size={14} />
+                            <Calculator size={14} aria-hidden="true" />
                         </button>
                     )}
                 </div>
