@@ -30,3 +30,11 @@
 **Learning:** In spreadsheet-like interfaces, tabbing into a numerical field with a default "0" often places the cursor at the end. Users who immediately start typing inadvertently append numbers (typing "5" results in "05").
 **Action:** Always add `onFocus={(e) => e.target.select()}` to numerical inputs in data-heavy forms to remove friction and match standard spreadsheet behavior.
 
+
+## 2026-05-24 - [Semantic Labels for Click Areas in Modals]
+**Learning:** Text descriptions acting as labels without a semantic `<label>` tag or `htmlFor` attribute require users to precisely click the tiny input box, which is a poor experience on desktop and frustrating on mobile.
+**Action:** Always wrap descriptions in `<label>` tags linked to inputs via `htmlFor` using dynamically generated unique IDs (e.g., `useId()`) to expand the clickable interaction area and improve semantics.
+
+## 2026-05-24 - [Disabled Input Context]
+**Learning:** Users often get frustrated when form elements are disabled without explanation, wondering if it's a bug or what action to take to enable them.
+**Action:** Disabled form elements must include explicit contextual explanations (e.g., via the `title` attribute or helper text) to clearly communicate *why* they are disabled (e.g., "Calculé automatiquement").
