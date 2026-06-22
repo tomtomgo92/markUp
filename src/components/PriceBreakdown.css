@@ -1,0 +1,100 @@
+.price-breakdown {
+    padding: var(--space-component-lg);
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 13.75rem;
+}
+
+.price-breakdown__heading {
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    color: var(--text-mid);
+    text-align: center;
+    margin: 0;
+}
+
+.price-breakdown__chart {
+    position: relative;
+    width: 7rem;
+    height: 7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: var(--space-component) 0;
+}
+
+.price-breakdown__svg {
+    transform: rotate(-90deg);
+}
+
+.price-breakdown__total {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.price-breakdown__total-label {
+    font-size: var(--fs-xxs);
+    color: var(--text-mid);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    margin-bottom: 0.125rem;
+}
+
+.price-breakdown__total-value {
+    font-size: var(--fs-s);
+    font-weight: var(--fw-bold);
+    color: var(--text-default);
+}
+
+.price-breakdown__legend {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+}
+
+.price-breakdown__legend-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--fs-xs);
+}
+
+.price-breakdown__legend-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--text-mid);
+    font-weight: var(--fw-regular);
+}
+
+.price-breakdown__legend-pct {
+    font-weight: var(--fw-bold);
+    color: var(--text-default);
+}
+
+.price-breakdown__dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+}
+
+.price-breakdown__dot--cost {
+    background: var(--neutral-100);
+}
+
+.price-breakdown__dot--margin {
+    background: var(--status-success);
+}
+
+.price-breakdown__dot--tva {
+    background: var(--neutral-600);
+}

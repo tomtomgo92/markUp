@@ -1,0 +1,95 @@
+.scenario-table {
+    background: var(--neutral-0);
+    border: 1px solid var(--neutral-50);
+    border-radius: var(--radius-m);
+    overflow: hidden;
+}
+
+.scenario-table__table {
+    width: 100%;
+    text-align: left;
+    font-size: var(--fs-s);
+    border-collapse: collapse;
+}
+
+.scenario-table__head {
+    background: var(--neutral-50);
+}
+
+.scenario-table__th {
+    padding: var(--space-component-sm);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    color: var(--text-mid);
+}
+
+.scenario-table__th--index {
+    width: 2.5rem;
+}
+
+.scenario-table__th--right {
+    text-align: right;
+}
+
+.scenario-table__empty {
+    padding: var(--space-l);
+    text-align: center;
+    color: var(--text-mid);
+}
+
+.scenario-table__empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-component);
+}
+
+.scenario-table__empty-text {
+    font-size: var(--fs-s);
+    font-weight: var(--fw-regular);
+    margin: 0;
+}
+
+.scenario-table__foot {
+    background: var(--neutral-0);
+    font-weight: var(--fw-bold);
+
+    border-top: 1px solid var(--neutral-50);
+    font-size: 1rem;
+    tr {
+        border-bottom: 1px solid var(--neutral-50);
+    }
+
+    .scenario-table__total-value-wrap {
+        display: flex;
+        align-items: center;
+        gap: var(--space-component-sm);
+        border-radius: var(--radius-s);
+        padding: 0 var(--space-component-sm);
+        background: var(--neutral-50);
+        width: fit-content;
+        color: var(--text-default);
+    }
+}
+
+.scenario-table__total-label {
+    padding: var(--space-component-sm);
+    font-size: var(--fs-xxs);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    text-align: right;
+}
+
+.scenario-table__total-value {
+    padding: var(--space-component-sm);
+    color: var(--neutral-600);
+}
+
+.scenario-table__total-margin {
+    padding: var(--space-component-sm);
+    text-align: right;
+    color: var(--status-success-dark);
+}

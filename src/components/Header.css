@@ -1,0 +1,72 @@
+.app-header {
+    background: #fff;
+    border-bottom: 1px solid var(--neutral-50);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    box-shadow: var(--shadow-sm);
+}
+
+.app-header__inner {
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+}
+
+.app-header__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-component);
+}
+
+.app-header__logo {
+    background: linear-gradient(135deg, var(--neutral-600), var(--neutral-400));
+    padding: 0.625rem;
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-md);
+    display: inline-flex;
+}
+
+.app-header__logo-icon {
+    color: #fff;
+}
+
+.app-header__title {
+    font-size: var(--fs-l);
+    font-weight: var(--fw-bold);
+    color: var(--text-default);
+    line-height: var(--lh-tight);
+    margin: 0;
+}
+
+.app-header__title-accent {
+    color: var(--neutral-600);
+}
+
+.app-header__subtitle {
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-bold);
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    line-height: 1;
+    margin: 0;
+}
+
+.app-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-component-sm);
+}
+
+.app-header__copied-icon {
+    color: var(--status-success);
+}
+
+@media (max-width: 640px) {
+    .app-header__action-label {
+        display: none;
+    }
+}

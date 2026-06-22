@@ -1,0 +1,104 @@
+.app-footer {
+    background: #fff;
+    border-top: 1px solid var(--neutral-50);
+    margin-top: var(--space-section-sm);
+}
+
+.app-footer__inner {
+    padding-block: var(--space-l);
+}
+
+.app-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-l);
+}
+
+@media (min-width: 768px) {
+    .app-footer__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.app-footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-component-sm);
+}
+
+.app-footer__heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--text-default);
+}
+
+.app-footer__heading h4 {
+    font-size: var(--fs-s);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.app-footer__heading--accent {
+    color: var(--neutral-600);
+}
+
+.app-footer__heading--success {
+    color: var(--status-success-dark);
+}
+
+.app-footer__text {
+    font-size: var(--fs-xs);
+    color: var(--text-mid);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.app-footer__list {
+    font-size: var(--fs-xs);
+    color: var(--text-mid);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xxs);
+}
+
+.app-footer__list-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--neutral-50);
+    padding-bottom: var(--space-xxs);
+}
+
+.app-footer__list-item--last {
+    border-bottom: none;
+    padding-top: var(--space-xxs);
+}
+
+.app-footer__list-value {
+    font-weight: var(--fw-bold);
+}
+
+.app-footer__bottom {
+    border-top: 1px solid var(--neutral-50);
+    margin-top: var(--space-l);
+    padding-top: var(--space-component);
+    display: flex;
+    justify-content: center;
+}
+
+.app-footer__copyright {
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-bold);
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    margin: 0;
+}
+
+.app-footer__copyright a {
+    color: var(--neutral-600);
+}

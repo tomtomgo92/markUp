@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pvFromCost, costFromPv, calculateResults, TAX_CONFIG } from './finance';
+import { pvFromCost, costFromPv, calculateResults } from './finance';
 
 // ─── pvFromCost ──────────────────────────────────────────────────────────────
 
@@ -61,10 +61,6 @@ describe('calculateResults — mode pv_cost', () => {
     it('calcule le TTC = PV + TVA', () => {
         expect(calculateResults(base).ttc).toBeCloseTo(1200);
     });
-    it('calcule le bénéfice net = marge - IS', () => {
-        const res = calculateResults(base);
-        expect(res.netProfit).toBeCloseTo(res.marginEuro - res.is);
-    });
 });
 
 // ─── calculateResults — mode cost_percent ───────────────────────────────────
@@ -96,39 +92,6 @@ describe('calculateResults — mode pv_percent', () => {
     it('garde le PV inchangé', () => {
         const s = { mode: 'pv_percent', pv: 1000, cost: 0, marginPercent: 30, items: [] };
         expect(calculateResults(s).pv).toBe(1000);
-    });
-});
-
-// ─── IS progressif ───────────────────────────────────────────────────────────
-
-describe('calculateResults — IS progressif', () => {
-    const { SEUIL_IS, IS_REDUIT, IS_NORMAL } = TAX_CONFIG;
-
-    it('applique 15% sous le seuil', () => {
-        const s = { mode: 'pv_cost', pv: 20000, cost: 10000, items: [] };
-        const res = calculateResults(s);
-        expect(res.marginEuro).toBe(10000);
-        expect(res.is).toBeCloseTo(10000 * IS_REDUIT);
-    });
-    it('applique un taux mixte au-dessus du seuil', () => {
-        const s = { mode: 'pv_cost', pv: 100000, cost: 50000, items: [] };
-        const res = calculateResults(s);
-        const expected = SEUIL_IS * IS_REDUIT + (50000 - SEUIL_IS) * IS_NORMAL;
-        expect(res.is).toBeCloseTo(expected);
-    });
-    it('applique exactement 15% à la limite du seuil', () => {
-        const s = { mode: 'pv_cost', pv: SEUIL_IS + 10000, cost: 10000, items: [] };
-        const res = calculateResults(s);
-        expect(res.marginEuro).toBe(SEUIL_IS);
-        expect(res.is).toBeCloseTo(SEUIL_IS * IS_REDUIT);
-    });
-    it('IS = 0 quand la marge est nulle', () => {
-        const s = { mode: 'pv_cost', pv: 1000, cost: 1000, items: [] };
-        expect(calculateResults(s).is).toBe(0);
-    });
-    it('IS = 0 quand la marge est négative', () => {
-        const s = { mode: 'pv_cost', pv: 500, cost: 1000, items: [] };
-        expect(calculateResults(s).is).toBe(0);
     });
 });
 
@@ -230,10 +193,9 @@ describe('calculateResults — cas limites', () => {
         const res = calculateResults({ mode: 'pv_cost', pv: 1000, cost: 0, items: [] });
         expect(res.marginEuro).toBe(1000);
     });
-    it('marge négative → netProfit négatif, IS=0', () => {
+    it('marge négative → marginEuro négatif', () => {
         const res = calculateResults({ mode: 'pv_cost', pv: 300, cost: 500, items: [] });
-        expect(res.is).toBe(0);
-        expect(res.netProfit).toBeLessThan(0);
+        expect(res.marginEuro).toBeLessThan(0);
     });
     it('marginPercent=0 en cost_percent → pv = cost (marge zéro)', () => {
         const res = calculateResults({ mode: 'cost_percent', pv: 0, cost: 1000, marginPercent: 0, items: [] });

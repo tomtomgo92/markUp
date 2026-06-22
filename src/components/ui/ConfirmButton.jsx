@@ -1,45 +1,48 @@
-import React, { useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import "./ConfirmButton.css";
+
+import React, { useState } from "react";
+
+import { Button } from "@thatmuch/designsystem";
+import { Trash2 } from "lucide-react";
 
 const ConfirmButton = ({
-    onConfirm,
-    icon: Icon = Trash2,
-    label,
-    message = "Confirmer ?",
-    size = 18,
-    className = "",
-    activeClassName = "bg-red-600 text-white px-3 py-1.5 rounded-lg shadow-md"
+  onConfirm,
+  icon,
+  label,
+  message = "Confirmer ?",
+  size = 18,
+  variant = "white",
+  confirmVariant = "com",
 }) => {
-    const [status, setStatus] = useState('idle');
+  const [status, setStatus] = useState("idle");
+  const confirming = status === "confirming";
 
-    const handleClick = (e) => {
-        e.stopPropagation();
-        if (status === 'confirming') {
-            onConfirm();
-            setStatus('idle');
-        } else {
-            setStatus('confirming');
-        }
-    };
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (confirming) {
+      onConfirm();
+      setStatus("idle");
+    } else {
+      setStatus("confirming");
+    }
+  };
 
-    return (
-        <button
-            onClick={handleClick}
-            onBlur={() => setStatus('idle')}
-            className={`transition-all duration-200 flex items-center justify-center gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
-                status === 'confirming' ? activeClassName : className
-            }`}
-            aria-label={status === 'confirming' ? message : label}
-            title={status === 'confirming' ? message : label}
-            type="button"
-        >
-            {status === 'confirming' ? (
-                 <span className="whitespace-nowrap">{message}</span>
-            ) : (
-                <Icon size={size} aria-hidden="true" />
-            )}
-        </button>
-    );
+  return (
+    <Button
+      type="button"
+      variant={confirming ? confirmVariant : variant}
+      size="sm"
+      iconOnly={!confirming}
+      className="confirm-btn"
+      onClick={handleClick}
+      onBlur={() => setStatus("idle")}
+      aria-label={confirming ? message : label}
+      title={confirming ? message : label}
+      icon={icon ? icon : <Trash2 size={size} />}
+    >
+      {confirming ? message : ""}
+    </Button>
+  );
 };
 
 export default ConfirmButton;

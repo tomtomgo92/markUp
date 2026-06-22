@@ -1,0 +1,14 @@
+.confirm-btn.tm-btn--white {
+    background-color: transparent;
+    color: var(--neutral-300);
+    box-shadow: none;
+}
+
+.confirm-btn.tm-btn--white:hover {
+    color: var(--status-error);
+    background-color: var(--status-error-light);
+}
+
+.confirm-btn.tm-btn--white .tm-btn__overlay {
+    display: none;
+}
