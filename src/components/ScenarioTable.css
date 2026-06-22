@@ -56,8 +56,23 @@
 .scenario-table__foot {
     background: var(--neutral-0);
     font-weight: var(--fw-bold);
-    color: var(--text-default);
+
     border-top: 1px solid var(--neutral-50);
+    font-size: 1rem;
+    tr {
+        border-bottom: 1px solid var(--neutral-50);
+    }
+
+    .scenario-table__total-value-wrap {
+        display: flex;
+        align-items: center;
+        gap: var(--space-component-sm);
+        border-radius: var(--radius-s);
+        padding: 0 var(--space-component-sm);
+        background: var(--neutral-50);
+        width: fit-content;
+        color: var(--text-default);
+    }
 }
 
 .scenario-table__total-label {
