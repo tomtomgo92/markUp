@@ -1,0 +1,98 @@
+.app-main {
+    padding-block: var(--space-l);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+}
+
+.app-main__hero {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-component);
+}
+
+@media (min-width: 768px) {
+    .app-main__hero {
+        flex-direction: row;
+        align-items: flex-end;
+    }
+}
+
+.app-main__hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.app-main__hero-title {
+    font-size: var(--fs-xxl);
+    font-weight: var(--fw-bold);
+    color: var(--text-default);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin: 0;
+}
+
+.app-main__hero-icon {
+    color: var(--status-success);
+}
+
+.app-main__hero-desc {
+    color: var(--text-mid);
+    max-width: 40rem;
+    font-size: var(--fs-s);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.app-main__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-l);
+    align-items: start;
+}
+
+.app-main__add-card {
+    height: 18.75rem;
+    border-radius: var(--radius-m);
+    border: 2px dashed var(--neutral-100);
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-component);
+    color: var(--neutral-200);
+    cursor: pointer;
+    transition: all var(--speed-fast) var(--ease-standard);
+    outline: none;
+}
+
+.app-main__add-card:hover {
+    border-color: var(--dev-400);
+    background: var(--neutral-0);
+    color: var(--dev-600);
+}
+
+.app-main__add-card:focus-visible {
+    box-shadow: 0 0 0 4px #3fd2db40;
+}
+
+.app-main__add-card-icon {
+    padding: var(--space-component);
+    border-radius: 50%;
+    background: var(--neutral-0);
+    transition: background var(--speed-fast) var(--ease-standard);
+}
+
+.app-main__add-card:hover .app-main__add-card-icon {
+    background: var(--dev-50);
+}
+
+.app-main__add-card-label {
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-s);
+}

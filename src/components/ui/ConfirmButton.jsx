@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Trash2 } from 'lucide-react';
+import { Button } from '@thatmuch/designsystem';
+import './ConfirmButton.css';
 
 const ConfirmButton = ({
     onConfirm,
@@ -7,14 +9,15 @@ const ConfirmButton = ({
     label,
     message = "Confirmer ?",
     size = 18,
-    className = "",
-    activeClassName = "bg-red-600 text-white px-3 py-1.5 rounded-lg shadow-md"
+    variant = "white",
+    confirmVariant = "com",
 }) => {
     const [status, setStatus] = useState('idle');
+    const confirming = status === 'confirming';
 
     const handleClick = (e) => {
         e.stopPropagation();
-        if (status === 'confirming') {
+        if (confirming) {
             onConfirm();
             setStatus('idle');
         } else {
@@ -23,22 +26,19 @@ const ConfirmButton = ({
     };
 
     return (
-        <button
+        <Button
+            type="button"
+            variant={confirming ? confirmVariant : variant}
+            size="sm"
+            iconOnly={!confirming}
+            className="confirm-btn"
             onClick={handleClick}
             onBlur={() => setStatus('idle')}
-            className={`transition-all duration-200 flex items-center justify-center gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
-                status === 'confirming' ? activeClassName : className
-            }`}
-            aria-label={status === 'confirming' ? message : label}
-            title={status === 'confirming' ? message : label}
-            type="button"
+            aria-label={confirming ? message : label}
+            title={confirming ? message : label}
         >
-            {status === 'confirming' ? (
-                 <span className="whitespace-nowrap">{message}</span>
-            ) : (
-                <Icon size={size} aria-hidden="true" />
-            )}
-        </button>
+            {confirming ? message : <Icon size={size} aria-hidden="true" />}
+        </Button>
     );
 };
 

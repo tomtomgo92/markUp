@@ -7,6 +7,7 @@ import ScenarioCard from './components/ScenarioCard';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ComparisonView from './components/ComparisonView';
+import './App.css';
 
 const LS_KEY = 'markup_scenarios';
 
@@ -125,7 +126,7 @@ const App = () => {
     const getScenarios = useCallback(() => scenariosRef.current, []);
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
+        <div className="app-shell">
             <div className="print-hidden">
                 <Header
                     onAddScenario={addScenario}
@@ -135,16 +136,16 @@ const App = () => {
             </div>
 
             {/* MAIN CONTENT */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+            <main className="container app-main">
 
                 {/* Hero Section / Intro */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 print-hidden">
-                    <div className="space-y-2">
-                        <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                            <TrendingUp className="text-emerald-500" strokeWidth={2.5} />
+                <div className="app-main__hero print-hidden">
+                    <div className="app-main__hero-text">
+                        <h2 className="app-main__hero-title">
+                            <TrendingUp className="app-main__hero-icon" strokeWidth={2.5} />
                             Tableau de Bord
                         </h2>
-                        <p className="text-slate-500 max-w-xl text-sm leading-relaxed">
+                        <p className="app-main__hero-desc">
                             Analysez la rentabilité de vos projets en temps réel. Comparez différents scénarios de pricing,
                             ajustez vos marges et visualisez l'impact fiscal immédiatement.
                         </p>
@@ -152,7 +153,7 @@ const App = () => {
                 </div>
 
                 {/* Scenarios Grid */}
-                <div className="grid grid-cols-1 gap-8 items-start">
+                <div className="app-main__grid">
                     {scenarios.map((s, idx) => (
                         <ScenarioCard
                             key={s.id}
@@ -167,12 +168,12 @@ const App = () => {
                     {/* Empty State / Add New Card Shortcut */}
                     <button
                         onClick={addScenario}
-                        className="group h-[300px] rounded-3xl border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:bg-slate-50 transition-all duration-300 flex flex-col items-center justify-center gap-4 text-slate-400 hover:text-indigo-600 focus-visible:ring-4 focus-visible:ring-indigo-500 focus-visible:ring-offset-4 outline-none print-hidden"
+                        className="app-main__add-card print-hidden"
                     >
-                        <div className="p-4 rounded-full bg-slate-50 group-hover:bg-indigo-100 transition-colors">
+                        <div className="app-main__add-card-icon">
                             <Plus size={32} />
                         </div>
-                        <span className="font-bold text-sm">Ajouter une comparaison</span>
+                        <span className="app-main__add-card-label">Ajouter une comparaison</span>
                     </button>
                 </div>
             </main>

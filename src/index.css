@@ -1,28 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@font-face {
-    font-family: 'NeueMachina';
-    src: url('assets/fonts/NeueMachina-Ultrabold.woff') format('woff'), url('assets/fonts/NeueMachina-Ultrabold.woff2') format('woff2');
-    font-weight: bold;
-    font-style: normal;
+.app-shell {
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--text-default);
 }
 
-@font-face {
-    font-family: 'NeueMachina';
-    src: url('assets/fonts/NeueMachina-Regular.woff') format('woff'), url('assets/fonts/NeueMachina-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
+.container {
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: var(--space-s);
 }
 
-@layer base {
-    body {
-        @apply font-sans antialiased text-slate-900 bg-slate-50;
-    }
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-heading tracking-tight;
-    }
-}
 @media print {
     .print-hidden {
         display: none !important;
@@ -32,7 +19,8 @@
         background-color: white !important;
     }
 
-    input, select {
+    input,
+    select {
         border: none !important;
         background: transparent !important;
         padding: 0 !important;
@@ -41,21 +29,17 @@
         appearance: none;
     }
 
-    /* Remove outline from all elements when printing */
     * {
         outline: none !important;
         box-shadow: none !important;
     }
 
-    /* Force background colors to print if needed by specific elements like the profitability bar */
-    .bg-emerald-500 {
+    .profitability-bar__segment--profit {
         print-color-adjust: exact;
         -webkit-print-color-adjust: exact;
     }
 
-    /* Per-card print: hide all scenario cards except the one being printed */
     body.print-single .scenario-card:not(.is-printing) {
         display: none !important;
     }
 }
-

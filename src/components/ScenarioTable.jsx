@@ -1,10 +1,12 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
+import { Button } from '@thatmuch/designsystem';
 import ScenarioItemRow from './ScenarioItemRow';
+import './ScenarioTable.css';
 
 /**
  * ScenarioTable - Displays the list of items in a scenario with calculation results
- * 
+ *
  * @param {Object} props
  * @param {Array} props.items - List of items in the scenario
  * @param {string} props.mode - Calculation mode ('pv_cost', 'cost_percent', 'pv_percent')
@@ -14,29 +16,29 @@ import ScenarioItemRow from './ScenarioItemRow';
  * @param {Function} props.onAddItem - Handler for adding a new item
  * @param {Object} props.results - Calculated results (pv, cost)
  */
-const ScenarioTable = ({ 
-    items, 
-    mode, 
-    onUpdateItem, 
-    onRemoveItem, 
-    onOpenCalculator, 
+const ScenarioTable = ({
+    items,
+    mode,
+    onUpdateItem,
+    onRemoveItem,
+    onOpenCalculator,
     onAddItem,
-    results 
+    results
 }) => {
     return (
-        <div className="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
-            <table className="w-full text-left text-sm">
-                <thead className="bg-slate-100 text-xs text-slate-500 font-bold uppercase tracking-wider">
+        <div className="scenario-table">
+            <table className="scenario-table__table">
+                <thead className="scenario-table__head">
                     <tr>
-                        <th className="p-3 w-10">#</th>
-                        <th className="p-3">Libellé</th>
-                        <th className="p-3">Coût</th>
-                        <th className="p-3">PV</th>
-                        <th className="p-3 text-right">Marge</th>
-                        <th className="p-3 w-10 print-hidden"></th>
+                        <th className="scenario-table__th scenario-table__th--index">#</th>
+                        <th className="scenario-table__th">Libellé</th>
+                        <th className="scenario-table__th">Coût</th>
+                        <th className="scenario-table__th">PV</th>
+                        <th className="scenario-table__th scenario-table__th--right">Marge</th>
+                        <th className="scenario-table__th scenario-table__th--index print-hidden"></th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
+                <tbody>
                     {items?.map((item, i) => (
                         <ScenarioItemRow
                             key={item.id}
@@ -51,28 +53,30 @@ const ScenarioTable = ({
                     ))}
                     {(!items || items.length === 0) && (
                         <tr>
-                            <td colSpan="6" className="p-8 text-center text-slate-500">
-                                <div className="flex flex-col items-center justify-center gap-3">
-                                    <p className="text-sm font-medium">Commencez par ajouter des éléments à chiffrer</p>
-                                    <button
+                            <td colSpan="6" className="scenario-table__empty">
+                                <div className="scenario-table__empty-content">
+                                    <p className="scenario-table__empty-text">Commencez par ajouter des éléments à chiffrer</p>
+                                    <Button
+                                        type="button"
+                                        variant="primary"
+                                        size="sm"
+                                        icon={<Plus size={16} />}
                                         onClick={onAddItem}
-                                        className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors font-bold text-sm"
                                     >
-                                        <Plus size={16} />
                                         Ajouter une ligne
-                                    </button>
+                                    </Button>
                                 </div>
                             </td>
                         </tr>
                     )}
                 </tbody>
                 {items && items.length > 0 && (
-                    <tfoot className="bg-slate-50 font-bold text-slate-700 border-t border-slate-200">
+                    <tfoot className="scenario-table__foot">
                         <tr>
-                            <td className="p-3 text-xs uppercase tracking-wider text-right" colSpan="2">Total</td>
-                            <td className="p-3 text-indigo-900">{results.cost.toFixed(2)}€</td>
-                            <td className="p-3 text-indigo-900">{results.pv.toFixed(2)}€</td>
-                            <td className="p-3 text-right text-emerald-600">{(results.pv - results.cost).toFixed(2)}€</td>
+                            <td className="scenario-table__total-label" colSpan="2">Total</td>
+                            <td className="scenario-table__total-value">{results.cost.toFixed(2)}€</td>
+                            <td className="scenario-table__total-value">{results.pv.toFixed(2)}€</td>
+                            <td className="scenario-table__total-margin">{(results.pv - results.cost).toFixed(2)}€</td>
                             <td></td>
                         </tr>
                     </tfoot>

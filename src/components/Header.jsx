@@ -1,5 +1,7 @@
 import React, { memo, useState } from 'react';
 import { Calculator, Plus, BarChart2, Share2, Check } from 'lucide-react';
+import { Button } from '@thatmuch/designsystem';
+import './Header.css';
 
 const Header = ({ onAddScenario, onToggleComparison, getScenarios }) => {
     const [isCopied, setIsCopied] = useState(false);
@@ -25,51 +27,56 @@ const Header = ({ onAddScenario, onToggleComparison, getScenarios }) => {
     };
 
     return (
-        <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm/50 backdrop-blur-md bg-white/80">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-tr from-indigo-600 to-blue-500 p-2.5 rounded-xl shadow-lg shadow-indigo-200">
-                        <Calculator className="text-white" size={24} strokeWidth={2.5} />
+        <header className="app-header">
+            <div className="container app-header__inner">
+                <div className="app-header__brand">
+                    <div className="app-header__logo">
+                        <Calculator className="app-header__logo-icon" size={24} strokeWidth={2.5} />
                     </div>
                     <div>
-                        <h1 className="text-xl font-black tracking-tight text-slate-900 leading-tight">
-                            Mark<span className="text-indigo-600">Up</span>
+                        <h1 className="app-header__title">
+                            Mark<span className="app-header__title-accent">Up</span>
                         </h1>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                        <p className="app-header__subtitle">
                             Simulateur de Rentabilité
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-
-                    <button
+                <div className="app-header__actions">
+                    <Button
+                        type="button"
+                        variant="white"
+                        size="sm"
+                        icon={<BarChart2 size={20} strokeWidth={2.5} />}
                         onClick={onToggleComparison}
                         aria-label="Comparer les scénarios"
-                        className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
                     >
-                        <BarChart2 size={20} strokeWidth={2.5} />
-                        <span className="hidden sm:inline">Comparer</span>
-                    </button>
+                        <span className="app-header__action-label">Comparer</span>
+                    </Button>
 
-                    <button
+                    <Button
+                        type="button"
+                        variant="white"
+                        size="sm"
+                        icon={isCopied ? <Check size={20} strokeWidth={2.5} className="app-header__copied-icon" /> : <Share2 size={20} strokeWidth={2.5} />}
                         onClick={handleShare}
                         aria-label="Partager la simulation"
-                        className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-indigo-600 transition-colors"
                         title="Copier le lien de partage"
                     >
-                        {isCopied ? <Check size={20} strokeWidth={2.5} className="text-emerald-500" /> : <Share2 size={20} strokeWidth={2.5} />}
-                        <span className="hidden sm:inline">{isCopied ? "Copié !" : "Partager"}</span>
-                    </button>
+                        <span className="app-header__action-label">{isCopied ? "Copié !" : "Partager"}</span>
+                    </Button>
 
-                    <button
+                    <Button
+                        type="button"
+                        variant="primary"
+                        size="sm"
+                        icon={<Plus size={18} strokeWidth={2.5} />}
                         onClick={onAddScenario}
                         aria-label="Nouveau Scénario"
-                        className="outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 group flex items-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-indigo-200 active:scale-95"
                     >
-                        <Plus size={18} className="transition-transform group-hover:rotate-90" strokeWidth={2.5} />
-                        <span className="hidden sm:inline">Nouveau Scénario</span>
-                    </button>
+                        <span className="app-header__action-label">Nouveau Scénario</span>
+                    </Button>
                 </div>
             </div>
         </header>
