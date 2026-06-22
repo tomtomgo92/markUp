@@ -63,10 +63,6 @@
     background: var(--neutral-100);
 }
 
-.profitability-bar__segment--tax {
-    background: var(--design-300);
-}
-
 .profitability-bar__segment--profit {
     background: var(--status-success);
 }
@@ -79,21 +75,8 @@
     font-size: var(--fs-xs);
 }
 
-.profitability-bar__legend-item--center {
-    align-items: center;
-    display: none;
-}
-
 .profitability-bar__legend-item--end {
     align-items: flex-end;
-}
-
-@media (min-width: 640px) {
-    .profitability-bar__legend-item--center {
-        display: flex;
-        flex-direction: column;
-        gap: 0.125rem;
-    }
 }
 
 .profitability-bar__legend-row {
@@ -110,10 +93,6 @@
 
 .profitability-bar__dot--cost {
     background: var(--neutral-100);
-}
-
-.profitability-bar__dot--tax {
-    background: var(--design-300);
 }
 
 .profitability-bar__dot--profit {

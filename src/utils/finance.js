@@ -1,9 +1,6 @@
 
 export const TAX_CONFIG = {
-    TVA_STANDARD: 0.20,
-    IS_REDUIT: 0.15,
-    IS_NORMAL: 0.25,
-    SEUIL_IS: 42500
+    TVA_STANDARD: 0.20
 };
 
 export const FORMATTER = new Intl.NumberFormat('fr-FR', {
@@ -70,14 +67,6 @@ export const calculateResults = (s) => {
     const tvaRate = isNoVat ? 0 : (s.tvaRate !== undefined ? parseFloat(s.tvaRate) : TAX_CONFIG.TVA_STANDARD);
     const tva = finalPV * tvaRate;
 
-    // Calcul IS Progressif
-    let is = 0;
-    if (marginEuro > 0) {
-        is = marginEuro <= TAX_CONFIG.SEUIL_IS
-            ? marginEuro * TAX_CONFIG.IS_REDUIT
-            : (TAX_CONFIG.SEUIL_IS * TAX_CONFIG.IS_REDUIT) + ((marginEuro - TAX_CONFIG.SEUIL_IS) * TAX_CONFIG.IS_NORMAL);
-    }
-
     return {
         pv: finalPV,
         basePv: pv,
@@ -86,8 +75,6 @@ export const calculateResults = (s) => {
         marginPercent: finalPV !== 0 ? (marginEuro / finalPV) : 0,
         tva,
         ttc: finalPV + tva,
-        is,
-        netProfit: marginEuro - is,
         discountAmount
     };
 };

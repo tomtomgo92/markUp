@@ -59,7 +59,7 @@ const ComparisonView = ({ scenarios, onClose }) => {
                 <div className="comparison-view__chart-area">
                     <div className="comparison-view__chart">
                         {data.map((item) => {
-                            const { pv, cost, marginEuro, marginPercent, netProfit } = item.results;
+                            const { pv, cost, marginEuro, marginPercent } = item.results;
                             const heightPercent = (pv / maxPV) * 100;
 
                             const costHeight = pv > 0 ? (cost / pv) * 100 : 0;
@@ -114,7 +114,7 @@ const ComparisonView = ({ scenarios, onClose }) => {
                                         </div>
                                         <div className="comparison-view__bar-metric comparison-view__bar-metric--net">
                                             <span>Net:</span>
-                                            <span>{FORMATTER.format(netProfit)}</span>
+                                            <span>{FORMATTER.format(marginEuro)}</span>
                                         </div>
                                     </div>
                                 </div>

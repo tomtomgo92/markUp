@@ -7,7 +7,6 @@ import {
     Copy,
     Percent,
     Download,
-    Info,
 } from 'lucide-react';
 import { Button, Checkbox } from '@thatmuch/designsystem';
 import ConfirmButton from './ui/ConfirmButton';
@@ -290,8 +289,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                 <ProfitabilityBar
                     pv={res.pv}
                     cost={res.cost}
-                    is={res.is}
-                    netProfit={res.netProfit}
+                    marginEuro={res.marginEuro}
                 />
 
                 <div className="scenario-card__results">
@@ -381,9 +379,9 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                         </div>
 
                         <div className="scenario-card__details-item">
-                            <span className="scenario-card__details-label">Bénéfice Net (Après IS)</span>
-                            <span className={`scenario-card__net-profit scenario-card__net-profit--${res.netProfit >= 0 ? 'positive' : 'negative'}`}>
-                                {res.netProfit >= 0 ? '+' : ''}{FORMATTER.format(res.netProfit)}
+                            <span className="scenario-card__details-label">Marge Nette</span>
+                            <span className={`scenario-card__net-profit scenario-card__net-profit--${res.marginEuro >= 0 ? 'positive' : 'negative'}`}>
+                                {res.marginEuro >= 0 ? '+' : ''}{FORMATTER.format(res.marginEuro)}
                             </span>
                         </div>
                     </div>
@@ -396,10 +394,6 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                                 {marginHealth === 'good' ? 'Saine (≥ 40%)' : marginHealth === 'mid' ? 'Moyenne (20-40%)' : 'Critique (< 20%)'}
                             </span>
                         </div>
-                    </div>
-                    <div className="scenario-card__footnote">
-                        <Info size={11} className="scenario-card__footnote-icon" aria-hidden="true" />
-                        <span>IS estimé par scénario — non consolidé au niveau de l'exercice fiscal.</span>
                     </div>
                 </div>
             </div>
