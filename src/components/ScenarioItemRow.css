@@ -88,8 +88,9 @@
 
 .scenario-row__margin {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-center;
+    justify-content: end;
+    gap: var(--space-component-sm);
 }
 
 .scenario-row__margin-value {
@@ -111,22 +112,8 @@
     margin-top: 0.125rem;
 }
 
-.scenario-row__health-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-}
-
-.scenario-row__health-dot--good {
-    background: var(--status-success);
-}
-
-.scenario-row__health-dot--mid {
-    background: var(--status-warning);
-}
-
-.scenario-row__health-dot--low {
-    background: var(--status-error);
+ .scenario-row__health-tag.tm-tag {
+    font-size: var(--fs-xxs);
 }
 
 .scenario-row__pct-input-wrap {

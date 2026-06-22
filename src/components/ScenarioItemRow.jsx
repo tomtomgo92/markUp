@@ -1,10 +1,10 @@
 import "./ScenarioItemRow.css";
 
+import { Button, Tag } from "@thatmuch/designsystem";
 import { Calculator, Trash2 } from "lucide-react";
 import React, { memo } from "react";
 import { costFromPv, pvFromCost } from "../utils/finance";
 
-import { Button } from "@thatmuch/designsystem";
 import ConfirmButton from "./ui/ConfirmButton";
 
 const ScenarioItemRow = memo(
@@ -129,11 +129,6 @@ const ScenarioItemRow = memo(
               {itemMargin.toFixed(0)}€
             </span>
             <div className="scenario-row__margin-pct">
-              <div
-                className={`scenario-row__health-dot scenario-row__health-dot--${marginHealth}`}
-                title={`Santé de la marge: ${marginHealth === "good" ? "Excellente" : marginHealth === "mid" ? "Moyenne" : "Critique"}`}
-                aria-hidden="true"
-              />
               {mode === "cost_percent" || mode === "pv_percent" ? (
                 <span className="scenario-row__pct-input-wrap">
                   <input
@@ -147,9 +142,19 @@ const ScenarioItemRow = memo(
                   <span className="scenario-row__pct-suffix">%</span>
                 </span>
               ) : (
-                <span className="scenario-row__pct-static">
+                <Tag
+                  scope={
+                    marginHealth === "good"
+                      ? "project"
+                      : marginHealth === "mid"
+                        ? "design"
+                        : "com"
+                  }
+                  className="scenario-row__health-tag"
+                  aria-label={`Santé de la marge: ${marginHealth === "good" ? "Excellente" : marginHealth === "mid" ? "Moyenne" : "Critique"}`}
+                >
                   {itemMarginPercent.toFixed(1)}%
-                </span>
+                </Tag>
               )}
             </div>
           </div>
