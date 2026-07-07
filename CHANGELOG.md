@@ -7,6 +7,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-07
+
+### Added
+
+- VAT toggle control to scenarios and conditional VAT calculation in tables.
+
+### Changed
+
+- Updated Button icon implementation and applied consistent code formatting in `TJMCalculator`.
+
+### Fixed
+
+- Authenticated `npm ci` with `PACKAGES_TOKEN` secret in GitHub Actions CI workflow.
+
 ## [0.1.0] - 2026-06-22
 
 ### Added

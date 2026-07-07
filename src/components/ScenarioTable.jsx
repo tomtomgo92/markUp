@@ -21,6 +21,7 @@ import ScenarioItemRow from "./ScenarioItemRow";
 const ScenarioTable = ({
   items,
   mode,
+  noVat = false,
   onUpdateItem,
   onRemoveItem,
   onOpenCalculator,
@@ -106,30 +107,34 @@ const ScenarioTable = ({
               </td>
               <td></td>
             </tr>
-            <tr>
-              <td className="scenario-table__total-label" colSpan="2">
-                TVA (20%)
-              </td>
-              <td className="scenario-table__total-value">
-                {tvaCost.toFixed(2)}€
-              </td>
-              <td className="scenario-table__total-value">
-                {tvaPv.toFixed(2)}€
-              </td>
-              <td className="scenario-table__total-margin">{tvaMargin}€</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td className="scenario-table__total-label" colSpan="2">
-                Total TTC
-              </td>
-              <td className="scenario-table__total-value">{totalCost}€</td>
-              <td className="scenario-table__total-value">{totalPv}€</td>
-              <td className="scenario-table__total-margin">
-                {totalMarginTTC}€
-              </td>
-              <td></td>
-            </tr>
+            {!noVat && (
+              <>
+                <tr>
+                  <td className="scenario-table__total-label" colSpan="2">
+                    TVA (20%)
+                  </td>
+                  <td className="scenario-table__total-value">
+                    {tvaCost.toFixed(2)}€
+                  </td>
+                  <td className="scenario-table__total-value">
+                    {tvaPv.toFixed(2)}€
+                  </td>
+                  <td className="scenario-table__total-margin">{tvaMargin}€</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td className="scenario-table__total-label" colSpan="2">
+                    Total TTC
+                  </td>
+                  <td className="scenario-table__total-value">{totalCost}€</td>
+                  <td className="scenario-table__total-value">{totalPv}€</td>
+                  <td className="scenario-table__total-margin">
+                    {totalMarginTTC}€
+                  </td>
+                  <td></td>
+                </tr>
+              </>
+            )}
           </tfoot>
         )}
       </table>
