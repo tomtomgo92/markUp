@@ -178,6 +178,11 @@
     background: var(--status-warning-light);
 }
 
+.scenario-card__callout--foreign {
+    background: var(--neutral-0);
+    border: 1px solid var(--neutral-50);
+}
+
 .scenario-card__callout-left {
     display: flex;
     align-items: center;
@@ -195,6 +200,11 @@
 .scenario-card__callout-icon--warning {
     background: var(--design-100);
     color: var(--design-700);
+}
+
+.scenario-card__callout-icon--foreign {
+    background: var(--dev-100, var(--neutral-100));
+    color: var(--dev-600, var(--neutral-600));
 }
 
 .scenario-card__callout-title {
@@ -285,6 +295,59 @@
     background: var(--status-warning);
     color: var(--neutral-900);
     box-shadow: var(--shadow-sm);
+}
+
+.scenario-card__vat-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    font-family: var(--font-body);
+}
+
+.scenario-card__vat-switch-track {
+    position: relative;
+    width: 2.5rem;
+    height: 1.375rem;
+    border-radius: 999px;
+    background: var(--neutral-100);
+    transition: background var(--speed-fast) var(--ease-standard);
+    flex-shrink: 0;
+}
+
+.scenario-card__vat-switch--on .scenario-card__vat-switch-track {
+    background: var(--dev-500, var(--status-success));
+}
+
+.scenario-card__vat-switch-thumb {
+    position: absolute;
+    top: 0.1875rem;
+    left: 0.1875rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--speed-fast) var(--ease-standard);
+}
+
+.scenario-card__vat-switch--on .scenario-card__vat-switch-thumb {
+    transform: translateX(1.125rem);
+}
+
+.scenario-card__vat-switch-label {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    color: var(--text-mid);
+}
+
+.scenario-card__vat-switch:focus-visible {
+    outline: 2px solid var(--dev-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-s);
 }
 
 .scenario-card__lines {

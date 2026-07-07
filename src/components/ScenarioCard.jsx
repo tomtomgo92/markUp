@@ -5,6 +5,7 @@ import {
   ChevronDown,
   Copy,
   Download,
+  Globe,
   Percent,
   PieChart,
   Plus,
@@ -320,6 +321,7 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
             <ScenarioTable
               items={s.items}
               mode={s.mode}
+              noVat={s.noVat === true}
               onUpdateItem={handleUpdateItem}
               onRemoveItem={handleRemoveItem}
               onOpenCalculator={handleOpenCalculator}
@@ -370,6 +372,40 @@ const ScenarioCard = memo(({ s, onUpdate, onRemove, onDuplicate, index }) => {
                 €
               </button>
             </div>
+          </div>
+        </div>
+
+        <div className="scenario-card__callout scenario-card__callout--foreign">
+          <div className="scenario-card__callout-left">
+            <div className="scenario-card__callout-icon scenario-card__callout-icon--foreign">
+              <Globe size={18} aria-hidden="true" />
+            </div>
+            <div>
+              <h4 className="scenario-card__callout-title">
+                Paiement à l'étranger
+              </h4>
+              <p className="scenario-card__callout-hint">
+                Désactive la TVA (client hors UE / non assujetti)
+              </p>
+            </div>
+          </div>
+
+          <div className="scenario-card__callout-control">
+            <button
+              type="button"
+              role="switch"
+              aria-checked={s.noVat === true}
+              onClick={() => onUpdate(s.id, "noVat", !s.noVat)}
+              className={`scenario-card__vat-switch ${s.noVat ? "scenario-card__vat-switch--on" : ""}`}
+              title="Activer pour facturer sans TVA (paiement à l'étranger)"
+            >
+              <span className="scenario-card__vat-switch-track">
+                <span className="scenario-card__vat-switch-thumb" />
+              </span>
+              <span className="scenario-card__vat-switch-label">
+                {s.noVat ? "Hors TVA" : "TVA 20%"}
+              </span>
+            </button>
           </div>
         </div>
 
