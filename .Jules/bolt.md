@@ -5,3 +5,6 @@
 ## 2025-01-28 - [React Lazy State Initialization]
 **Learning:** When initializing React state with expensive operations (like URL parameter parsing, base64 decoding, or JSON parsing), calling the function directly inside `useState` (e.g., `useState(getInitialState())`) executes the expensive operation on *every single render* of the component, even though the result is only used on the first render.
 **Action:** Always use React lazy initialization by passing a function reference to `useState` (e.g., `useState(getInitialState)`) when the initial state calculation is expensive, to prevent main thread blocking and unnecessary recalculations.
+## 2026-04-03 - Memoize derived data arrays for complex views
+**Learning:** When generating derived data arrays for charts or complex views (e.g., mapping through scenarios to run computations), not wrapping them in useMemo causes the expensive operation to run on every render.
+**Action:** Always wrap derived data arrays and their aggregations (like finding max values) in useMemo when passed down or used in complex views.
