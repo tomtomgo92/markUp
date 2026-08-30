@@ -1,21 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, memo } from 'react';
 import { X, TrendingUp } from 'lucide-react';
 import { Button } from '@thatmuch/designsystem';
 import { calculateResults, FORMATTER, PERCENT_FORMATTER } from '../utils/finance';
 import './ComparisonView.css';
 
-const ComparisonView = ({ scenarios, onClose }) => {
+// BOLT: Optimize - Wrap ComparisonView in memo to prevent unnecessary re-renders when parent App updates but props haven't changed.
+const ComparisonView = memo(({ scenarios, onClose }) => {
+    // BOLT: Optimize - useMemo to prevent recalculating expensive results array on every render
     // 1. Calculate results for all scenarios
-    const data = scenarios.map(s => {
-        const res = calculateResults(s);
-        return {
-            ...s,
-            results: res
-        };
-    });
+    const data = useMemo(() => {
+        return scenarios.map(s => {
+            const res = calculateResults(s);
+            return {
+                ...s,
+                results: res
+            };
+        });
+    }, [scenarios]);
 
+    // BOLT: Optimize - useMemo to prevent recalculating maxPV on every render
     // 2. Determine max PV to scale the chart
-    const maxPV = Math.max(...data.map(d => d.results.pv), 1); // Avoid div by 0
+    const maxPV = useMemo(() => {
+        return Math.max(...data.map(d => d.results.pv), 1); // Avoid div by 0
+    }, [data]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -136,6 +143,6 @@ const ComparisonView = ({ scenarios, onClose }) => {
             </div>
         </div>
     );
-};
+});
 
 export default ComparisonView;
